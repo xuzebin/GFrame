@@ -9,6 +9,7 @@
 #ifndef Scene_h
 #define Scene_h
 
+#include <unordered_map>
 
 /**
  * A simple scene containing entities to be rendered.
@@ -17,11 +18,15 @@ class Scene {
 
 private:
     std::vector<Entity*> entities;
+    static std::unordered_map<std::string, Entity*> table;
+    
     
 public:
     
     void addChild(Entity* entity) {
         entities.push_back(entity);
+        
+        table[entity->getName()] = entity;
     }
     
     //must be called and called once before rendering
@@ -41,6 +46,17 @@ public:
         }
     }
     
+    Entity* getEntity(std::string name) {
+        if (table.find(name) == table.end()) {
+            std::cerr << "Entity with name: " << name << " not found in the hashtable" << std::endl;
+            return NULL;
+        }
+        
+        return table[name];
+    }
+    
 };
+
+std::unordered_map<std::string, Entity*> Scene::table;
 
 #endif /* Scene_h */

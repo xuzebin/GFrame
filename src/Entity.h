@@ -24,8 +24,11 @@ struct Entity {
     Entity* parent;
     
 private:
-    static int id_;
-    bool visible_;
+    static int id_counter;
+
+    std::string name;
+    
+    bool visible;
     bool depthTest;
     
     GLfloat modelViewMat[16];
@@ -34,16 +37,23 @@ private:
     
 public:
     
-    Entity() : geometry(NULL), material(NULL), parent(NULL), visible_(true), depthTest(true){
-        id_ += 1;
-    }
+    Entity(Geometry* geometry_, Material* material_) : Entity("", geometry_, material_, NULL) {}
     
-    Entity(Geometry* geometry_, Material* material_) : Entity(geometry_, material_, NULL) {}
-    
+    Entity(std::string name_, Geometry* geometry_, Material* material_) : Entity(name_, geometry_, material_, NULL) {}
+ 
     Entity(Geometry* geometry_, Material* material_, Entity* parent_)
-        : geometry(geometry_), material(material_), parent(parent_), visible_(true), depthTest(true){
-          
-        id_ += 1;
+    : Entity("", geometry_, material_, parent_) {}
+
+    Entity(std::string name_, Geometry* geometry_, Material* material_, Entity* parent_)
+    : name(name_), geometry(geometry_), material(material_), parent(parent_) {
+        
+        ++id_counter;
+        visible = true;
+        depthTest = true;
+        
+        if (name.empty()) {
+            name = "Entity" + std::to_string(id_counter);
+        }
     }
     
     ~Entity() {
@@ -58,7 +68,7 @@ public:
     }
     
     void draw(const Matrix4& eyeInverseMatrix, const Matrix4& projectionMatrix, ShaderProgram* shaderProgram) {
-        if (!visible_) {
+        if (!isVisible()) {
             return;
         }
         if (material == NULL) {
@@ -107,15 +117,15 @@ public:
         geometry->draw(shaderProgram->aPositionLoc, shaderProgram->aNormalLoc, shaderProgram->aTexCoordLoc);
     }
     
-    int getId() {
-        return id_;
+    string getName() {
+        return name;
     }
     
     void setVisible(bool visible) {
-        this->visible_ = visible;
+        this->visible = visible;
     }
-    bool visible() {
-        return this->visible_;
+    bool isVisible() {
+        return this->visible;
     }
     
     void setDepthTest(bool enable) {
@@ -128,6 +138,8 @@ public:
 
 };
 
-int Entity::id_ = 0;
+int Entity::id_counter = 0;
+
+
 
 #endif /* Entity_h */
