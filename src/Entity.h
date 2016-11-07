@@ -16,14 +16,13 @@
 /**
  * The object/Entity to be rendered.
  */
-struct Entity {
+class Entity {
+    
+private:
     Transform transform;
     Geometry* geometry;
     Material* material;
     
-    Entity* parent;
-    
-private:
     static int id_counter;
 
     std::string name;
@@ -36,6 +35,7 @@ private:
     GLfloat normalMat[16];
     
 public:
+    Entity* parent;
     
     Entity(Geometry* geometry_, Material* material_) : Entity("", geometry_, material_, NULL) {}
     
@@ -124,6 +124,7 @@ public:
     void setVisible(bool visible) {
         this->visible = visible;
     }
+    
     bool isVisible() {
         return this->visible;
     }
@@ -131,11 +132,38 @@ public:
     void setDepthTest(bool enable) {
         depthTest = enable;
     }
+    
     bool depthTestEnabled() {
         return depthTest;
     }
     
-
+    
+    void setPosition(Cvec3 position) {
+        transform.setPosition(position);
+    }
+    void translate(Cvec3 translation) {
+        transform.translate(translation);
+    }
+    const Cvec3& getPosition() {
+        return transform.getPosition();
+    }
+    
+    void setRotation(Quat rotation) {
+        transform.setRotation(rotation);
+    }
+    void rotate(Quat rotation) {
+        transform.rotate(rotation);
+    }
+    const Quat& getRotation() {
+        return transform.getRotation();
+    }
+    void setScale(Cvec3 scale) {
+        transform.setScale(scale);
+    }
+    const Cvec3& getScale() {
+        return transform.getScale();
+    }
+  
 };
 
 int Entity::id_counter = 0;
