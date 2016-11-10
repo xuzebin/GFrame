@@ -55,6 +55,11 @@ public:
         return table[name];
     }
     
+    void removeAll() {
+        entities.clear();
+        table.clear();
+    }
+    
 };
 
 std::unordered_map<std::string, Entity*> Scene::table;

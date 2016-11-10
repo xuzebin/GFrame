@@ -16,20 +16,27 @@
 #include "tiny_obj_loader.h"
 
 
-struct VertexPN {
+struct Vertex {
     Cvec3f position;
     Cvec3f normal;
     Cvec2f texCoord;
     
-    VertexPN() {}
+    Cvec3f binormal;
+    Cvec3f tangent;
     
-    VertexPN(Cvec3f positionCoordinate, Cvec3f normalCoordinate, Cvec2f textureCoordinate) :
+    
+    
+    Vertex() {}
+    
+    Vertex(Cvec3f positionCoordinate, Cvec3f normalCoordinate, Cvec2f textureCoordinate) :
     position(positionCoordinate), normal(normalCoordinate), texCoord(textureCoordinate) {}
     
-    VertexPN& operator = (const GenericVertex& v) {
+    Vertex& operator = (const GenericVertex& v) {
         position = v.pos;
         normal = v.normal;
         texCoord = v.tex;
+        binormal = v.binormal;
+        tangent = v.tangent;
         return *this;
     }
 };
@@ -60,11 +67,11 @@ public:
     
     virtual void createVBOs() = 0;
     
-    void createVBOs(std::vector<VertexPN> vtx, std::vector<unsigned short> idx) {
+    void createVBOs(std::vector<Vertex> vtx, std::vector<unsigned short> idx) {
         indicesNum = (int)idx.size();
         glGenBuffers(1, &vertexVBO);
         glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(VertexPN) * vtx.size(), vtx.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vtx.size(), vtx.data(), GL_STATIC_DRAW);
         
         glGenBuffers(1, &indexVBO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
@@ -74,13 +81,13 @@ public:
     void draw(const GLuint aPositionLocation, const GLuint aNomralLocation, const GLuint aTexCoordLocation) {
         glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
         
-        glVertexAttribPointer(aPositionLocation, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPN), (void*)offsetof(VertexPN, position));
+        glVertexAttribPointer(aPositionLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
         glEnableVertexAttribArray(aPositionLocation);
         
-        glVertexAttribPointer(aNomralLocation, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPN), (void*)offsetof(VertexPN, normal));
+        glVertexAttribPointer(aNomralLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
         glEnableVertexAttribArray(aNomralLocation);
         
-        glVertexAttribPointer(aTexCoordLocation, 2, GL_FLOAT, GL_FALSE, sizeof(VertexPN), (void*)offsetof(VertexPN, texCoord));
+        glVertexAttribPointer(aTexCoordLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
         glEnableVertexAttribArray(aTexCoordLocation);
         
         
@@ -107,7 +114,7 @@ public:
         int vertexBufferLen, indexBufferLen;
         getCubeVbIbLen(vertexBufferLen, indexBufferLen);
         
-        std::vector<VertexPN> vtx(vertexBufferLen);
+        std::vector<Vertex> vtx(vertexBufferLen);
         std::vector<unsigned short> idx(indexBufferLen);
         
         makeCube(size, vtx.begin(), idx.begin());
@@ -133,7 +140,7 @@ public:
         int vertexBufferLen, indexBufferLen;
         getPlaneVbIbLen(vertexBufferLen, indexBufferLen);
         
-        std::vector<VertexPN> vtx(vertexBufferLen);
+        std::vector<Vertex> vtx(vertexBufferLen);
         std::vector<unsigned short> idx(indexBufferLen);
         
         makePlane(size, vtx.begin(), idx.begin());
@@ -164,7 +171,7 @@ public:
         int vertexBufferLen, indexBufferLen;
         getSphereVbIbLen(slices, stacks, vertexBufferLen, indexBufferLen);
         
-        std::vector<VertexPN> vtx(vertexBufferLen);
+        std::vector<Vertex> vtx(vertexBufferLen);
         std::vector<unsigned short> idx(indexBufferLen);
         
         makeSphere(radius, slices, stacks, vtx.begin(), idx.begin());
@@ -188,13 +195,13 @@ public:
         int vertexBufferLen, indexBufferLen;
         getCubeVbIbLen(vertexBufferLen, indexBufferLen);
         
-        std::vector<VertexPN> vtx(vertexBufferLen);
+        std::vector<Vertex> vtx(vertexBufferLen);
         std::vector<unsigned short> idx(indexBufferLen);
         
         makeCube(size, vtx.begin(), idx.begin());
         
         //flip normals of cube to point inside the box.
-        for(std::vector<VertexPN>::iterator it = vtx.begin(); it != vtx.end(); ++it) {
+        for(std::vector<Vertex>::iterator it = vtx.begin(); it != vtx.end(); ++it) {
             it->normal *= -1;
         }
         
@@ -210,7 +217,7 @@ public:
     Model(const std::string fileName_) : fileName(fileName_) {}
     
     void createVBOs() {
-        std::vector<VertexPN> vertices;
+        std::vector<Vertex> vertices;
         std::vector<unsigned short> indices;
         loadFromFile(fileName, vertices, indices);
         
@@ -219,7 +226,7 @@ public:
     
 private:
     
-    void loadFromFile(const std::string& fileName, std::vector<VertexPN>& vertices, std::vector<unsigned short>& indices) {
+    void loadFromFile(const std::string& fileName, std::vector<Vertex>& vertices, std::vector<unsigned short>& indices) {
         tinyobj::attrib_t attrib;
         std::vector<tinyobj::shape_t> shapes;
         std::vector<tinyobj::material_t> materials;
@@ -229,7 +236,7 @@ private:
         
         if (ret) {
             for (int i = 0; i < attrib.vertices.size(); i += 3) {
-                VertexPN v;
+                Vertex v;
                 for (int j = 0; j < 3; ++j) {
                     v.position[j] = attrib.vertices[i + j];
                     v.normal[j]   = attrib.normals[i + j];
