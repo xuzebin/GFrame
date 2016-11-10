@@ -12,6 +12,7 @@
 #include "Transform.h"
 #include "Material.h"
 #include "ShaderProgram.h"
+#include "Camera.h"
 
 /**
  * The object/Entity to be rendered.
@@ -67,7 +68,7 @@ public:
         geometry->createVBOs();
     }
     
-    void draw(const Matrix4& eyeInverseMatrix, const Matrix4& projectionMatrix, ShaderProgram* shaderProgram) {
+    void draw(Camera* camera, ShaderProgram* shaderProgram) {
         if (!isVisible()) {
             return;
         }
@@ -78,6 +79,7 @@ public:
             throw string("Geometry NULL");
         }
         
+        Matrix4 projectionMatrix = camera->getProjectionMatrix();
         
         //Transform hierachy, iteratively multiply parent rigidbody matrices
         //to get the ultimate modelmatrix that transform from object frame to world frame.
@@ -91,7 +93,7 @@ public:
         }
         
         
-        Matrix4 modelViewMatrix = eyeInverseMatrix * modelMatrix;
+        Matrix4 modelViewMatrix = inv(camera->getViewMatrix()) * modelMatrix;
         Matrix4 normal = normalMatrix(modelViewMatrix);
         
         modelViewMatrix.writeToColumnMajorMatrix(modelViewMat);
@@ -104,9 +106,27 @@ public:
 
         glUniform3f(shaderProgram->uColorLoc, material->color[0], material->color[1], material->color[2]);
         glUniform1f(shaderProgram->uMinColorLoc, 0.2);
+        
+        Cvec3 lightPosWorld0 = Cvec3(0, 2, 2);
+        Cvec4 lightPosEye0 = normalMatrix(camera->getViewMatrix()) * Cvec4(lightPosWorld0, 1);
+        glUniform3f(shaderProgram->uLightPositionLoc0, lightPosEye0[0], lightPosEye0[1], lightPosEye0[2]);
+        glUniform3f(shaderProgram->uLightColorLoc0, 1, 1, 1);
+        glUniform3f(shaderProgram->uSpecularLightColorLoc0, 1, 1, 1);
+        
+//        Cvec3 lightPosWorld1 = Cvec3(-10, 10, 0);
+//        Cvec4 lightPosEye1 = normalMatrix(camera->getViewMatrix()) * Cvec4(lightPosWorld1, 1);
+//        glUniform3f(shaderProgram->uLightPositionLoc1, lightPosEye1[0], lightPosEye1[1], lightPosEye1[2]);
+//        glUniform3f(shaderProgram->uLightColorLoc1, 1, 1, 1);
+//        glUniform3f(shaderProgram->uSpecularLightColorLoc1, 1, 1, 1);
  
+        glUniform1f(shaderProgram->uDiffuseTextureLoc, 0);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, material->texture);
-        glUniform1i(material->texture, 0);
+//        glUniform1i(material->texture, 0);
+        
+//        glUniform1f(shaderProgram->uSpecularTextureLoc, 1);
+//        glActiveTexture(GL_TEXTURE1);
+//        glBindBuffer(GL_TEXTURE_2D, material->texture);//specular texture.
 
         if (depthTest) {
             glEnable(GL_DEPTH_TEST);

@@ -20,6 +20,7 @@
 struct Material {
     Cvec3f color;//we here define a default (-1, -1, -1) which means do not apply color uniform
     GLuint texture;
+    GLuint specularTexture;
     
     Material() : color (-1, -1, -1), texture(0) {}
     
@@ -32,6 +33,7 @@ struct Material {
     Material& operator = (const Material& g) {
         color = g.color;
         texture = g.texture;
+        specularTexture = g.specularTexture;
         return *this;
     }
 };

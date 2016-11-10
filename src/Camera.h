@@ -13,7 +13,7 @@
 
 static const Cvec3 UP_VEC = Cvec3(0, 1, 0);
 static const double Z_NEAR = -0.1;
-static const double Z_FAR = -1500;
+static const double Z_FAR = -800;
 
 /**
  * The camera object holds the view matrix as well as projection matrix.
@@ -38,6 +38,11 @@ public:
 
     Camera() : position(0, 0, 0), offsetToObject(0, 10, 80) {
         updateView(Cvec3(0, 0, 0));
+        projectionMatrix = Matrix4::makeProjection(fov, 1.0, Z_NEAR, Z_FAR);
+    }
+    
+    Camera(Cvec3 position_, Quat rotation_) : position(position_), rotation(rotation_) {
+        viewMatrix = Matrix4::makeTranslation(position) * quatToMatrix(rotation);
         projectionMatrix = Matrix4::makeProjection(fov, 1.0, Z_NEAR, Z_FAR);
     }
     

@@ -27,6 +27,19 @@ struct ShaderProgram {
     GLuint uColorLoc;
     GLuint uMinColorLoc;
     
+    //light
+    GLuint uLightPositionLoc0;
+    GLuint uLightColorLoc0;
+    GLuint uSpecularLightColorLoc0;
+    
+    GLuint uLightPositionLoc1;
+    GLuint uLightColorLoc1;
+    GLuint uSpecularLightColorLoc1;
+    
+    
+    GLuint uDiffuseTextureLoc;
+    GLuint uSpecularTextureLoc;
+    
     GLuint programId;
     
     ShaderProgram(const char* vertexShaderFileName, const char* fragmentShaderFileName) {
@@ -42,6 +55,18 @@ struct ShaderProgram {
         uNormalMatrixLoc = glGetUniformLocation(programId, "uNormalMatrix");
         uColorLoc = glGetUniformLocation(programId, "uColor");
         uMinColorLoc = glGetUniformLocation(programId, "uMinColor");
+        
+        uLightPositionLoc0 = glGetUniformLocation(programId, "uLight[0].lightPosition");
+        uLightColorLoc0 = glGetUniformLocation(programId, "uLight[0].lightColor");
+        uSpecularLightColorLoc0 = glGetUniformLocation(programId, "uLight[0].specularLightColor");
+        
+        uLightPositionLoc1 = glGetUniformLocation(programId, "uLight[1].lightPosition");
+        uLightColorLoc1 = glGetUniformLocation(programId, "uLight[1].lightColor");
+        uSpecularLightColorLoc1 = glGetUniformLocation(programId, "uLight[1].specularLightColor");
+        
+        
+        uDiffuseTextureLoc = glGetUniformLocation(programId, "uDiffuseTexture");
+        uSpecularTextureLoc = glGetUniformLocation(programId, "uSpecularTexture");
     }
     
     ~ShaderProgram() {

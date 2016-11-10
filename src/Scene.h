@@ -38,17 +38,18 @@ public:
     
     void render(Camera* camera, ShaderProgram* shaderProgram) {
         glUseProgram(shaderProgram->programId);
-        Matrix4 viewMatrixInv = inv(camera->getViewMatrix());
-        Matrix4 projectionMatrix = camera->getProjectionMatrix();
+//        Matrix4 viewMatrixInv = inv(camera->getViewMatrix());
+//        Matrix4 projectionMatrix = camera->getProjectionMatrix();
         
         for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
-            (*it)->draw(viewMatrixInv, projectionMatrix, shaderProgram);
+//            (*it)->draw(viewMatrixInv, projectionMatrix, shaderProgram);
+            (*it)->draw(camera, shaderProgram);
         }
     }
     
     Entity* getEntity(std::string name) {
         if (table.find(name) == table.end()) {
-            std::cerr << "Entity with name: " << name << " not found in the hashtable" << std::endl;
+//            std::cerr << "Entity with name: " << name << " not found in the hashtable" << std::endl;
             return NULL;
         }
         
