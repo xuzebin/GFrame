@@ -9,6 +9,10 @@
 #ifndef RigidBodyTransform_h
 #define RigidBodyTransform_h
 
+#include "quat.h"
+#include "cvec.h"
+#include "matrix4.h"
+
 /**
  * Rigid Body Transform (RBT) excludes scaling.
  * Preserve dot products between vectors, handedness of basis and distance between points.

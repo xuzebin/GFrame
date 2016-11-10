@@ -13,6 +13,8 @@
 #include "Material.h"
 #include "ShaderProgram.h"
 #include "Camera.h"
+#include "Geometry.h"
+
 
 /**
  * The object/Entity to be rendered.
@@ -38,15 +40,17 @@ private:
 public:
     Entity* parent;
     
-    Entity(Geometry* geometry_, Material* material_) : Entity("", geometry_, material_, NULL) {}
+    Entity(Geometry* geometry_, Material* material_)
+        : Entity("", geometry_, material_, NULL) {}
     
-    Entity(std::string name_, Geometry* geometry_, Material* material_) : Entity(name_, geometry_, material_, NULL) {}
+    Entity(std::string name_, Geometry* geometry_, Material* material_)
+        : Entity(name_, geometry_, material_, NULL) {}
  
     Entity(Geometry* geometry_, Material* material_, Entity* parent_)
-    : Entity("", geometry_, material_, parent_) {}
+        : Entity("", geometry_, material_, parent_) {}
 
     Entity(std::string name_, Geometry* geometry_, Material* material_, Entity* parent_)
-    : name(name_), geometry(geometry_), material(material_), parent(parent_) {
+        :name(name_), geometry(geometry_), material(material_), parent(parent_) {
         
         ++id_counter;
         visible = true;
@@ -60,6 +64,22 @@ public:
     ~Entity() {
         delete material;
     }
+    
+//    void createMesh();
+//    void draw(Camera* camera, ShaderProgram* shaderProgram);
+//    string getName();
+//    void setVisible(bool visible);
+//    bool isVisible();
+//    void setDepthTest(bool enable);
+//    bool depthTestEnabled();
+//    void setPosition(Cvec3 position);
+//    void translate(Cvec3 translation);
+//    const Cvec3& getPosition();
+//    void setRotation(Quat rotation);
+//    void rotate(Quat rotation);
+//    const Quat& getRotation();
+//    void setScale(Cvec3 scale);
+//    const Cvec3& getScale();
     
     void createMesh()  {
         if (geometry == NULL) {
@@ -76,7 +96,7 @@ public:
             throw string("Material NULL");
         }
         if (geometry == NULL) {
-            throw string("Geometry NULL");
+            throw std::string("Geometry NULL");
         }
         
         Matrix4 projectionMatrix = camera->getProjectionMatrix();
@@ -85,7 +105,7 @@ public:
         //to get the ultimate modelmatrix that transform from object frame to world frame.
         Matrix4 modelMatrix;
         modelMatrix = transform.getModelMatrix();
-       
+        
         Entity* current = parent;
         while (current != NULL) {
             modelMatrix = current->transform.getRigidBodyMatrix() * modelMatrix;
@@ -103,41 +123,41 @@ public:
         glUniformMatrix4fv(shaderProgram->uModelViewMatrixLoc, 1, false, modelViewMat);
         glUniformMatrix4fv(shaderProgram->uProjectionMatrixLoc, 1, false, projectionMat);
         glUniformMatrix4fv(shaderProgram->uNormalMatrixLoc, 1, false, normalMat);
-
+        
         glUniform3f(shaderProgram->uColorLoc, material->color[0], material->color[1], material->color[2]);
         glUniform1f(shaderProgram->uMinColorLoc, 0.2);
         
-        Cvec3 lightPosWorld0 = Cvec3(0, 2, 2);
+        Cvec3 lightPosWorld0 = Cvec3(0.0, 2.0, 2.0);
         Cvec4 lightPosEye0 = normalMatrix(camera->getViewMatrix()) * Cvec4(lightPosWorld0, 1);
         glUniform3f(shaderProgram->uLightPositionLoc0, lightPosEye0[0], lightPosEye0[1], lightPosEye0[2]);
         glUniform3f(shaderProgram->uLightColorLoc0, 1, 1, 1);
         glUniform3f(shaderProgram->uSpecularLightColorLoc0, 1, 1, 1);
         
-//        Cvec3 lightPosWorld1 = Cvec3(-10, 10, 0);
-//        Cvec4 lightPosEye1 = normalMatrix(camera->getViewMatrix()) * Cvec4(lightPosWorld1, 1);
-//        glUniform3f(shaderProgram->uLightPositionLoc1, lightPosEye1[0], lightPosEye1[1], lightPosEye1[2]);
-//        glUniform3f(shaderProgram->uLightColorLoc1, 1, 1, 1);
-//        glUniform3f(shaderProgram->uSpecularLightColorLoc1, 1, 1, 1);
- 
+        //        Cvec3 lightPosWorld1 = Cvec3(-10, 10, 0);
+        //        Cvec4 lightPosEye1 = normalMatrix(camera->getViewMatrix()) * Cvec4(lightPosWorld1, 1);
+        //        glUniform3f(shaderProgram->uLightPositionLoc1, lightPosEye1[0], lightPosEye1[1], lightPosEye1[2]);
+        //        glUniform3f(shaderProgram->uLightColorLoc1, 1, 1, 1);
+        //        glUniform3f(shaderProgram->uSpecularLightColorLoc1, 1, 1, 1);
+        
         glUniform1f(shaderProgram->uDiffuseTextureLoc, 0);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, material->texture);
-//        glUniform1i(material->texture, 0);
+        //        glUniform1i(material->texture, 0);
         
-//        glUniform1f(shaderProgram->uSpecularTextureLoc, 1);
-//        glActiveTexture(GL_TEXTURE1);
-//        glBindBuffer(GL_TEXTURE_2D, material->texture);//specular texture.
-
+        //        glUniform1f(shaderProgram->uSpecularTextureLoc, 1);
+        //        glActiveTexture(GL_TEXTURE1);
+        //        glBindBuffer(GL_TEXTURE_2D, material->texture);//specular texture.
+        
         if (depthTest) {
             glEnable(GL_DEPTH_TEST);
         } else {
             glDisable(GL_DEPTH_TEST);
         }
-
+        
         geometry->draw(shaderProgram->aPositionLoc, shaderProgram->aNormalLoc, shaderProgram->aTexCoordLoc);
     }
     
-    string getName() {
+    std::string getName() const {
         return name;
     }
     
@@ -145,7 +165,7 @@ public:
         this->visible = visible;
     }
     
-    bool isVisible() {
+    bool isVisible() const {
         return this->visible;
     }
     
@@ -153,7 +173,7 @@ public:
         depthTest = enable;
     }
     
-    bool depthTestEnabled() {
+    bool depthTestEnabled() const {
         return depthTest;
     }
     
@@ -183,11 +203,11 @@ public:
     const Cvec3& getScale() {
         return transform.getScale();
     }
-  
+//
 };
 
-int Entity::id_counter = 0;
 
+int Entity::id_counter = 0;
 
 
 #endif /* Entity_h */

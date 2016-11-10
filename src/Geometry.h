@@ -14,32 +14,30 @@
 #include "geometrymaker.h"
 #include "cvec.h"
 #include "tiny_obj_loader.h"
+#include "Vertex.h"
 
-
-struct Vertex {
-    Cvec3f position;
-    Cvec3f normal;
-    Cvec2f texCoord;
-    
-    Cvec3f binormal;
-    Cvec3f tangent;
-    
-    
-    
-    Vertex() {}
-    
-    Vertex(Cvec3f positionCoordinate, Cvec3f normalCoordinate, Cvec2f textureCoordinate) :
-    position(positionCoordinate), normal(normalCoordinate), texCoord(textureCoordinate) {}
-    
-    Vertex& operator = (const GenericVertex& v) {
-        position = v.pos;
-        normal = v.normal;
-        texCoord = v.tex;
-        binormal = v.binormal;
-        tangent = v.tangent;
-        return *this;
-    }
-};
+//struct Vertex {
+//    Cvec3f position;
+//    Cvec3f normal;
+//    Cvec2f texCoord;
+//    
+//    Cvec3f binormal;
+//    Cvec3f tangent;
+//    
+//    Vertex() {}
+//    
+//    Vertex(Cvec3f positionCoordinate, Cvec3f normalCoordinate, Cvec2f textureCoordinate) :
+//    position(positionCoordinate), normal(normalCoordinate), texCoord(textureCoordinate) {}
+//    
+//    Vertex& operator = (const GenericVertex& v) {
+//        position = v.pos;
+//        normal = v.normal;
+//        texCoord = v.tex;
+//        binormal = v.binormal;
+//        tangent = v.tangent;
+//        return *this;
+//    }
+//};
 
 
 /**

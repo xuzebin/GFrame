@@ -6,7 +6,6 @@
 //  Copyright © 2016 Ivan Safrin. All rights reserved.
 //
 
-#include <stdio.h>
 #include "Camera.h"
 
 const Cvec3 Camera::UP_VEC = Cvec3(0, 1, 0);
