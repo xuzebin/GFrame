@@ -6,12 +6,14 @@ uniform mat4 uModelViewMatrix;
 uniform mat4 uProjectionMatrix;
 uniform mat4 uNormalMatrix;
 
-varying vec4 vNormal;
+varying vec3 vNormal;
 varying vec2 vTexCoord;
+varying vec3 vPosition;
 
 void main() {
-    vNormal = normalize(uNormalMatrix * aNormal);
+    vNormal = normalize((uNormalMatrix * aNormal).xyz);
     vTexCoord = aTexCoord;
-    //gl_Position = uProjectionMatrix * uModelViewMatrix * aPosition;
-    gl_Position = uProjectionMatrix * uModelViewMatrix * aPosition;
+    vec4 viewspacePos = uModelViewMatrix * aPosition;
+    vPosition = viewspacePos.xyz;
+    gl_Position = uProjectionMatrix * viewspacePos;
 }
