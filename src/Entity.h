@@ -203,7 +203,7 @@ public:
     const Cvec3& getScale() {
         return transform.getScale();
     }
-//
+
 };
 
 
