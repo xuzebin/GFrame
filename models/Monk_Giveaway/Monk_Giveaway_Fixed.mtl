@@ -9,7 +9,7 @@ Ks 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd E:\Mes documents\3d New\Monk\Final\Give away\Monk_D.tga
+map_Kd Monk_D.tga
 map_Bump Monk_N_Normal_Bump.tga
-map_Ka E:\\Mes documents\\3d New\\Monk\\Final\\Give away\\Monk_D.tga
-map_d E:\\Mes documents\\3d New\\Monk\\Final\\Give away\\Monk_D.tga
+map_Ka Monk_D.tga
+map_d Monk_D.tga
