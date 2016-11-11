@@ -19,20 +19,20 @@
  */
 struct Material {
     Cvec3f color;//we here define a default (-1, -1, -1) which means do not apply color uniform
-    GLuint texture;
+    GLuint diffuseTexture;
     GLuint specularTexture;
     
-    Material() : color (-1, -1, -1), texture(0) {}
+    Material() : color (-1, -1, -1), diffuseTexture(0) {}
     
     Material(const char* textureFileName) : color(-1, -1, -1) {
-        texture = loadGLTexture(textureFileName);
+        diffuseTexture = loadGLTexture(textureFileName);
     }
     
-    Material(Cvec3f color_) : color(color_), texture(0) {}
+    Material(Cvec3f color_) : color(color_), diffuseTexture(0) {}
     
     Material& operator = (const Material& g) {
         color = g.color;
-        texture = g.texture;
+        diffuseTexture = g.diffuseTexture;
         specularTexture = g.specularTexture;
         return *this;
     }

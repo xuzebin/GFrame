@@ -9,11 +9,8 @@
 #ifndef Geometry_h
 #define Geometry_h
 
-#define TINYOBJLOADER_IMPLEMENTATION
-
 #include "geometrymaker.h"
 #include "cvec.h"
-#include "tiny_obj_loader.h"
 #include "Vertex.h"
 
 

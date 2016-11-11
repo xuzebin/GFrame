@@ -19,7 +19,7 @@ public:
         this->size = size;
     }
     
-    virtual void createVBOs() {
+    void createVBOs() {
         int vertexBufferLen, indexBufferLen;
         getPlaneVbIbLen(vertexBufferLen, indexBufferLen);
         

@@ -22,7 +22,7 @@ public:
         this->size = size;
     }
     
-    inline void createVBOs() {
+    void createVBOs() {
         int vertexBufferLen, indexBufferLen;
         getCubeVbIbLen(vertexBufferLen, indexBufferLen);
         
