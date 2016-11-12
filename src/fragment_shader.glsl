@@ -26,7 +26,7 @@ void main() {
     for (int i = 0; i < 2; ++i) {
         vec3 lightDirection = -normalize(vPosition - uLight[i].lightPosition);
         float diffuse = max(0.0, dot(vNormal, lightDirection));
-        float attenuation = attenuate(distance(vPosition, uLight[i].lightPosition) / 40.0, 0.5, 0.5);
+        float attenuation = attenuate(distance(vPosition, uLight[i].lightPosition) / 50.0, 0.5, 0.5);
         diffuseColor += (uLight[i].lightColor * diffuse) * attenuation;
         
         vec3 h = normalize(v + lightDirection);
@@ -38,7 +38,7 @@ void main() {
     if (uColor != vec3(-1, -1, -1)) {
         intensity = uColor * diffuseColor + specularColor;
     } else {
-        intensity = texture2D(uDiffuseTexture, vTexCoord).xyz * diffuseColor + specularColor;
+        intensity = texture2D(uDiffuseTexture, vTexCoord).xyz * diffuseColor + specularColor * texture2D(uSpecularTexture, vTexCoord).x;
     }
     gl_FragColor = vec4(intensity.xyz, 1.0);
     
