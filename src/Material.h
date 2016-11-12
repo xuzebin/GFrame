@@ -22,13 +22,13 @@ struct Material {
     GLuint diffuseTexture;
     GLuint specularTexture;
     
-    Material() : color (-1, -1, -1), diffuseTexture(0) {}
+    Material() : color (-1, -1, -1), diffuseTexture(0), specularTexture(0) {}
     
     Material(const char* textureFileName) : color(-1, -1, -1) {
         diffuseTexture = loadGLTexture(textureFileName);
     }
     
-    Material(Cvec3f color_) : color(color_), diffuseTexture(0) {}
+    Material(Cvec3f color_) : color(color_), diffuseTexture(0), specularTexture(0) {}
     
     Material& operator = (const Material& g) {
         color = g.color;

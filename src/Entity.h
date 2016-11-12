@@ -129,7 +129,7 @@ public:
         glUniform3f(shaderProgram->uColorLoc, material->color[0], material->color[1], material->color[2]);
         glUniform1f(shaderProgram->uMinColorLoc, 0.2);
         
-        Cvec3 lightPosWorld0 = Cvec3(0.0, 5.0, 1.0);
+        Cvec3 lightPosWorld0 = Cvec3(0.0, 15.0, 0.0);
         Cvec4 lightPosEye0 = normalMatrix(camera->getViewMatrix()) * Cvec4(lightPosWorld0, 1);
         glUniform3f(shaderProgram->uLightPositionLoc0, lightPosEye0[0], lightPosEye0[1], lightPosEye0[2]);
         glUniform3f(shaderProgram->uLightColorLoc0, 1, 1, 1);
@@ -144,11 +144,10 @@ public:
         glUniform1f(shaderProgram->uDiffuseTextureLoc, 0);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, material->diffuseTexture);
-        //        glUniform1i(material->texture, 0);
         
-        //        glUniform1f(shaderProgram->uSpecularTextureLoc, 1);
-        //        glActiveTexture(GL_TEXTURE1);
-        //        glBindBuffer(GL_TEXTURE_2D, material->texture);//specular texture.
+        glUniform1f(shaderProgram->uSpecularTextureLoc, 1);
+        glActiveTexture(GL_TEXTURE1);
+        glBindBuffer(GL_TEXTURE_2D, material->specularTexture);
         
         if (depthTest) {
             glEnable(GL_DEPTH_TEST);
