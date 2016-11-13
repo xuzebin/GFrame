@@ -17,6 +17,10 @@ void Camera::setViewMatrix(const Cvec3 position, const Quat rotation) {
     viewMatrix = Matrix4::makeTranslation(position) * quatToMatrix(rotation);
 }
 
+void Camera::updateViewMatrix() {
+    setViewMatrix(position, rotation);
+}
+
 void Camera::setProjectionMatrix(const double fov, const double aspectRatio, const double zNear, const double zFar) {
     projectionMatrix = Matrix4::makeProjection(fov, aspectRatio, zNear, zFar);
 }
@@ -36,6 +40,10 @@ Cvec3 Camera::getPosition() const {
 void Camera::updateView(Cvec3 target) {
     position = target + offsetToObject;
     viewMatrix = setLookat(position, target, UP_VEC);
+}
+
+double Camera::getFov() {
+    return fov;
 }
 
 

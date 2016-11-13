@@ -39,6 +39,7 @@ private:
     double fov = 45.0;
     
     void setViewMatrix(Cvec3 position, Quat rotation);
+    void updateViewMatrix();
     void setProjectionMatrix(const double fov, const double aspectRatio, const double zNear, const double zFar);
 
 
@@ -60,6 +61,14 @@ public:
     void updateView(Cvec3 target);
     
     void switchMode(char mode);
+    
+    
+    void rotate(Quat rotation) {
+        this->rotation = this->rotation * rotation;
+        updateViewMatrix();
+    }
+    
+    double getFov();
 };
 
 
