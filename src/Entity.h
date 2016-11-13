@@ -21,10 +21,11 @@
  */
 class Entity {
     
-protected:
+public:
     Transform transform;
     Geometry* geometry;
     Material* material;
+protected:
     
     static int id_counter;
 
@@ -129,17 +130,17 @@ public:
         glUniform3f(shaderProgram->uColorLoc, material->color[0], material->color[1], material->color[2]);
         glUniform1f(shaderProgram->uMinColorLoc, 0.2);
         
-        Cvec3 lightPosWorld0 = Cvec3(0.0, 15.0, 0.0);
+        Cvec3 lightPosWorld0 = Cvec3(0.0, 10.0, 0.0);
         Cvec4 lightPosEye0 = normalMatrix(camera->getViewMatrix()) * Cvec4(lightPosWorld0, 1);
         glUniform3f(shaderProgram->uLightPositionLoc0, lightPosEye0[0], lightPosEye0[1], lightPosEye0[2]);
         glUniform3f(shaderProgram->uLightColorLoc0, 1, 1, 1);
         glUniform3f(shaderProgram->uSpecularLightColorLoc0, 1, 1, 1);
         
-//        Cvec3 lightPosWorld1 = Cvec3(-5, 5, 0);
-//        Cvec4 lightPosEye1 = normalMatrix(camera->getViewMatrix()) * Cvec4(lightPosWorld1, 1);
-//        glUniform3f(shaderProgram->uLightPositionLoc1, lightPosEye1[0], lightPosEye1[1], lightPosEye1[2]);
-//        glUniform3f(shaderProgram->uLightColorLoc1, 1, 1, 1);
-//        glUniform3f(shaderProgram->uSpecularLightColorLoc1, 1, 1, 1);
+        Cvec3 lightPosWorld1 = Cvec3(-10, 5, 0);
+        Cvec4 lightPosEye1 = normalMatrix(camera->getViewMatrix()) * Cvec4(lightPosWorld1, 1);
+        glUniform3f(shaderProgram->uLightPositionLoc1, lightPosEye1[0], lightPosEye1[1], lightPosEye1[2]);
+        glUniform3f(shaderProgram->uLightColorLoc1, 1, 1, 1);
+        glUniform3f(shaderProgram->uSpecularLightColorLoc1, 1, 1, 1);
         
         glUniform1f(shaderProgram->uDiffuseTextureLoc, 0);
         glActiveTexture(GL_TEXTURE0);
@@ -149,13 +150,17 @@ public:
         glActiveTexture(GL_TEXTURE1);
         glBindBuffer(GL_TEXTURE_2D, material->specularTexture);
         
+        glUniform1f(shaderProgram->uNormalTextureLoc, 2);
+        glActiveTexture(GL_TEXTURE2);
+        glBindBuffer(GL_TEXTURE_2D, material->normalTexture);
+        
         if (depthTest) {
             glEnable(GL_DEPTH_TEST);
         } else {
             glDisable(GL_DEPTH_TEST);
         }
         
-        geometry->draw(shaderProgram->aPositionLoc, shaderProgram->aNormalLoc, shaderProgram->aTexCoordLoc);
+        geometry->draw(shaderProgram->aPositionLoc, shaderProgram->aNormalLoc, shaderProgram->aTexCoordLoc, shaderProgram->aBinormalLoc, shaderProgram->aTangentLoc);
     }
     
     std::string getName() const {
@@ -203,6 +208,10 @@ public:
     }
     const Cvec3& getScale() {
         return transform.getScale();
+    }
+    
+    const Matrix4& getModelMatrix() {
+        return transform.getModelMatrix();
     }
 
 };

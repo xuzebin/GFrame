@@ -19,6 +19,8 @@ struct ShaderProgram {
     GLuint aPositionLoc;
     GLuint aNormalLoc;
     GLuint aTexCoordLoc;
+    GLuint aBinormalLoc;
+    GLuint aTangentLoc;
     
     GLuint uModelViewMatrixLoc;
     GLuint uProjectionMatrixLoc;
@@ -39,6 +41,7 @@ struct ShaderProgram {
     
     GLuint uDiffuseTextureLoc;
     GLuint uSpecularTextureLoc;
+    GLuint uNormalTextureLoc;
     
     GLuint programId;
     
@@ -49,6 +52,8 @@ struct ShaderProgram {
         aPositionLoc = glGetAttribLocation(programId, "aPosition");
         aNormalLoc = glGetAttribLocation(programId, "aNormal");
         aTexCoordLoc = glGetAttribLocation(programId, "aTexCoord");
+        aBinormalLoc = glGetAttribLocation(programId, "aBinormal");
+        aTangentLoc = glGetAttribLocation(programId, "aTangent");
         
         uModelViewMatrixLoc = glGetUniformLocation(programId, "uModelViewMatrix");
         uProjectionMatrixLoc = glGetUniformLocation(programId, "uProjectionMatrix");
@@ -67,6 +72,7 @@ struct ShaderProgram {
         
         uDiffuseTextureLoc = glGetUniformLocation(programId, "uDiffuseTexture");
         uSpecularTextureLoc = glGetUniformLocation(programId, "uSpecularTexture");
+        uNormalTextureLoc = glGetUniformLocation(programId, "uNormalTexture");
     }
     
     ~ShaderProgram() {

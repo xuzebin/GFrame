@@ -50,8 +50,11 @@ public:
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short) * idx.size(), idx.data(), GL_STATIC_DRAW);
     }
     
-    void draw(const GLuint aPositionLocation, const GLuint aNomralLocation, const GLuint aTexCoordLocation) {
+    void draw(const GLuint aPositionLocation, const GLuint aNomralLocation, const GLuint aTexCoordLocation, const GLuint aBinormalLocation, const GLuint aTangentLocation) {
         glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+        
+        glVertexAttribPointer(aTexCoordLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
+        glEnableVertexAttribArray(aTexCoordLocation);
         
         glVertexAttribPointer(aPositionLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
         glEnableVertexAttribArray(aPositionLocation);
@@ -59,9 +62,11 @@ public:
         glVertexAttribPointer(aNomralLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
         glEnableVertexAttribArray(aNomralLocation);
         
-        glVertexAttribPointer(aTexCoordLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
-        glEnableVertexAttribArray(aTexCoordLocation);
+        glVertexAttribPointer(aBinormalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, binormal));
+        glEnableVertexAttribArray(aNomralLocation);
         
+        glVertexAttribPointer(aTangentLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
+        glEnableVertexAttribArray(aTangentLocation);
         
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
         glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_SHORT, 0);
