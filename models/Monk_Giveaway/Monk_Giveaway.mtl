@@ -12,8 +12,8 @@ newmtl Monk_Giveaway
 	Kd 0.5882 0.5882 0.5882
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka E:\Mes documents\3d New\Monk\Final\Give away\Monk_D.tga
-	map_Kd E:\Mes documents\3d New\Monk\Final\Give away\Monk_D.tga
-	map_Ks E:\Mes documents\3d New\Monk\Final\Give away\Monk_Sc.tga
-	map_d E:\Mes documents\3d New\Monk\Final\Give away\Monk_D.tga
+	map_Ka Monk_D.tga
+	map_Kd Monk_D.tga
+	map_Ks Monk_Sc.tga
+	map_d Monk_D.tga
 	map_bump Monk_N_Normal_Bump.tga
