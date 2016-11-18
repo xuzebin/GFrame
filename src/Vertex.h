@@ -9,6 +9,9 @@
 #ifndef Vertex_h
 #define Vertex_h
 
+#include "cvec.h"
+#include "geometrymaker.h"
+
 struct Vertex {
     Cvec3f position;
     Cvec3f normal;

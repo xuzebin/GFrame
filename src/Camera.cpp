@@ -38,7 +38,7 @@ Cvec3 Camera::getPosition() const {
 }
 
 void Camera::updateView(Cvec3 target) {
-    position = target + offsetToObject;
+//    position = target + offsetToObject;
     viewMatrix = setLookat(position, target, UP_VEC);
 }
 

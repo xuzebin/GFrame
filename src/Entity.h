@@ -142,17 +142,42 @@ public:
         glUniform3f(shaderProgram->uLightColorLoc1, 1, 1, 1);
         glUniform3f(shaderProgram->uSpecularLightColorLoc1, 1, 1, 1);
         
+        
+
+//        for (int i = 0; i < material->textures.size(); ++i) {
+//            glUniform1f(shaderProgram->uDiffuseTextureLoc, i);
+//            glActiveTexture(GL_TEXTURE0 + i);
+//            glBindTexture(GL_TEXTURE_2D, material->textures[i].diffuseTexture);
+////
+//            glUniform1f(shaderProgram->uSpecularTextureLoc, 1);
+//            glActiveTexture(GL_TEXTURE1);
+//            glBindBuffer(GL_TEXTURE_2D, material->textures[i].specularTexture);
+//            
+//            glUniform1f(shaderProgram->uNormalTextureLoc, 2);
+//            glActiveTexture(GL_TEXTURE2);
+//            glBindBuffer(GL_TEXTURE_2D, material->textures[i].normalTexture);
+//        }
+    
         glUniform1f(shaderProgram->uDiffuseTextureLoc, 0);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, material->diffuseTexture);
-        
+        glBindTexture(GL_TEXTURE_2D, material->textures[0].diffuseTexture);
         glUniform1f(shaderProgram->uSpecularTextureLoc, 1);
         glActiveTexture(GL_TEXTURE1);
-        glBindBuffer(GL_TEXTURE_2D, material->specularTexture);
-        
-        glUniform1f(shaderProgram->uNormalTextureLoc, 2);
+        glBindTexture(GL_TEXTURE_2D, material->textures[0].specularTexture);
+        glUniform1f(shaderProgram->uNormalMatrixLoc, 2);
         glActiveTexture(GL_TEXTURE2);
-        glBindBuffer(GL_TEXTURE_2D, material->normalTexture);
+        glBindTexture(GL_TEXTURE_2D, material->textures[0].normalTexture);
+//        glUniform1f(shaderProgram->uDiffuseTextureLoc, 0);
+//        glActiveTexture(GL_TEXTURE0);
+//        glBindTexture(GL_TEXTURE_2D, material->diffuseTexture);
+//        
+//        glUniform1f(shaderProgram->uSpecularTextureLoc, 1);
+//        glActiveTexture(GL_TEXTURE1);
+//        glBindBuffer(GL_TEXTURE_2D, material->specularTexture);
+//        
+//        glUniform1f(shaderProgram->uNormalTextureLoc, 2);
+//        glActiveTexture(GL_TEXTURE2);
+//        glBindBuffer(GL_TEXTURE_2D, material->normalTexture);
         
         if (depthTest) {
             glEnable(GL_DEPTH_TEST);
