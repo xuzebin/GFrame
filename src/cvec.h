@@ -51,10 +51,10 @@ public:
   // either truncate if m < n, or extend with extendValue
   template<int m>
   explicit Cvec(const Cvec<T, m>& v, const T& extendValue = T(0)) {
-    for (int i = 0; i < std::min(m, n); ++i) {
+    for (int i = 0; i < fmin(m, n); ++i) {
       d_[i] = v[i];
     }
-    for (int i = std::min(m, n); i < n; ++i) {
+    for (int i = fmin(m, n); i < n; ++i) {
       d_[i] = extendValue;
     }
   }
