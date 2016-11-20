@@ -58,7 +58,7 @@ void moveCar(double speed);//forward declaration
 
 void display(void) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+
     Entity* carBody = Scene::getEntity("carBody");
     if (carBody != NULL) {
         //simple way to bound the car inside the skybox
@@ -325,14 +325,24 @@ void init() {
 //    scene.addChild(model1);
     
     
-    
+    //TODO add different shaders
     Model* model2 = new Model("Spiderman.obj", "model2");
     model2->setScale(Cvec3(1.4, 1.4, 1.4));
     model2->setPosition(Cvec3(1, -2.4, -7));
     model2->setRotation(Quat::makeYRotation(-40));
     Scene::addChild(model2);
+    
+    
+    
+    Geometry* buttonG = new Sphere(2, 40, 40);
+    Material* buttonM = new Material(Cvec3f(1.0, 0.0, 0.0));
+    Entity* btn = new Entity("btn0", buttonG, buttonM);
+    btn->setPosition(Cvec3(1.4, 1.4, -5));
+    btn->setScale(Cvec3(0.1, 0.1, 0.1));
+    Scene::addChild(btn);
+    
+
 //
-//    
 //    Model* model3 = new Model("Spiderman.obj", "model3");
 //    model3->setScale(Cvec3(1.4, 1.4, 1.4));
 //    model3->setPosition(Cvec3(0, -2.4, -7));
@@ -635,7 +645,13 @@ void mouse(int button, int state, int x, int y) {
         std::cerr << "model not found in the scene" << std::endl;
         return;
     }
+    Entity* btn = Scene::getEntity("btn0");
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+        if (Scene::testIntersect(x, y, screenWidth, screenHeight, btn)) {
+            btn->setScale((Cvec3(0.2, 0.2, 0.2)));
+            std::cout << "------------------------------------picked!!!!" << std::endl;
+        }
+        
         std::cout << "down" << std::endl;
         cur_pos = getPickedPointOnSphereInScreenSpace(model, x, screenHeight - y);
         prev_pos = cur_pos;
@@ -645,6 +661,7 @@ void mouse(int button, int state, int x, int y) {
 //        curr_p = prev_p;
     } else {
         rotating = false;
+        btn->setScale((Cvec3(0.1, 0.1, 0.1)));
     }
     
 }

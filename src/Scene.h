@@ -16,6 +16,8 @@
 #include "Camera.h"
 #include "ShaderProgram.h"
 #include "Light.h"
+#include "Raycaster.h"
+#include "Sphere.h"
 
 /**
  * A simple scene containing entities to be rendered.
@@ -76,13 +78,18 @@ public:
 //            (*it)->draw(camera, shaderProgram);
 //        }
 //    }
+    static bool testIntersect(int x, int y, int screenWidth, int screenHeight, Entity* entity) {
+        Geometry* geometry = entity->geometry;
+        Sphere* sphere = dynamic_cast<Sphere*>(geometry);
+        return Raycaster::isPicked(x, y, screenWidth, screenHeight, camera->getProjectionMatrix(), camera->getViewMatrix(), camera->getPosition(), entity->getPosition(), sphere->getRadius() * entity->getScale()[0]);
+    }
     
     static void render(ShaderProgram* shaderProgram) {
         if (camera == NULL) {
             throw std::string("Camera NULL");
         }
-        glUseProgram(shaderProgram->programId);
         
+        glUseProgram(shaderProgram->programId);
         for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
             (*it)->draw(camera, shaderProgram, light0, light1);
         }

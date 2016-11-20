@@ -18,11 +18,11 @@
  */
 class Camera {
     
-private:
+public:
     static const Cvec3 UP_VEC;
     static const double Z_NEAR;
     static const double Z_FAR;
-    
+private:
     /** could have used RigidBodyTransform, 
      * but i don't need automatic * viewmatrix calculation because i will use setlookat matrix here.
      */
