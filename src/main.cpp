@@ -35,6 +35,8 @@
 #include "Skybox.h"
 #include "Model.h"
 #include "Sphere.h"
+#include "Light.h"
+
 
 int screenWidth = 500;
 int screenHeight = 500;
@@ -84,6 +86,9 @@ void init() {
 
 
     Scene::setCamera(&camera);
+    Light* light0 = new Light();
+    light0->setPosition(0, 5, -5);
+    Scene::setLight0(light0);
     shaderProgram = new ShaderProgram(VERTEX_SHADER, FRAGMENT_SHADER);
     
     /********************************** Baymax **********************************/
@@ -511,7 +516,48 @@ void keyboard(unsigned char key, int x, int y) {
             camera.updateView(model->getPosition());
             break;
         }
-            
+        case 'G':
+        case 'g':
+        {
+            Light* light0 = Scene::getLight0();
+            light0->moveY(1);
+            break;
+        }
+        case 'b':
+        case 'B':
+        {
+            Light* light0 = Scene::getLight0();
+            light0->moveY(-1);
+            break;
+        }
+        case 'v':
+        case 'V':
+        {
+            Light* light0 = Scene::getLight0();
+            light0->moveX(-1);
+            break;
+        }
+        case 'n':
+        case 'N':
+        {
+            Light* light0 = Scene::getLight0();
+            light0->moveX(1);
+            break;
+        }
+        case 'f':
+        case 'F':
+        {
+            Light* light0 = Scene::getLight0();
+            light0->moveZ(1);
+            break;
+        }
+        case 'h':
+        case 'H':
+        {
+            Light* light0 = Scene::getLight0();
+            light0->moveZ(-1);
+            break;
+        }
         default:
             break;
     }

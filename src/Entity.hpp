@@ -15,7 +15,7 @@
 #include "Material.h"
 #include "Camera.h"
 #include "ShaderProgram.h"
-
+#include "Light.h"
 /**
  * The object/Entity to be rendered.
  */
@@ -75,7 +75,7 @@ public:
     }
     
     void createMesh();
-    void draw(Camera* camera, ShaderProgram* shaderProgram);
+    void draw(Camera* camera, ShaderProgram* shaderProgram, Light* light0, Light* light1);
     std::string getName();
     void setVisible(bool visible);
     bool isVisible() const;

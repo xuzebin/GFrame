@@ -15,7 +15,7 @@
 #include "Entity.hpp"
 #include "Camera.h"
 #include "ShaderProgram.h"
-
+#include "Light.h"
 
 /**
  * A simple scene containing entities to be rendered.
@@ -28,15 +28,14 @@ private:
     
     static Camera* camera;
     
+    //currently only support 2 lights.
+//    static std::vector<Light*> lights;
+    static Light* light0;
+    static Light* light1;
+    
     Scene();
     
 public:
-    
-//    void addChild(Entity* entity);
-//    void createMeshes();
-//    void render(Camera* camera, ShaderProgram* shaderProgram);
-//    Entity* getEntity(std::string name);
-//    void removeAll();
     
     static void setCamera(Camera* camera_) {
         camera = camera_;
@@ -46,9 +45,20 @@ public:
         return camera;
     }
     
+    static void setLight0(Light* light) {
+        light0 = light;
+    }
+    
+    static void setLight1(Light* light) {
+        light1 = light;
+    }
+    
+    static Light* getLight0() {
+        return light0;
+    }
+    
     static void addChild(Entity* entity) {
         entities.push_back(entity);
-        
         table[entity->getName()] = entity;
     }
     
@@ -74,7 +84,7 @@ public:
         glUseProgram(shaderProgram->programId);
         
         for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
-            (*it)->draw(camera, shaderProgram);
+            (*it)->draw(camera, shaderProgram, light0, light1);
         }
     }
     
@@ -96,5 +106,10 @@ public:
 std::unordered_map<std::string, Entity*> Scene::table;
 std::vector<Entity*> Scene::entities;
 Camera* Scene::camera = NULL;
+
+Light* Scene::light0 = NULL;
+Light* Scene::light1 = NULL;
+
+
 
 #endif /* Scene_h */

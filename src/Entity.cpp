@@ -8,6 +8,7 @@
 
 #include "Entity.hpp"
 
+
 int Entity::id_counter = 0;
 
 void Entity::createMesh()  {
@@ -17,7 +18,7 @@ void Entity::createMesh()  {
     geometry->createVBOs();
 }
 
-void Entity::draw(Camera* camera, ShaderProgram* shaderProgram) {
+void Entity::draw(Camera* camera, ShaderProgram* shaderProgram, Light* light0, Light* light1) {
     if (!isVisible()) {
         return;
     }
@@ -41,8 +42,8 @@ void Entity::draw(Camera* camera, ShaderProgram* shaderProgram) {
         current = current->parent;
     }
     
-    
-    Matrix4 modelViewMatrix = inv(camera->getViewMatrix()) * modelMatrix;
+    const Matrix4 viewMatrix = camera->getViewMatrix();
+    Matrix4 modelViewMatrix = inv(viewMatrix) * modelMatrix;
     Matrix4 normal = normalMatrix(modelViewMatrix);
     
     modelMatrix.writeToColumnMajorMatrix(modelMat);
@@ -58,11 +59,25 @@ void Entity::draw(Camera* camera, ShaderProgram* shaderProgram) {
     glUniform3f(shaderProgram->uColorLoc, material->color[0], material->color[1], material->color[2]);
     glUniform1f(shaderProgram->uMinColorLoc, 0.2);
     
-    Cvec3 lightPosWorld0 = Cvec3(0.0, 10.0, 0.0);
-    Cvec4 lightPosEye0 = normalMatrix(camera->getViewMatrix()) * Cvec4(lightPosWorld0, 1);
-    glUniform3f(shaderProgram->uLightPositionLoc0, lightPosEye0[0], lightPosEye0[1], lightPosEye0[2]);
-    glUniform3f(shaderProgram->uLightColorLoc0, 1, 1, 1);
-    glUniform3f(shaderProgram->uSpecularLightColorLoc0, 1, 1, 1);
+    
+    if (light0 != NULL) {
+        Cvec3 lightPosEye0 = light0->getPositionInEyeSpace(viewMatrix);
+        glUniform3f(shaderProgram->uLightPositionLoc0, lightPosEye0[0], lightPosEye0[1], lightPosEye0[2]);
+        glUniform3f(shaderProgram->uLightColorLoc0, 1, 1, 1);
+        glUniform3f(shaderProgram->uSpecularLightColorLoc0, 1, 1, 1);
+    }
+    if (light1 != NULL) {
+        Cvec3 lightPosEye1 = light1->getPositionInEyeSpace(viewMatrix);
+        glUniform3f(shaderProgram->uLightPositionLoc1, lightPosEye1[0], lightPosEye1[1], lightPosEye1[2]);
+        glUniform3f(shaderProgram->uLightColorLoc1, 1, 1, 1);
+        glUniform3f(shaderProgram->uSpecularLightColorLoc1, 1, 1, 1);
+    }
+    
+//    Cvec3 lightPosWorld0 = Cvec3(0.0, 4.0, -5.0);
+//    Cvec4 lightPosEye0 = normalMatrix(camera->getViewMatrix()) * Cvec4(lightPosWorld0, 1);
+//    glUniform3f(shaderProgram->uLightPositionLoc0, lightPosEye0[0], lightPosEye0[1], lightPosEye0[2]);
+//    glUniform3f(shaderProgram->uLightColorLoc0, 1, 1, 1);
+//    glUniform3f(shaderProgram->uSpecularLightColorLoc0, 1, 1, 1);
     
 //    Cvec3 lightPosWorld1 = Cvec3(-10, 5, 0);
 //    Cvec4 lightPosEye1 = normalMatrix(camera->getViewMatrix()) * Cvec4(lightPosWorld1, 1);
