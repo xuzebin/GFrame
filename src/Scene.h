@@ -26,6 +26,8 @@ private:
     static std::vector<Entity*> entities;
     static std::unordered_map<std::string, Entity*> table;
     
+    static Camera* camera;
+    
     Scene();
     
 public:
@@ -35,6 +37,14 @@ public:
 //    void render(Camera* camera, ShaderProgram* shaderProgram);
 //    Entity* getEntity(std::string name);
 //    void removeAll();
+    
+    static void setCamera(Camera* camera_) {
+        camera = camera_;
+    }
+    
+    static Camera* getCamera() {
+        return camera;
+    }
     
     static void addChild(Entity* entity) {
         entities.push_back(entity);
@@ -49,7 +59,18 @@ public:
         }
     }
     
-    static void render(Camera* camera, ShaderProgram* shaderProgram) {
+//    static void render(Camera* camera, ShaderProgram* shaderProgram) {
+//        glUseProgram(shaderProgram->programId);
+//        
+//        for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
+//            (*it)->draw(camera, shaderProgram);
+//        }
+//    }
+    
+    static void render(ShaderProgram* shaderProgram) {
+        if (camera == NULL) {
+            throw std::string("Camera NULL");
+        }
         glUseProgram(shaderProgram->programId);
         
         for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
@@ -74,5 +95,6 @@ public:
 
 std::unordered_map<std::string, Entity*> Scene::table;
 std::vector<Entity*> Scene::entities;
+Camera* Scene::camera = NULL;
 
 #endif /* Scene_h */
