@@ -21,7 +21,8 @@ struct ShaderProgram {
     GLuint aTexCoordLoc;
     GLuint aBinormalLoc;
     GLuint aTangentLoc;
-    
+  
+    GLuint uModelMatrixLoc;
     GLuint uModelViewMatrixLoc;
     GLuint uProjectionMatrixLoc;
     GLuint uNormalMatrixLoc;
@@ -55,6 +56,7 @@ struct ShaderProgram {
         aBinormalLoc = glGetAttribLocation(programId, "aBinormal");
         aTangentLoc = glGetAttribLocation(programId, "aTangent");
         
+        uModelMatrixLoc = glGetUniformLocation(programId, "uModelMatrix");
         uModelViewMatrixLoc = glGetUniformLocation(programId, "uModelViewMatrix");
         uProjectionMatrixLoc = glGetUniformLocation(programId, "uProjectionMatrix");
         uNormalMatrixLoc = glGetUniformLocation(programId, "uNormalMatrix");

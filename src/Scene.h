@@ -10,10 +10,12 @@
 #define Scene_h
 
 #include <unordered_map>
-
-#include "Entity.h"
+#include <vector>
+#include <string>
+#include "Entity.hpp"
 #include "Camera.h"
 #include "ShaderProgram.h"
+
 
 /**
  * A simple scene containing entities to be rendered.

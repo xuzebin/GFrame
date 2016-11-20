@@ -67,6 +67,10 @@ public:
         this->rotation = this->rotation * rotation;
         updateViewMatrix();
     }
+    void setPosition(Cvec3 position) {
+        this->position = position;
+        updateViewMatrix();
+    }
     
     double getFov();
 };

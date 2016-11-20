@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <vector>
 
 #ifdef __APPLE__
     #include <glut.h>
@@ -16,6 +17,7 @@
 #endif
 
 GLuint loadGLTexture(const char *filePath);
+GLuint loadGLCubemap(std::vector<std::string> faces);
 
 // Check if there has been an error inside OpenGL and if yes, print the error and
 // through a runtime_error exception.
