@@ -87,7 +87,7 @@ void init() {
 
     Scene::setCamera(&camera);
     Light* light0 = new Light();
-    light0->setPosition(0, 5, -5);
+    light0->setPosition(0, 5, 45);
     Scene::setLight0(light0);
     shaderProgram = new ShaderProgram(VERTEX_SHADER, FRAGMENT_SHADER);
     
@@ -549,6 +549,8 @@ void keyboard(unsigned char key, int x, int y) {
         {
             Light* light0 = Scene::getLight0();
             light0->moveZ(1);
+            Cvec3 pos = light0->getPosition();
+            std::cout << pos[0] << "," << pos[1] << "," << pos[2] << std::endl;
             break;
         }
         case 'h':

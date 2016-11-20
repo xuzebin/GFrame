@@ -17,7 +17,7 @@ private:
     bool isPositionDirty;
     Cvec3 position;
     Cvec3 positionInEyeSpace;
-    
+    //TODO add attenuation coefficient in c code.
 
 public:
     Light() : isPositionDirty(true) {}
@@ -48,6 +48,9 @@ public:
     inline void moveZ(double z) {
         setPositionZ(position[2] + z);
     }
+    inline const Cvec3& getPosition() {
+        return position;
+    }
     
     inline void updatePositionInEyeSpace(const Matrix4& viewMatrix) {
         Cvec4 p = normalMatrix(viewMatrix) * Cvec4(position[0], position[1], position[2], 1);
@@ -63,6 +66,9 @@ public:
         }
         return positionInEyeSpace;
     }
+    
+
+
 };
 
 
