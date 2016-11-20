@@ -23,9 +23,10 @@
 class Scene {
 
 private:
-    std::vector<Entity*> entities;
+    static std::vector<Entity*> entities;
     static std::unordered_map<std::string, Entity*> table;
     
+    Scene();
     
 public:
     
@@ -35,20 +36,20 @@ public:
 //    Entity* getEntity(std::string name);
 //    void removeAll();
     
-    void addChild(Entity* entity) {
+    static void addChild(Entity* entity) {
         entities.push_back(entity);
         
         table[entity->getName()] = entity;
     }
     
     //must be called and called once before rendering
-    void createMeshes() {
+    static void createMeshes() {
         for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
             (*it)->createMesh();
         }
     }
     
-    void render(Camera* camera, ShaderProgram* shaderProgram) {
+    static void render(Camera* camera, ShaderProgram* shaderProgram) {
         glUseProgram(shaderProgram->programId);
         
         for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
@@ -56,7 +57,7 @@ public:
         }
     }
     
-    Entity* getEntity(std::string name) {
+    static Entity* getEntity(std::string name) {
         if (table.find(name) == table.end()) {
             return NULL;
         }
@@ -64,7 +65,7 @@ public:
         return table[name];
     }
     
-    void removeAll() {
+    static void removeAll() {
         entities.clear();
         table.clear();
     }
@@ -72,5 +73,6 @@ public:
 };
 
 std::unordered_map<std::string, Entity*> Scene::table;
+std::vector<Entity*> Scene::entities;
 
 #endif /* Scene_h */
