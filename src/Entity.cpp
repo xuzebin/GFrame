@@ -16,6 +16,10 @@ void Entity::createMesh()  {
         throw string("Geometry NULL");
     }
     geometry->createVBOs();
+    
+    
+    initState.transform = transform;
+    initState.color = material->color;
 }
 
 void Entity::draw(Camera* camera, ShaderProgram* shaderProgram, Light* light0, Light* light1) {
@@ -28,6 +32,7 @@ void Entity::draw(Camera* camera, ShaderProgram* shaderProgram, Light* light0, L
     if (geometry == NULL) {
         throw std::string("Geometry NULL");
     }
+    
 
     Matrix4 projectionMatrix = camera->getProjectionMatrix();
     
@@ -57,65 +62,56 @@ void Entity::draw(Camera* camera, ShaderProgram* shaderProgram, Light* light0, L
     glUniformMatrix4fv(shaderProgram->uNormalMatrixLoc, 1, false, normalMat);
     
     glUniform3f(shaderProgram->uColorLoc, material->color[0], material->color[1], material->color[2]);
-    glUniform1f(shaderProgram->uMinColorLoc, 0.2);
-    
-    
+//    glUniform1f(shaderProgram->uMinColorLoc, 0.2);
+
     if (light0 != NULL) {
         Cvec3 lightPosEye0 = light0->getPositionInEyeSpace(viewMatrix);
         glUniform3f(shaderProgram->uLightPositionLoc0, lightPosEye0[0], lightPosEye0[1], lightPosEye0[2]);
-        glUniform3f(shaderProgram->uLightColorLoc0, 1, 1, 1);
-        glUniform3f(shaderProgram->uSpecularLightColorLoc0, 1, 1, 1);
+        Cvec3f lightColor = light0->lightColor;
+        glUniform3f(shaderProgram->uLightColorLoc0, lightColor[0], lightColor[1], lightColor[2]);
+        Cvec3f specularLightColor = light0->specularLightColor;
+        glUniform3f(shaderProgram->uSpecularLightColorLoc0, specularLightColor[0], specularLightColor[1], specularLightColor[2]);
     }
     if (light1 != NULL) {
         Cvec3 lightPosEye1 = light1->getPositionInEyeSpace(viewMatrix);
         glUniform3f(shaderProgram->uLightPositionLoc1, lightPosEye1[0], lightPosEye1[1], lightPosEye1[2]);
-        glUniform3f(shaderProgram->uLightColorLoc1, 1, 1, 1);
-        glUniform3f(shaderProgram->uSpecularLightColorLoc1, 1, 1, 1);
+        Cvec3f lightColor = light1->lightColor;
+        glUniform3f(shaderProgram->uLightColorLoc1, lightColor[0], lightColor[1], lightColor[2]);
+        Cvec3f specularLightColor = light1->specularLightColor;
+        glUniform3f(shaderProgram->uSpecularLightColorLoc1, specularLightColor[0], specularLightColor[1], specularLightColor[2]);
     }
     
-//    Cvec3 lightPosWorld0 = Cvec3(0.0, 4.0, -5.0);
-//    Cvec4 lightPosEye0 = normalMatrix(camera->getViewMatrix()) * Cvec4(lightPosWorld0, 1);
-//    glUniform3f(shaderProgram->uLightPositionLoc0, lightPosEye0[0], lightPosEye0[1], lightPosEye0[2]);
-//    glUniform3f(shaderProgram->uLightColorLoc0, 1, 1, 1);
-//    glUniform3f(shaderProgram->uSpecularLightColorLoc0, 1, 1, 1);
-    
-//    Cvec3 lightPosWorld1 = Cvec3(-10, 5, 0);
-//    Cvec4 lightPosEye1 = normalMatrix(camera->getViewMatrix()) * Cvec4(lightPosWorld1, 1);
-//    glUniform3f(shaderProgram->uLightPositionLoc1, lightPosEye1[0], lightPosEye1[1], lightPosEye1[2]);
-//    glUniform3f(shaderProgram->uLightColorLoc1, 1, 1, 1);
-//    glUniform3f(shaderProgram->uSpecularLightColorLoc1, 1, 1, 1);
-    
+
     //cubemap
-    if (material->cubemapApplied()) {
-        std::cout << "cubemap applied" << std::endl;
-        glBindTexture(GL_TEXTURE_CUBE_MAP, material->cubemap.texture);
-    }
-    
-    if (material->textures.size() > 0) {
-        glUniform1f(shaderProgram->uDiffuseTextureLoc, 0);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, material->textures[0].diffuseTexture);
-        glUniform1f(shaderProgram->uSpecularTextureLoc, 1);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, material->textures[0].specularTexture);
-        glUniform1f(shaderProgram->uNormalMatrixLoc, 2);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, material->textures[0].normalTexture);
-    }
-    
-//    for (int i = 0; i < material->textures.size(); ++i) {
-//        glUniform1f(shaderProgram->uDiffuseTextureLoc, 0);
+//    if (material->cubemapApplied()) {
+//        std::cout << "cubemap applied" << std::endl;
+//        glUniform1f(shaderProgram->uEnvironmentMapLoc, 0);
 //        glActiveTexture(GL_TEXTURE0);
-//        glBindTexture(GL_TEXTURE_2D, material->textures[i].diffuseTexture);
-//    
-//        glUniform1f(shaderProgram->uSpecularTextureLoc, 1);
-//        glActiveTexture(GL_TEXTURE1);
-//        glBindBuffer(GL_TEXTURE_2D, material->textures[i].specularTexture);
-//    
-//        glUniform1f(shaderProgram->uNormalTextureLoc, 2);
-//        glActiveTexture(GL_TEXTURE2);
-//        glBindBuffer(GL_TEXTURE_2D, material->textures[i].normalTexture);
+//        glBindTexture(GL_TEXTURE_CUBE_MAP, material->cubemap.texture);
 //    }
+
+
+    glUniform1f(shaderProgram->uDiffuseTextureLoc, 0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, material->texture.diffuseTexture);
+    
+    glUniform1f(shaderProgram->uSpecularTextureLoc, 1);
+    glActiveTexture(GL_TEXTURE0 + 1);
+    glBindTexture(GL_TEXTURE_2D, material->texture.specularTexture);
+
+    glUniform1f(shaderProgram->uNormalTextureLoc, 2);
+    glActiveTexture(GL_TEXTURE0 + 2);
+    glBindTexture(GL_TEXTURE_2D, material->texture.normalTexture);
+
+//    checkGlErrors(__FILE__, __LINE__);
+    
+    std::cout << "dif: " << material->texture.diffuseTexture << std::endl;
+    std::cout << "spe: " << material->texture.specularTexture << std::endl;
+    std::cout << "nor: " << material->texture.normalTexture << std::endl;
+    
+    std::cout << "difLoc: " << shaderProgram->uDiffuseTextureLoc << ": " << glGetUniformLocation(shaderProgram->programId, "uDiffuseTexture") << std::endl;
+    std::cout << "speLoc: " << shaderProgram->uSpecularTextureLoc << ": " << glGetUniformLocation(shaderProgram->programId, "uSpecularTexture") <<  std::endl;
+    std::cout << "norLoc: " << shaderProgram->uNormalTextureLoc << ": " << glGetUniformLocation(shaderProgram->programId, "uNormalTexture") << std::endl;
     
     if (depthTest) {
         glEnable(GL_DEPTH_TEST);

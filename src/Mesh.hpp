@@ -17,31 +17,27 @@
 #include "Geometry.hpp"
 
 
-
-class CallbackInterface {
-public:
-    virtual void setTextures(std::string diffuseTexName, std::string specularTexName, std::string normalTexName) = 0;
-};
-
 class Mesh : public Geometry {
     
 private:
-    const std::string fileName;
+    std::vector<Vertex> vtx;
+    std::vector<unsigned short> idx;
     
-    CallbackInterface* callback;
-    
-    void calcFaceTangent(const Cvec3f& v1, const Cvec3f& v2, const Cvec3f& v3, const Cvec2f& texcoord1, const Cvec2f& texcoord2, const Cvec2f& texcoord3, Cvec3f& tangent, Cvec3f& binormal);
-    void loadFromFile(const std::string& fileName, std::vector<Vertex>& vertices, std::vector<unsigned short>& indices);
-    
+    void clearDataInMemoery() {
+        vtx.clear();
+        idx.clear();
+    }
+
 public:
     
-    Mesh(const std::string fileName_) : fileName(fileName_) {}
-    
-    inline void addCallback(CallbackInterface* callback) {
-        this->callback = callback;
+    Mesh(std::vector<Vertex> vtx, std::vector<unsigned short> idx) {
+        this->vtx = vtx;
+        this->idx = idx;
     }
-    
+
     void createVBOs();
+    
+
 };
 
 

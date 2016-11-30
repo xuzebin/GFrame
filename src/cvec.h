@@ -129,6 +129,16 @@ public:
     assert(dot(*this, *this) > CS175_EPS2);
     return *this /= std::sqrt(dot(*this, *this));
   }
+    
+    friend std::ostream& operator << (std::ostream& os, const Cvec& v) {
+        os << "[";
+        for (int i = 0; i < n - 1; ++i) {
+            os << v[i] << ",";
+        }
+        os << v[n - 1] << "]";
+        return os;
+    }
+    
 };
 
 template<typename T>

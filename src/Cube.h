@@ -20,6 +20,7 @@ public:
     
     Cube(float size) {
         this->size = size;
+        minSphereDiameter = size;
     }
     
     void createVBOs() {

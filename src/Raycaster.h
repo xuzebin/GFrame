@@ -25,7 +25,7 @@ public:
     
     static bool isPicked(int x, int y, const int screenWidth, const int screenHeight, Matrix4 projectionMatrix, Matrix4 viewMatrix, Cvec3 cameraPosition, Cvec3 center, double radius) {
         Cvec3 rayDirection = castRay(x, y, screenWidth, screenHeight, projectionMatrix, viewMatrix);
-        std::cout << "raydirection: " << rayDirection[0] << "," << rayDirection[1] << "," << rayDirection[2] << std::endl;
+//        std::cout << "raydirection: " << rayDirection[0] << "," << rayDirection[1] << "," << rayDirection[2] << std::endl;
         return raySphereIntersect(center, radius, cameraPosition, rayDirection);
     }
     
@@ -34,7 +34,7 @@ public:
         //normalize
         float nx = (float)x / ((float)windowWidth / 2.0f) - 1.0f;
         float ny = 1.0f - (float)y / ((float)windowHeight / 2.0f);
-        std::cout << "nx: " << nx << "ny: " << ny << std::endl;
+//        std::cout << "nx: " << nx << "ny: " << ny << std::endl;
         
         //convert to homogeneous clip space
         Cvec4 rayClip = Cvec4(nx, ny, -1.0, 1.0);//point toward -z axis.

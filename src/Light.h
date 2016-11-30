@@ -19,8 +19,15 @@ private:
     Cvec3 positionInEyeSpace;
     //TODO add attenuation coefficient in c code.
 
+
 public:
-    Light() : isPositionDirty(true) {}
+    
+    Cvec3f lightColor;
+    Cvec3f specularLightColor;
+    
+    
+    Light() : isPositionDirty(true), lightColor(Cvec3f(1, 1, 1)), specularLightColor(Cvec3f(1, 1, 1)) {}
+    
     inline void setPosition(double x, double y, double z) {
         position[0] = x;
         position[1] = y;

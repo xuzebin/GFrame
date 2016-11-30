@@ -24,7 +24,7 @@ void Geometry::createVBOs(std::vector<Vertex> vtx, std::vector<unsigned short> i
     } else {
         created = true;
     }
-    indicesNum = (int)idx.size();
+    indicesNum = idx.size();
     glGenBuffers(1, &vertexVBO);
     glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vtx.size(), vtx.data(), GL_STATIC_DRAW);
@@ -47,7 +47,7 @@ void Geometry::draw(const GLuint aPositionLocation, const GLuint aNomralLocation
     glEnableVertexAttribArray(aNomralLocation);
     
     glVertexAttribPointer(aBinormalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, binormal));
-    glEnableVertexAttribArray(aNomralLocation);
+    glEnableVertexAttribArray(aBinormalLocation);
     
     glVertexAttribPointer(aTangentLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
     glEnableVertexAttribArray(aTangentLocation);

@@ -143,23 +143,66 @@ GLuint loadGLTexture(const char *filePath) {
     glGenTextures(1, &retTexture);
     glBindTexture(GL_TEXTURE_2D, retTexture);
     
+//    GLfloat fLargest;
+//    glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &fLargest);
+//    std::cout << "GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT: " << fLargest << std::endl;
+
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+//    glGenerateMipmap(GL_TEXTURE_2D);
+//
+//    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16);
+    
     
     glBindTexture(GL_TEXTURE_2D, 0);
     stbi_image_free(image);
     return retTexture;
 }
 
+//GLuint* loadMultipleGLTextures(const char* filePath[], const int number) {
+//    
+//    GLuint* retTexture = new GLuint[number];
+//    glGenTextures(number, retTexture);
+//    
+//    for (int i = 0; i < number; i++) {
+//        int w,h,comp;
+//        unsigned char* image = stbi_load(filePath[i], &w, &h, &comp, STBI_rgb_alpha);
+//        
+//        if(image == nullptr) {
+//            std::cout << "Unable to load image. Make sure the image is in the same path as the executable.\n";
+//            assert(false);
+//        }
+//        
+//        glActiveTexture(GL_TEXTURE0 + i);
+//        glBindTexture(GL_TEXTURE_2D, retTexture[i]);
+//        
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//        
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+//        
+//        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+//        
+//        stbi_image_free(image);
+//    }
+//    
+//    glBindTexture(GL_TEXTURE_2D, 0);
+//
+//    return retTexture;
+//}
+
 GLuint loadGLCubemap(std::vector<std::string> faces) {
     GLuint textureID;
     glGenTextures(1, &textureID);
-    glActiveTexture(GL_TEXTURE0);
+//    glActiveTexture(GL_TEXTURE0);
     
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
     for (GLuint i = 0; i < faces.size(); ++i) {

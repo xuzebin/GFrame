@@ -25,6 +25,7 @@ public:
         this->slices = slices;
         this->stacks = stacks;
         this->stereo = stereo;
+        minSphereDiameter = 2 * radius;
     }
     
     void createVBOs() {

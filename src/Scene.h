@@ -30,14 +30,14 @@ private:
     
     static Camera* camera;
     
+    Scene() {}
+    
+
+public:
     //currently only support 2 lights.
-//    static std::vector<Light*> lights;
     static Light* light0;
     static Light* light1;
-    
-    Scene();
-    
-public:
+
     
     static void setCamera(Camera* camera_) {
         camera = camera_;
@@ -55,8 +55,15 @@ public:
         light1 = light;
     }
     
-    static Light* getLight0() {
-        return light0;
+    static Light* getLight(int index) {
+        switch(index) {
+            case 0:
+                return light0;
+            case 1:
+                return light1;
+            default:
+                throw std::string("no matched light index");
+        }
     }
     
     static void addChild(Entity* entity) {
@@ -71,17 +78,12 @@ public:
         }
     }
     
-//    static void render(Camera* camera, ShaderProgram* shaderProgram) {
-//        glUseProgram(shaderProgram->programId);
-//        
-//        for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
-//            (*it)->draw(camera, shaderProgram);
-//        }
-//    }
-    static bool testIntersect(int x, int y, int screenWidth, int screenHeight, Entity* entity) {
+    static bool testIntersect(Entity* entity, int x, int y, int screenWidth, int screenHeight) {
+        if (entity == NULL) {
+            return false;
+        }
         Geometry* geometry = entity->geometry;
-        Sphere* sphere = dynamic_cast<Sphere*>(geometry);
-        return Raycaster::isPicked(x, y, screenWidth, screenHeight, camera->getProjectionMatrix(), camera->getViewMatrix(), camera->getPosition(), entity->getPosition(), sphere->getRadius() * entity->getScale()[0]);
+        return Raycaster::isPicked(x, y, screenWidth, screenHeight, camera->getProjectionMatrix(), camera->getViewMatrix(), camera->getPosition(), entity->getPosition(), geometry->getDiameter() / 2.0 * entity->getScale()[0]);
     }
     
     static void render(ShaderProgram* shaderProgram) {
@@ -107,7 +109,43 @@ public:
         entities.clear();
         table.clear();
     }
+
     
+    static void updateMouseEvent(int button , int state, int x, int y, int screenWidth, int screenHeight) {
+        //test intersection
+        
+        if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+            //NOTE: currently only supports ray sphere intersection.
+            for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
+                if ((*it)->clickEventListenerRegistered()) {
+                    if (testIntersect(*it, x, y, screenWidth, screenHeight)) {
+                        (*it)->notify(EventType::CLICK);
+                    }
+                }
+            }
+        } else {
+            for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
+                if ((*it)->clickEventListenerRegistered()) {
+                    if (testIntersect(*it, x, y, screenWidth, screenHeight)) {
+                        (*it)->notify(EventType::HOVER);
+                    } else {
+                        (*it)->notify(EventType::IDLE);
+                    }
+                }
+            }
+        }
+    }
+    static void updateMousePassiveMotion(int x, int y, int screenWidth, int screenHeight) {
+        for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
+            if ((*it)->clickEventListenerRegistered()) {
+                if (testIntersect(*it, x, y, screenWidth, screenHeight)) {
+                    (*it)->notify(EventType::HOVER);
+                } else {
+                    (*it)->notify(EventType::IDLE);
+                }
+            }
+        }
+    }
 };
 
 std::unordered_map<std::string, Entity*> Scene::table;
@@ -116,7 +154,4 @@ Camera* Scene::camera = NULL;
 
 Light* Scene::light0 = NULL;
 Light* Scene::light1 = NULL;
-
-
-
 #endif /* Scene_h */

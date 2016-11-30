@@ -22,9 +22,6 @@ struct Vertex {
     
     Vertex() {}
     
-    Vertex(Cvec3f positionCoordinate, Cvec3f normalCoordinate, Cvec2f textureCoordinate) :
-    position(positionCoordinate), normal(normalCoordinate), texCoord(textureCoordinate) {}
-    
     Vertex& operator = (const GenericVertex& v) {
         position = v.pos;
         normal = v.normal;

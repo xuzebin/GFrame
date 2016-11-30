@@ -17,7 +17,7 @@ class Cubemap {
 public:
     GLuint texture;
     
-    Cubemap():texture(0) {}
+    Cubemap() : texture(0) {}
     
     void load(std::string posX, std::string negX,
                std::string posY, std::string negY,
