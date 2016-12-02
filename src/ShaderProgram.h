@@ -84,31 +84,9 @@ struct ShaderProgram {
         uDiffuseTextureLoc = glGetUniformLocation(programId, "uDiffuseTexture");
         uSpecularTextureLoc = glGetUniformLocation(programId, "uSpecularTexture");
         uNormalTextureLoc = glGetUniformLocation(programId, "uNormalTexture");
-        
-        
-        printLocation("aPositionLoc", aPositionLoc);
-        printLocation("aNormalLoc", aNormalLoc);
-        printLocation("aTexCoordLoc", aTexCoordLoc);
-        printLocation("aBinormalLoc", aBinormalLoc);
-        printLocation("aTangentLoc", aTangentLoc);
-        printLocation("uModelMatrixLoc", uModelMatrixLoc);
-        printLocation("uLightPositionLoc0", uLightPositionLoc0);
-        printLocation("uDiffuseTextureLoc", uDiffuseTextureLoc);
-        printLocation("uSpecularTextureLoc", uSpecularTextureLoc);
-        printLocation("uNormalTextureLoc", uNormalTextureLoc);
-        
 
 //                uEnvironmentMapLoc = glGetUniformLocation(programId, "uEnviromentMap");
     }
-    
-    void setAttributes() {
-        
-    }
-    
-    void setUniforms() {
-        
-    }
-    
     
     
     void printLocation(std::string name, int location) {
@@ -121,31 +99,29 @@ struct ShaderProgram {
     
 };
 
-struct Shader {
-    
-    const std::string A_POSITION = "aPosition";
-    const std::string A_TEXCOORD = "aTexCoord";
-    const std::string U_MODEL_MATRIX = "uModelMatrix";
-    const std::string U_MODELVIEW_MATRIX = "uModelViewMatrix";
-    const std::string U_PROJECTION_MATRIX = "uProjectionMatrix";
-    const std::string U_COLOR = "uColor";
-    const std::string U_DIFFUSE_TEXTURE = "uDiffuseTexture";
-    const std::string U_SPECULAR_TEXTURE = "uSpecularTexture";
-    const std::string U_NORMAL_TEXTURE = "uNormalTexture";
+//struct Shader {
+//    
+//    const std::string A_POSITION = "aPosition";
+//    const std::string A_TEXCOORD = "aTexCoord";
+//    const std::string U_MODEL_MATRIX = "uModelMatrix";
+//    const std::string U_MODELVIEW_MATRIX = "uModelViewMatrix";
+//    const std::string U_PROJECTION_MATRIX = "uProjectionMatrix";
+//    const std::string U_COLOR = "uColor";
+//    const std::string U_DIFFUSE_TEXTURE = "uDiffuseTexture";
+//    const std::string U_SPECULAR_TEXTURE = "uSpecularTexture";
+//    const std::string U_NORMAL_TEXTURE = "uNormalTexture";
+//
+//    GLuint programId;
+//    //    std::unordered_map<std::string, GLuint> uniforms;
+//    //    std::unordered_map<std::string, GLuint> attributes;
+//
+//    
+//    virtual void createProgram(const char* vertexShaderFileName, const char* fragmentShaderFileName) = 0;
+//    virtual void setAttributes() = 0;
+//    virtual void setUniforms() = 0;
+//    virtual ~Shader() {}
+//};
 
-//    
-//    
-    GLuint programId;
-    //    std::unordered_map<std::string, GLuint> uniforms;
-    //    std::unordered_map<std::string, GLuint> attributes;
-//
-    
-    virtual void createProgram(const char* vertexShaderFileName, const char* fragmentShaderFileName) = 0;
-    virtual void setAttributes() = 0;
-    virtual void setUniforms() = 0;
-    virtual ~Shader() {}
-};
-//
 
 
 

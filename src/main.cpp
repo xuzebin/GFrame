@@ -208,46 +208,46 @@ void init() {
     model0->setPosition(Cvec3(0, -3.4, -10));
     model0->setRotation(Quat::makeYRotation(20));
     Scene::addChild(model0);
-//
-//    //TODO add different shaders
-//    Model* model1 = new Model("Spiderman.obj", "model1");
-//    model1->setScale(Cvec3(1.3, 1.3, 1.3));
-//    model1->setPosition(Cvec3(0, -2.3, -7));
-//    model1->setRotation(Quat::makeYRotation(20));
-//    model1->setVisible(false);
-//    Scene::addChild(model1);
-//    
-//    
-//    /************ model swtich button ************/
-//    Geometry* buttonG = new Sphere(2, 40, 40);
-//    Material* buttonM = new Material(Cvec3f(0.6, 0.0, 0.0));
-//    Entity* btn0 = new Entity("button0", buttonG, buttonM);
-//    btn0->setPosition(Cvec3(-1.8, 1.9, -5));
-//    btn0->setScale(Cvec3(0.05, 0.05, 0.05));
-//    btn0->registerClickEventListener(new ModelSwitchBtnEventListener());
-//    Scene::addChild(btn0);
-//    
-//    /************ light color buttons ************/
-//    for (int i = 0; i < 2; ++i) {
-//        Material* buttonM = new Material(Cvec3f(0.6, 0.0, 0.0));
-//        Entity* btn = new Entity("button" + std::to_string(i + 1), buttonG, buttonM);
-//        btn->setPosition(Cvec3(-1.8, 1.9 - (i + 1) / 3.0, -5));
-//        btn->setScale(Cvec3(0.05, 0.05, 0.05));
-//        btn->registerClickEventListener(new LightColorBtnEventListener());
-//        Scene::addChild(btn);
-//    }
-//    
-//    /************ specular light color buttons ************/
-//    for (int i = 0; i < 2; ++i) {
-//        Material* buttonM = new Material(Cvec3f(0.6, 0.0, 0.0));
-//        Entity* btn = new Entity("button" + std::to_string(i + 3), buttonG, buttonM);
-//        btn->setPosition(Cvec3(-1.5, 1.9 - (i + 1) / 3.0, -5));
-//        btn->setScale(Cvec3(0.05, 0.05, 0.05));
-//        btn->registerClickEventListener(new SpecularLightColorBtnEventListener());
-//        Scene::addChild(btn);
-//    }
-//    
-    /************** ground ****************/
+
+    //TODO add different shaders
+    Model* model1 = new Model("Spiderman.obj", "model1");
+    model1->setScale(Cvec3(1.3, 1.3, 1.3));
+    model1->setPosition(Cvec3(0, -2.3, -7));
+    model1->setRotation(Quat::makeYRotation(20));
+    model1->setVisible(false);
+    Scene::addChild(model1);
+    
+    
+    /************ model swtich button ************/
+    Geometry* buttonG = new Sphere(2, 40, 40);
+    Material* buttonM = new Material(Cvec3f(0.6, 0.0, 0.0));
+    Entity* btn0 = new Entity("button0", buttonG, buttonM);
+    btn0->setPosition(Cvec3(-1.8, 1.9, -5));
+    btn0->setScale(Cvec3(0.05, 0.05, 0.05));
+    btn0->registerClickEventListener(new ModelSwitchBtnEventListener());
+    Scene::addChild(btn0);
+    
+    /************ light color buttons ************/
+    for (int i = 0; i < 2; ++i) {
+        Material* buttonM = new Material(Cvec3f(0.6, 0.0, 0.0));
+        Entity* btn = new Entity("button" + std::to_string(i + 1), buttonG, buttonM);
+        btn->setPosition(Cvec3(-1.8, 1.9 - (i + 1) / 3.0, -5));
+        btn->setScale(Cvec3(0.05, 0.05, 0.05));
+        btn->registerClickEventListener(new LightColorBtnEventListener());
+        Scene::addChild(btn);
+    }
+    
+    /************ specular light color buttons ************/
+    for (int i = 0; i < 2; ++i) {
+        Material* buttonM = new Material(Cvec3f(0.6, 0.0, 0.0));
+        Entity* btn = new Entity("button" + std::to_string(i + 3), buttonG, buttonM);
+        btn->setPosition(Cvec3(-1.5, 1.9 - (i + 1) / 3.0, -5));
+        btn->setScale(Cvec3(0.05, 0.05, 0.05));
+        btn->registerClickEventListener(new SpecularLightColorBtnEventListener());
+        Scene::addChild(btn);
+    }
+    
+    /************* ground ***************/
 //    Entity* ground = new Entity("ground", new Plane(8), new Material("rock.jpg"));
 //    ground->setPosition(Cvec3(0, -3.5, -12));
 //    Scene::addChild(ground);

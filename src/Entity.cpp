@@ -91,27 +91,17 @@ void Entity::draw(Camera* camera, ShaderProgram* shaderProgram, Light* light0, L
 //    }
 
 
-    glUniform1f(shaderProgram->uDiffuseTextureLoc, 0);
+    glUniform1i(shaderProgram->uDiffuseTextureLoc, 0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, material->texture.diffuseTexture);
     
-    glUniform1f(shaderProgram->uSpecularTextureLoc, 1);
+    glUniform1i(shaderProgram->uSpecularTextureLoc, 1);
     glActiveTexture(GL_TEXTURE0 + 1);
     glBindTexture(GL_TEXTURE_2D, material->texture.specularTexture);
 
-    glUniform1f(shaderProgram->uNormalTextureLoc, 2);
+    glUniform1i(shaderProgram->uNormalTextureLoc, 2);
     glActiveTexture(GL_TEXTURE0 + 2);
     glBindTexture(GL_TEXTURE_2D, material->texture.normalTexture);
-
-//    checkGlErrors(__FILE__, __LINE__);
-    
-    std::cout << "dif: " << material->texture.diffuseTexture << std::endl;
-    std::cout << "spe: " << material->texture.specularTexture << std::endl;
-    std::cout << "nor: " << material->texture.normalTexture << std::endl;
-    
-    std::cout << "difLoc: " << shaderProgram->uDiffuseTextureLoc << ": " << glGetUniformLocation(shaderProgram->programId, "uDiffuseTexture") << std::endl;
-    std::cout << "speLoc: " << shaderProgram->uSpecularTextureLoc << ": " << glGetUniformLocation(shaderProgram->programId, "uSpecularTexture") <<  std::endl;
-    std::cout << "norLoc: " << shaderProgram->uNormalTextureLoc << ": " << glGetUniformLocation(shaderProgram->programId, "uNormalTexture") << std::endl;
     
     if (depthTest) {
         glEnable(GL_DEPTH_TEST);
