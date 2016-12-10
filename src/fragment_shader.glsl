@@ -7,8 +7,6 @@ uniform float uMinColor;
 varying vec3 vNormal;
 varying vec2 vTexCoord;
 varying vec3 vPosition;
-varying vec3 vWorldPosition;
-
 varying mat3 vTBNMatrix;
 
 struct Light {
@@ -24,8 +22,7 @@ float attenuate(float distance, float a, float b) {
 }
 
 void main() {
-    vec3 diffuseColor = vec3(0.470560, 0.470560, 0.470560);
-    //    vec3 diffuseColor = vec3(0.0, 0.0, 0.0);
+    vec3 diffuseColor = vec3(0.0, 0.0, 0.0);
     vec3 specularColor = vec3(0.0, 0.0, 0.0);
     
     vec3 intensity;
@@ -34,7 +31,7 @@ void main() {
         for (int i = 0; i < 2; ++i) {
             vec3 lightDirection = -normalize(vPosition - uLight[i].lightPosition);
             float diffuse = max(0.0, dot(vNormal, lightDirection));
-            float attenuation = attenuate(distance(vPosition, uLight[i].lightPosition) / 60.0, 2.7, 5.0);//30.0, 0.5, 0.5);
+            float attenuation = attenuate(distance(vPosition, uLight[i].lightPosition) / 100.0, 2.7, 5.0);//30.0, 0.5, 0.5);
             diffuseColor += (uLight[i].lightColor * diffuse) * attenuation;
             
             vec3 v = normalize(-vPosition);
@@ -50,18 +47,17 @@ void main() {
         
         for (int i = 0; i < 2; ++i) {
             vec3 lightDirection = -normalize(vPosition - uLight[i].lightPosition);
-//            float diffuse = max(0.0, dot(vNormal, lightDirection));
             float diffuse = max(0.0, dot(textureNormal, lightDirection));
-            float attenuation = attenuate(distance(vPosition, uLight[i].lightPosition) / 60.0, 2.7, 5.0);//0.5, 0.5);
+            float attenuation = attenuate(distance(vPosition, uLight[i].lightPosition) / 100.0, 2.7, 5.0);//0.5, 0.5);
             diffuseColor += (uLight[i].lightColor * diffuse) * attenuation;
             
             vec3 v = normalize(-vPosition);
             vec3 h = normalize(v + lightDirection);
-//            float specular = pow(max(0.0, dot(h, vNormal)), 64.0);
             float specular = pow(max(0.0, dot(h, textureNormal)), 64.0);
             specularColor += (uLight[i].specularLightColor * specular) * attenuation;
         }
-        intensity = (texture2D(uNormalTexture, vTexCoord).xyz;//texture2D(uDiffuseTexture, vTexCoord).xyz * diffuseColor + (specularColor * texture2D(uSpecularTexture, vTexCoord).x);
+
+        intensity = texture2D(uDiffuseTexture, vTexCoord).xyz * diffuseColor + (specularColor * texture2D(uSpecularTexture, vTexCoord).x);
     }
     
     gl_FragColor = vec4(intensity.xyz, 1.0);

@@ -63,8 +63,9 @@ public:
         
         bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, fileName.c_str(), NULL, true);
 
-        material->setTextures(materials[0].diffuse_texname, materials[0].specular_texname, materials[0].normal_texname);
-
+        material->setDiffuseTexture(materials[0].diffuse_texname);
+        material->setSpecularTexture(materials[0].specular_texname);
+        material->setNormalTexture(materials[0].normal_texname);
         
         if (ret) {
             for (int i = 0; i < shapes.size(); i++) {

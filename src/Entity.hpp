@@ -15,7 +15,7 @@
 #include "Geometry.hpp"
 #include "Material.h"
 #include "Camera.h"
-#include "ShaderProgram.h"
+#include "Shader.h"
 #include "Light.h"
 
 
@@ -76,11 +76,14 @@ protected:
     bool visible;
     bool depthTest;
     
-    GLfloat modelMat[16];
-    GLfloat modelViewMat[16];
-    GLfloat projectionMat[16];
-    GLfloat normalMat[16];
+    //indicate which shaderprogram to use
+    int programId;
     
+//    GLfloat modelMat[16];
+//    GLfloat modelViewMat[16];
+//    GLfloat projectionMat[16];
+//    GLfloat normalMat[16];
+//    
     
     //currently we have only one event listener for each entity.
     ClickEventListener* clickEventListener;
@@ -114,8 +117,10 @@ public:
         delete material;
     }
     
+    void setProgram(int programId);
+    int getProgram();
     void createMesh();
-    void draw(Camera* camera, ShaderProgram* shaderProgram, Light* light0, Light* light1);
+    void draw(Camera* camera, Shader* shader, Light* light0, Light* light1);
     std::string getName();
     void setVisible(bool visible);
     bool isVisible() const;

@@ -10,7 +10,6 @@
 #include "Material.h"
 #include "Camera.h"
 #include "Scene.h"
-#include "ShaderProgram.h"
 #include "Util.h"
 #include "Cube.h"
 #include "Plane.h"
@@ -18,19 +17,23 @@
 #include "Model.h"
 #include "Sphere.h"
 #include "Light.h"
-
+#include "Shader.h"
+#include "ColorShader.h"
+#include "ModelShader.h"
+#include "TextureShader.h"
 
 int screenWidth = 500;
 int screenHeight = 500;
 
-ShaderProgram* shaderProgram;
+Shader* colorShader;
+Shader* modelShader;
+Shader* textureShader;
 
 Camera camera(Cvec3(0, 0, 0), Quat::makeXRotation(0));
 
 std::string currentModel = "model0";
 
 Light* currentMovingLight = Scene::getLight(0);
-
 
 
 class BtnEventListener : public ClickEventListener {
@@ -43,12 +46,12 @@ public:
     void onHover(Entity* button) {
         button->setPosition(button->initState.transform.getPosition());
         button->setScale(button->initState.transform.getScale() * 1.1);
-        button->material->color = button->initState.color + Cvec3f(0.2, 0, 0);
+        button->material->setColor(button->initState.color + Cvec3f(0.2, 0, 0));
     }
     void onIdle(Entity* button) {
         button->setPosition(button->initState.transform.getPosition());
         button->setScale(button->initState.transform.getScale());
-        button->material->color = button->initState.color;
+        button->material->setColor(button->initState.color);
     }
 };
 
@@ -143,22 +146,22 @@ public:
             spcularLightColorOn0 = !spcularLightColorOn0;
             if(spcularLightColorOn0) {
                 Scene::light0->specularLightColor = Cvec3f(0, 0, 0);
-                button->material->color = Cvec3f(0.1, 0, 0);
+                button->material->setColor(0.1, 0, 0);
                 button->initState.color = Cvec3f(0.1, 0, 0);
             } else {
                 Scene::light0->specularLightColor = Cvec3f(1, 1, 1);
-                button->material->color = Cvec3f(0.6, 0, 0);
+                button->material->setColor(0.6, 0, 0);
                 button->initState.color = Cvec3f(0.6, 0, 0);
             }
         } else {
             spcularLightColorOn1 = !spcularLightColorOn1;
             if(spcularLightColorOn1) {
                 Scene::light1->specularLightColor = Cvec3f(0, 0, 0);
-                button->material->color = Cvec3f(0.1, 0, 0);
+                button->material->setColor(0.1, 0, 0);
                 button->initState.color = Cvec3f(0.1, 0, 0);
             } else {
                 Scene::light1->specularLightColor = Cvec3f(1, 1, 1);
-                button->material->color = Cvec3f(0.6, 0, 0);
+                button->material->setColor(0.6, 0, 0);
                 button->initState.color = Cvec3f(0.6, 0, 0);
             }
         }
@@ -176,7 +179,7 @@ public:
 void display(void) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    Scene::render(shaderProgram);
+    Scene::render();
     
     glutSwapBuffers();
 }
@@ -190,9 +193,18 @@ void init() {
     glDepthFunc(GL_GREATER);
     glReadBuffer(GL_BACK);
     
-    shaderProgram = new ShaderProgram();
-    shaderProgram->createProgram("vertex_shader.glsl", "fragment_shader.glsl");
-    glUseProgram(shaderProgram->programId);
+    colorShader = new ColorShader();
+    colorShader->createProgram("shaders/vertex_shader_simple.glsl", "shaders/fragment_shader_color.glsl");
+    
+    modelShader = new ModelShader();
+    modelShader->createProgram("shaders/vertex_shader_model.glsl", "shaders/fragment_shader_model.glsl");
+    
+    textureShader = new TextureShader();
+    textureShader->createProgram("shaders/vertex_shader_texture.glsl", "shaders/fragment_shader_texture.glsl");
+    
+    Scene::addShader(colorShader);
+    Scene::addShader(modelShader);
+    Scene::addShader(textureShader);
 
     Scene::setCamera(&camera);
     Light* light0 = new Light();
@@ -207,14 +219,17 @@ void init() {
     model0->setScale(Cvec3(0.5, 0.5, 0.5));
     model0->setPosition(Cvec3(0, -3.4, -10));
     model0->setRotation(Quat::makeYRotation(20));
+    model0->material->setColor(0.0, 0.8, 0.8);
+    model0->setProgram(modelShader->getProgramId());
     Scene::addChild(model0);
 
-    //TODO add different shaders
+
     Model* model1 = new Model("Spiderman.obj", "model1");
     model1->setScale(Cvec3(1.3, 1.3, 1.3));
     model1->setPosition(Cvec3(0, -2.3, -7));
     model1->setRotation(Quat::makeYRotation(20));
     model1->setVisible(false);
+    model1->setProgram(modelShader->getProgramId());
     Scene::addChild(model1);
     
     
@@ -225,6 +240,7 @@ void init() {
     btn0->setPosition(Cvec3(-1.8, 1.9, -5));
     btn0->setScale(Cvec3(0.05, 0.05, 0.05));
     btn0->registerClickEventListener(new ModelSwitchBtnEventListener());
+    btn0->setProgram(colorShader->getProgramId());
     Scene::addChild(btn0);
     
     /************ light color buttons ************/
@@ -234,6 +250,7 @@ void init() {
         btn->setPosition(Cvec3(-1.8, 1.9 - (i + 1) / 3.0, -5));
         btn->setScale(Cvec3(0.05, 0.05, 0.05));
         btn->registerClickEventListener(new LightColorBtnEventListener());
+        btn->setProgram(colorShader->getProgramId());
         Scene::addChild(btn);
     }
     
@@ -244,18 +261,17 @@ void init() {
         btn->setPosition(Cvec3(-1.5, 1.9 - (i + 1) / 3.0, -5));
         btn->setScale(Cvec3(0.05, 0.05, 0.05));
         btn->registerClickEventListener(new SpecularLightColorBtnEventListener());
+        btn->setProgram(colorShader->getProgramId());
         Scene::addChild(btn);
     }
     
     /************* ground ***************/
-//    Entity* ground = new Entity("ground", new Plane(8), new Material("rock.jpg"));
-//    ground->setPosition(Cvec3(0, -3.5, -12));
-//    Scene::addChild(ground);
+    Material* gm = new Material("rock.jpg");
+    Entity* ground = new Entity(new Plane(8), gm);
+    ground->setPosition(Cvec3(0, -4, -13));
+    ground->setProgram(textureShader->getProgramId());
+    Scene::addChild(ground);
     
-    
-//    Entity* screen = new Entity("screen", new Plane(2), new Material());
-    
-
 
     Scene::createMeshes();//this call genereate vbo/ibo for the geometry of each Entity.
 }

@@ -21,9 +21,9 @@ public:
     GLuint normalTexture;
     
     Texture() {
-        this->diffuseTexture = 0;
-        this->specularTexture = 0;
-        this->normalTexture = 0;
+        this->diffuseTexture = -1;
+        this->specularTexture = -1;
+        this->normalTexture = -1;
     }
     
     Texture& operator = (const Texture& t) {

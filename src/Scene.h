@@ -14,7 +14,7 @@
 #include <string>
 #include "Entity.hpp"
 #include "Camera.h"
-#include "ShaderProgram.h"
+#include "Shader.h"
 #include "Light.h"
 #include "Raycaster.h"
 #include "Sphere.h"
@@ -26,7 +26,8 @@ class Scene {
 
 private:
     static std::vector<Entity*> entities;
-    static std::unordered_map<std::string, Entity*> table;
+    static std::unordered_map<std::string, Entity*> entityTable;
+    static std::unordered_map<int, Shader*> shaderTable;
     
     static Camera* camera;
     
@@ -68,7 +69,7 @@ public:
     
     static void addChild(Entity* entity) {
         entities.push_back(entity);
-        table[entity->getName()] = entity;
+        entityTable[entity->getName()] = entity;
     }
     
     //must be called and called once before rendering
@@ -86,28 +87,42 @@ public:
         return Raycaster::isPicked(x, y, screenWidth, screenHeight, camera->getProjectionMatrix(), camera->getViewMatrix(), camera->getPosition(), entity->getPosition(), geometry->getDiameter() / 2.0 * entity->getScale()[0]);
     }
     
-    static void render(ShaderProgram* shaderProgram) {
+//    static void render(ShaderProgram* shaderProgram) {
+//        if (camera == NULL) {
+//            throw std::string("Camera NULL");
+//        }
+//        
+////        glUseProgram(shaderProgram->programId);
+//        shaderProgram->use();
+//        for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
+//            (*it)->draw(camera, shaderProgram, light0, light1);
+//        }
+//    }
+    static void render() {
         if (camera == NULL) {
             throw std::string("Camera NULL");
         }
         
-        glUseProgram(shaderProgram->programId);
         for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
-            (*it)->draw(camera, shaderProgram, light0, light1);
+            Shader* shader = shaderTable[(*it)->getProgram()];
+            if (shader == NULL) {
+                throw std::string("shader not exists");
+            }
+            (*it)->draw(camera, shader, light0, light1);
         }
     }
     
     static Entity* getEntity(std::string name) {
-        if (table.find(name) == table.end()) {
+        if (entityTable.find(name) == entityTable.end()) {
             return NULL;
         }
         
-        return table[name];
+        return entityTable[name];
     }
     
     static void removeAll() {
         entities.clear();
-        table.clear();
+        entityTable.clear();
     }
 
     
@@ -146,9 +161,20 @@ public:
             }
         }
     }
+    
+    
+    static void addShader(Shader* shader) {
+        int programId = shader->getProgramId();
+        if (shaderTable.find(programId) == shaderTable.end()) {
+            shaderTable[programId] = shader;
+        } else {
+            std::cerr << "program: " << programId << " already exists." << std::endl;
+        }
+    }
 };
 
-std::unordered_map<std::string, Entity*> Scene::table;
+std::unordered_map<std::string, Entity*> Scene::entityTable;
+std::unordered_map<int, Shader*> Scene::shaderTable;
 std::vector<Entity*> Scene::entities;
 Camera* Scene::camera = NULL;
 
