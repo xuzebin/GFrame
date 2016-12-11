@@ -22,12 +22,15 @@
 #include "ModelShader.h"
 #include "TextureShader.h"
 
-int screenWidth = 500;
-int screenHeight = 500;
+int screenWidth = 800;
+int screenHeight = 800;
 
-Shader* colorShader;
-Shader* modelShader;
-Shader* textureShader;
+ColorShader* colorShader;
+ModelShader* modelShader;
+TextureShader* textureShader;
+TextureShader* cubemapShader;
+TextureShader* refractShader;
+TextureShader* reflectShader;
 
 Camera camera(Cvec3(0, 0, 0), Quat::makeXRotation(0));
 
@@ -200,11 +203,23 @@ void init() {
     modelShader->createProgram("shaders/vertex_shader_model.glsl", "shaders/fragment_shader_model.glsl");
     
     textureShader = new TextureShader();
-    textureShader->createProgram("shaders/vertex_shader_texture.glsl", "shaders/fragment_shader_texture.glsl");
+    textureShader->createProgram("shaders/vertex_shader_simple.glsl", "shaders/fragment_shader_texture.glsl");
+    
+    cubemapShader = new TextureShader();
+    cubemapShader->createProgram("shaders/vertex_shader_cubemap.glsl", "shaders/fragment_shader_cubemap.glsl");
+    
+    reflectShader = new TextureShader();
+    reflectShader->createProgram("shaders/vertex_shader_simple.glsl", "shaders/fragment_shader_environment_reflect.glsl");
+    
+    refractShader = new TextureShader();
+    refractShader->createProgram("shaders/vertex_shader_simple.glsl", "shaders/fragment_shader_environment_refract.glsl");
     
     Scene::addShader(colorShader);
     Scene::addShader(modelShader);
     Scene::addShader(textureShader);
+    Scene::addShader(cubemapShader);
+    Scene::addShader(reflectShader);
+    Scene::addShader(refractShader);
 
     Scene::setCamera(&camera);
     Light* light0 = new Light();
@@ -220,7 +235,7 @@ void init() {
     model0->setPosition(Cvec3(0, -3.4, -10));
     model0->setRotation(Quat::makeYRotation(20));
     model0->material->setColor(0.0, 0.8, 0.8);
-    model0->setProgram(modelShader->getProgramId());
+    model0->setProgram(refractShader->getProgramId());
     Scene::addChild(model0);
 
 
@@ -229,7 +244,7 @@ void init() {
     model1->setPosition(Cvec3(0, -2.3, -7));
     model1->setRotation(Quat::makeYRotation(20));
     model1->setVisible(false);
-    model1->setProgram(modelShader->getProgramId());
+    model1->setProgram(reflectShader->getProgramId());
     Scene::addChild(model1);
     
     
@@ -266,12 +281,22 @@ void init() {
     }
     
     /************* ground ***************/
-    Material* gm = new Material("rock.jpg");
-    Entity* ground = new Entity(new Plane(8), gm);
-    ground->setPosition(Cvec3(0, -4, -13));
-    ground->setProgram(textureShader->getProgramId());
-    Scene::addChild(ground);
+//    Material* gm = new Material("rock.jpg");
+//    Entity* ground = new Entity(new Plane(8), gm);
+//    ground->setPosition(Cvec3(0, -4, -13));
+//    ground->setProgram(textureShader->getProgramId());
+//    Scene::addChild(ground);
     
+    
+    Cubemap cubemap;
+    cubemap.loadTextures("cubemap/posx.jpg", "cubemap/negx.jpg", "cubemap/posy.jpg", "cubemap/negy.jpg", "cubemap/posz.jpg", "cubemap/negz.jpg");
+
+    Material* cubemapM = new Material();
+    cubemapM->setCubemap(cubemap.getTexture());
+    Cube* sb = new Cube(100);
+    Entity* skybox = new Entity(sb, cubemapM);
+    skybox->setProgram(cubemapShader->getProgramId());
+    Scene::addChild(skybox);
 
     Scene::createMeshes();//this call genereate vbo/ibo for the geometry of each Entity.
 }

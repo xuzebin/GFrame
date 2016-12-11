@@ -15,16 +15,25 @@
 #include <glut.h>
 
 class Texture {
-public:
+    
+private:
+    bool hasDiffuseTex;
+    bool hasSpecularTex;
+    bool hasNormalTex;
+    
     GLuint diffuseTexture;
     GLuint specularTexture;
     GLuint normalTexture;
     
-    Texture() {
-        this->diffuseTexture = -1;
-        this->specularTexture = -1;
-        this->normalTexture = -1;
-    }
+    bool hasCubemapTex;
+    GLuint cubemapTexture;
+    
+    
+public:
+    
+    Texture() : diffuseTexture(0), specularTexture(0), normalTexture(0), cubemapTexture(0),
+                hasDiffuseTex(false), hasSpecularTex(false), hasNormalTex(false), hasCubemapTex(false)
+    {}
     
     Texture& operator = (const Texture& t) {
         diffuseTexture = t.diffuseTexture;
@@ -33,8 +42,46 @@ public:
         return *this;
     }
 
-
-    
+    bool hasDiffuseTexture() {
+        return hasDiffuseTex;
+    }
+    bool hasSpecularTexture() {
+        return hasSpecularTex;
+    }
+    bool hasNormalTexture() {
+        return hasNormalTex;
+    }
+    bool hasCubmapTexture() {
+        return hasCubemapTex;
+    }
+    void setDiffuseTexture(GLuint diffuse) {
+        diffuseTexture = diffuse;
+        hasDiffuseTex = true;
+    }
+    void setSpecularTexture(GLuint specular) {
+        specularTexture = specular;
+        hasSpecularTex = true;
+    }
+    void setNormalTexture(GLuint normal) {
+        normalTexture = normal;
+        hasNormalTex = true;
+    }
+    void setCubemapTexture(GLuint cubemap) {
+        cubemapTexture = cubemap;
+        hasCubemapTex = true;
+    }
+    GLuint getDiffuseTexture() {
+        return diffuseTexture;
+    }
+    GLuint getSpecularTexture() {
+        return specularTexture;
+    }
+    GLuint getNormalTexture() {
+        return normalTexture;
+    }
+    GLuint getCubemapTexture() {
+        return cubemapTexture;
+    }
 };
 
 #endif /* Texture_hpp */

@@ -14,14 +14,19 @@
 #include <vector>
 
 class Cubemap {
-public:
+private:
     GLuint texture;
-    
+public:
+
     Cubemap() : texture(0) {}
     
-    void load(std::string posX, std::string negX,
+    void loadTextures(std::string posX, std::string negX,
                std::string posY, std::string negY,
                std::string posZ, std::string negZ);
+    
+    int getTexture() {
+        return texture;
+    }
 };
 
 #endif /* Cubemap_hpp */

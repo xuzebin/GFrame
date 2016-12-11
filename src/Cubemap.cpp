@@ -9,7 +9,7 @@
 #include "Cubemap.hpp"
 #include "glsupport.h"
 
-void Cubemap::load(std::string posX, std::string negX,
+void Cubemap::loadTextures(std::string posX, std::string negX,
                    std::string posY, std::string negY,
                    std::string posZ, std::string negZ) {
     

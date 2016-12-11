@@ -20,6 +20,7 @@ protected:
     GLint aTexCoordLoc;
     
     //matrix uniforms
+    GLint uModelMatrixLoc;
     GLint uModelViewMatrixLoc;
     GLint uProjectionMatrixLoc;
     GLint uNormalMatrixLoc;
@@ -36,14 +37,20 @@ protected:
     //texture uniforms
     GLint uDiffuseTextureLoc;
     
-    //other uniforms
+    //color uniform
     GLint uColorLoc;
+    
+    //cubemap
+    GLint uEnvironmentMapLoc;
+    
+    
     
     void getLocations(int programId) {
         aPositionLoc = glGetAttribLocation(programId, "aPosition");
         aNormalLoc = glGetAttribLocation(programId, "aNormal");
         aTexCoordLoc = glGetAttribLocation(programId, "aTexCoord");
         
+        uModelMatrixLoc = glGetUniformLocation(programId, "uModelMatrix");
         uModelViewMatrixLoc = glGetUniformLocation(programId, "uModelViewMatrix");
         uProjectionMatrixLoc = glGetUniformLocation(programId, "uProjectionMatrix");
         uNormalMatrixLoc = glGetUniformLocation(programId, "uNormalMatrix");
@@ -58,6 +65,8 @@ protected:
         uSpecularLightColorLoc1 = glGetUniformLocation(programId, "uLight[1].specularLightColor");
         
         uDiffuseTextureLoc = glGetUniformLocation(programId, "uDiffuseTexture");
+
+        uEnvironmentMapLoc = glGetUniformLocation(programId, "uEnvironmentMap");
     }
     
     GLfloat modelMat[16];
@@ -65,7 +74,11 @@ protected:
     GLfloat projectionMat[16];
     GLfloat normalMat[16];
     
+
+    
 public:
+    
+
     
     void createProgram(const char* vertexShaderFileName, const char* fragmentShaderFileName) {
         Shader::createProgram(vertexShaderFileName, fragmentShaderFileName);
@@ -92,10 +105,12 @@ public:
         Matrix4 modelViewMatrix = inv(viewMatrix) * modelMatrix;
         Matrix4 normal = normalMatrix(modelViewMatrix);
         
+        modelMatrix.writeToColumnMajorMatrix(modelMat);//TODO add switch
         modelViewMatrix.writeToColumnMajorMatrix(modelViewMat);
         projectionMatrix.writeToColumnMajorMatrix(projectionMat);
         normal.writeToColumnMajorMatrix(normalMat);
         
+        glUniformMatrix4fv(uModelMatrixLoc, 1, false, modelMat);
         glUniformMatrix4fv(uModelViewMatrixLoc, 1, false, modelViewMat);
         glUniformMatrix4fv(uProjectionMatrixLoc, 1, false, projectionMat);
         glUniformMatrix4fv(uNormalMatrixLoc, 1, false, normalMat);
@@ -125,6 +140,15 @@ public:
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, entity->material->getDiffuseTexture());
         }
+        
+        if (entity->material->hasCubemap()) {
+            glUniform1i(uEnvironmentMapLoc, 0);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, entity->material->getCubemapTexture());
+            std::cout << "cubemap shader" << std::endl;
+        }
+        
+        
         
         entity->geometry->draw(aPositionLoc, aNormalLoc, aTexCoordLoc, -1, -1);
     }

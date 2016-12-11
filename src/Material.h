@@ -24,16 +24,13 @@ class Material {
 private:
     Cvec3f color;
     Texture texture;
-    Cubemap cubemap;
-    
-    bool hasCubemap;
     
 public:
-    Material() : hasCubemap(false){}
+    Material() {}
 
-    Material(Cvec3f color_) : color(color_), hasCubemap(false) {}
+    Material(Cvec3f color_) : color(color_) {}
     
-    Material(const char* textureFileName) : hasCubemap(false) {
+    Material(const char* textureFileName) {
         setDiffuseTexture(textureFileName);
     }
     
@@ -51,32 +48,36 @@ public:
     }
     
     bool hasDiffuseTexture() {
-        return (texture.diffuseTexture >= 0);
+        return texture.hasDiffuseTexture();
     }
     
     bool hasSpecularTexture() {
-        return (texture.specularTexture >= 0);
+        return texture.hasSpecularTexture();
     }
     
     bool hasNormalTexture() {
-        return (texture.normalTexture >= 0);
+        return texture.hasNormalTexture();
     }
     
     int getDiffuseTexture() {
-        return texture.diffuseTexture;
+        return texture.getDiffuseTexture();
     }
     
     int getSpecularTexture() {
-        return texture.specularTexture;
+        return texture.getSpecularTexture();
     }
     
     int getNormalTexture() {
-        return texture.normalTexture;
+        return texture.getNormalTexture();
+    }
+    
+    GLint getCubemapTexture() {
+        return texture.getCubemapTexture();
     }
     
     void setDiffuseTexture(std::string diffuseTexName) {
         if (diffuseTexName != "") {
-            texture.diffuseTexture = loadGLTexture(diffuseTexName.c_str());
+            texture.setDiffuseTexture(loadGLTexture(diffuseTexName.c_str()));
             std::cout << "diffuse texture set: " << diffuseTexName << std::endl;
         } else {
             std::cerr << "diffuse texture name empty" << std::endl;
@@ -85,7 +86,7 @@ public:
     
     void setSpecularTexture(std::string specularTexName) {
         if (specularTexName != "") {
-            texture.specularTexture = loadGLTexture(specularTexName.c_str());
+            texture.setSpecularTexture(loadGLTexture(specularTexName.c_str()));
             std::cout << "specular texture set: " << specularTexName << std::endl;
         } else {
             std::cerr << "specular texture name empty" << std::endl;
@@ -94,20 +95,19 @@ public:
     
     void setNormalTexture(std::string normalTexName) {
         if (normalTexName != "") {
-            texture.normalTexture = loadGLTexture(normalTexName.c_str());
+            texture.setNormalTexture(loadGLTexture(normalTexName.c_str()));
             std::cout << "normal texture set: " << normalTexName << std::endl;
         } else {
             std::cerr << "normal texture name empty" << std::endl;
         }
     }
     
-    void setCubemap(const Cubemap& cubemap) {
-        this->cubemap = cubemap;
-        hasCubemap = true;
+    void setCubemap(GLuint cubemapTexture) {
+        texture.setCubemapTexture(cubemapTexture);
     }
     
-    bool cubemapApplied() {
-        return hasCubemap;
+    bool hasCubemap() {
+        return texture.hasCubmapTexture();
     }
 
 };
