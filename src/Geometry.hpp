@@ -37,7 +37,7 @@ public:
     
     Geometry& operator = (const Geometry& g);
     void createVBOs(std::vector<Vertex> vtx, std::vector<unsigned short> idx);
-    void draw(const GLuint aPositionLocation, const GLuint aNomralLocation, const GLuint aTexCoordLocation, const GLuint aBinormalLocation, const GLuint aTangentLocation);
+    virtual void draw(const GLuint aPositionLocation, const GLuint aNomralLocation, const GLuint aTexCoordLocation, const GLuint aBinormalLocation, const GLuint aTangentLocation);
     
     inline float getDiameter() {
         return minSphereDiameter;

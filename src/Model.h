@@ -9,11 +9,13 @@
 #ifndef Model_h
 #define Model_h
 
-#include "Geometry.h"
+
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
-#include "Texture.hpp"
 #include "Mesh.hpp"
+class Texture;
+class Geometry;
+
 
 
 class Model : public Entity {

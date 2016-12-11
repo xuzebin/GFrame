@@ -16,9 +16,11 @@ class Shader {
     
 protected:
     GLuint programId;
+
 public:
     
     Shader() {}
+
     ~Shader() {
         glDeleteProgram(programId);
     }
@@ -33,7 +35,6 @@ public:
         readAndCompileShader(programId, vertexShaderFileName, fragmentShaderFileName);
     }
     virtual void setLocationsAndDraw(Entity* entity, Camera* camera, Light* light0, Light* light1) = 0;
-    
 };
 
 #endif /* Shader_h */

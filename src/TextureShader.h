@@ -73,12 +73,9 @@ protected:
     GLfloat modelViewMat[16];
     GLfloat projectionMat[16];
     GLfloat normalMat[16];
-    
 
-    
+
 public:
-    
-
     
     void createProgram(const char* vertexShaderFileName, const char* fragmentShaderFileName) {
         Shader::createProgram(vertexShaderFileName, fragmentShaderFileName);
@@ -123,18 +120,39 @@ public:
             glUniform3f(uLightPositionLoc0, lightPosEye0[0], lightPosEye0[1], lightPosEye0[2]);
             Cvec3f lightColor = light0->lightColor;
             glUniform3f(uLightColorLoc0, lightColor[0], lightColor[1], lightColor[2]);
-            Cvec3f specularLightColor = light0->specularLightColor;
+
+            Cvec3f specularLightColor;
+            if (entity->isLightOn(0)) {
+                specularLightColor = light0->specularLightColor;
+            } else {
+                specularLightColor = Cvec3f(0, 0, 0);
+            }
+
             glUniform3f(uSpecularLightColorLoc0, specularLightColor[0], specularLightColor[1], specularLightColor[2]);
+        } else {
+            glUniform3f(uLightPositionLoc0, 0, 0, 0);
+            glUniform3f(uLightColorLoc0, 1.0f, 1.0f, 1.0f);
+            glUniform3f(uSpecularLightColorLoc0, 0, 0, 0);
         }
         if (light1 != NULL) {
             Cvec3 lightPosEye1 = light1->getPositionInEyeSpace(viewMatrix);
             glUniform3f(uLightPositionLoc1, lightPosEye1[0], lightPosEye1[1], lightPosEye1[2]);
             Cvec3f lightColor = light1->lightColor;
             glUniform3f(uLightColorLoc1, lightColor[0], lightColor[1], lightColor[2]);
-            Cvec3f specularLightColor = light1->specularLightColor;
+
+            Cvec3f specularLightColor;
+            if (entity->isLightOn(1)) {
+                specularLightColor = light1->specularLightColor;
+            } else {
+                specularLightColor = Cvec3f(0, 0, 0);
+            }
             glUniform3f(uSpecularLightColorLoc1, specularLightColor[0], specularLightColor[1], specularLightColor[2]);
+        } else {
+            glUniform3f(uLightPositionLoc0, 0, 0, 0);
+            glUniform3f(uLightColorLoc0, 1.0f, 1.0f, 1.0f);
+            glUniform3f(uSpecularLightColorLoc0, 0, 0, 0);
         }
-        
+
         if (entity->material->hasDiffuseTexture()) {
             glUniform1i(uDiffuseTextureLoc, 0);
             glActiveTexture(GL_TEXTURE0);
@@ -145,10 +163,7 @@ public:
             glUniform1i(uEnvironmentMapLoc, 0);
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_CUBE_MAP, entity->material->getCubemapTexture());
-            std::cout << "cubemap shader" << std::endl;
         }
-        
-        
         
         entity->geometry->draw(aPositionLoc, aNormalLoc, aTexCoordLoc, -1, -1);
     }

@@ -89,6 +89,10 @@ protected:
     ClickEventListener* clickEventListener;
 
 
+    //by default: open 2 lights(..00011)
+    int lightSwitch = 3;//0001 indicates light0 opens, 0010 indicates light1 opens, 0011 indicates light0 and light1 open, and so on.
+
+
 public:
     Entity* parent;
     
@@ -135,7 +139,42 @@ public:
     void setScale(Cvec3 scale);
     const Cvec3& getScale();
     const Matrix4& getModelMatrix();
-    
+
+    void acceptLight(int lightID) {
+        if (lightID < 0 || lightID > 2) {
+            throw std::string("invalid lightID");
+        }
+        int mask = 0;
+        mask <<= (lightID + 1);
+
+        lightSwitch |= mask;
+    }
+    void rejectLight(int lightID) {
+        if (lightID < 0 || lightID > 2) {
+            throw std::string("invalid lightID");
+        }
+        int mask = 0;
+        mask <<= (lightID + 1);
+        mask = !mask;
+
+        lightSwitch &= mask;
+    }
+    void rejectAllLights() {
+        lightSwitch = 0;
+    }
+
+    bool isLightOn(int lightID) {
+        if (lightID < 0 || lightID > 2) {
+            throw std::string("invalid lightID");
+        }
+        int mask = 0;
+        mask <<= (lightID + 1);
+
+        int bit = lightSwitch & mask;
+        return (bit != 0);
+    }
+
+
     inline void registerClickEventListener(ClickEventListener* listener) {
         if (listener == NULL) {
             throw std::string("ClickEventListener object NULL");

@@ -84,6 +84,10 @@ public:
         }
     }
     
+    void setDiffuseTextureId(GLuint textureId) {
+        texture.setDiffuseTexture(textureId);
+    }
+    
     void setSpecularTexture(std::string specularTexName) {
         if (specularTexName != "") {
             texture.setSpecularTexture(loadGLTexture(specularTexName.c_str()));

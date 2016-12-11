@@ -21,6 +21,8 @@
 #include "ColorShader.h"
 #include "ModelShader.h"
 #include "TextureShader.h"
+#include "ScreenShader.h"
+#include "Screen.h"
 
 int screenWidth = 800;
 int screenHeight = 800;
@@ -31,12 +33,25 @@ TextureShader* textureShader;
 TextureShader* cubemapShader;
 TextureShader* refractShader;
 TextureShader* reflectShader;
+ScreenShader* screenShader;
+ScreenShader* grayShader;
+ScreenShader* colorInvertShader;
+ScreenShader* fxaaShader;
+
+ScreenShader* currentEffectShader = NULL;//record current effect for the whole scene (post-processing)
+
 
 Camera camera(Cvec3(0, 0, 0), Quat::makeXRotation(0));
 
 std::string currentModel = "model0";
 
 Light* currentMovingLight = Scene::getLight(0);
+
+
+
+GLuint frameBuffer;
+
+Entity* screen = NULL;//for post-processing
 
 
 class BtnEventListener : public ClickEventListener {
@@ -58,32 +73,101 @@ public:
     }
 };
 
+class PostProcessingSwitchListener : public BtnEventListener {
+private:
+    int effectSelected = 0;
+public:
+    void onClick(Entity* button) {
+        BtnEventListener::onClick(button);
+        effectSelected = (effectSelected + 1) % 4;
+        switch(effectSelected) {
+            case 0:
+            {
+                screen->setProgram(screenShader->getProgramId());
+                currentEffectShader = screenShader;
+                break;
+            }
+            case 1:
+            {
+                screen->setProgram(grayShader->getProgramId());
+                currentEffectShader = grayShader;
+                break;
+            }
+            case 2:
+            {
+                screen->setProgram(colorInvertShader->getProgramId());
+                currentEffectShader = colorInvertShader;
+                break;
+            }
+            case 3:
+            {
+                screen->setProgram(fxaaShader->getProgramId());
+                currentEffectShader = fxaaShader;
+                break;
+            }
+            default:
+                throw std::string("no matched model selected");
+        }
+    }
+    void onHover(Entity* button) {
+        BtnEventListener::onHover(button);
+    }
+    void onIdle(Entity* button) {
+        BtnEventListener::onIdle(button);
+    }
+};
+
 class ModelSwitchBtnEventListener : public BtnEventListener {
 private:
     int modelSelected = 0;
 public:
     void onClick(Entity* button) {
         BtnEventListener::onClick(button);
-        modelSelected = (modelSelected + 1) % 2;
+        modelSelected = (modelSelected + 1) % 4;
         switch(modelSelected) {
             case 0:
             {
                 Entity* monk = Scene::getEntity("model0");
-                Entity* spiderman = Scene::getEntity("model1");
-                monk->setVisible(true);
-                spiderman->setVisible(false);
-                currentModel = "model0";
+                monk->setProgram(refractShader->getProgramId());
                 break;
             }
             case 1:
             {
                 Entity* monk = Scene::getEntity("model0");
-                Entity* spiderman = Scene::getEntity("model1");
-                monk->setVisible(false);
-                spiderman->setVisible(true);
-                currentModel = "model1";
+                monk->setProgram(reflectShader->getProgramId());
                 break;
             }
+            case 2:
+            {
+                Entity* monk = Scene::getEntity("model0");
+                monk->setProgram(modelShader->getProgramId());
+                break;
+            }
+            case 3:
+            {
+                Entity* monk = Scene::getEntity("model0");
+                monk->setProgram(colorShader->getProgramId());
+                break;
+            }
+
+//            case 0:
+//            {
+//                Entity* monk = Scene::getEntity("model0");
+//                Entity* spiderman = Scene::getEntity("model1");
+//                monk->setVisible(true);
+//                spiderman->setVisible(false);
+//                currentModel = "model0";
+//                break;
+//            }
+//            case 1:
+//            {
+//                Entity* monk = Scene::getEntity("model0");
+//                Entity* spiderman = Scene::getEntity("model1");
+//                monk->setVisible(false);
+//                spiderman->setVisible(true);
+//                currentModel = "model1";
+//                break;
+//            }
             default:
                 throw std::string("no matched model selected");
         }
@@ -182,8 +266,19 @@ public:
 void display(void) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    Scene::render();
-    
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+    glViewport(0, 0, 1024, 1024);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    Scene::render();//render the scene
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, screenWidth, screenHeight);
+
+    if (screen != NULL) {
+        screen->draw(Scene::camera, currentEffectShader, Scene::light0, Scene::light1);
+    }
+
     glutSwapBuffers();
 }
 
@@ -192,6 +287,7 @@ void init() {
     glClearDepth(0.0);
     glCullFace(GL_BACK);
 //    glEnable(GL_CULL_FACE);
+    glDisable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_GREATER);
     glReadBuffer(GL_BACK);
@@ -204,7 +300,7 @@ void init() {
     
     textureShader = new TextureShader();
     textureShader->createProgram("shaders/vertex_shader_simple.glsl", "shaders/fragment_shader_texture.glsl");
-    
+
     cubemapShader = new TextureShader();
     cubemapShader->createProgram("shaders/vertex_shader_cubemap.glsl", "shaders/fragment_shader_cubemap.glsl");
     
@@ -214,12 +310,28 @@ void init() {
     refractShader = new TextureShader();
     refractShader->createProgram("shaders/vertex_shader_simple.glsl", "shaders/fragment_shader_environment_refract.glsl");
     
+    screenShader = new ScreenShader();
+    screenShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_offscreen.glsl");
+
+    grayShader = new ScreenShader();
+    grayShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_blackwhite.glsl");
+
+    colorInvertShader = new ScreenShader();
+    colorInvertShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_colorinvert.glsl");
+
+    fxaaShader = new ScreenShader();
+    fxaaShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_fxaa.glsl");
+
+    currentEffectShader = screenShader;//default effect
+
+
     Scene::addShader(colorShader);
     Scene::addShader(modelShader);
     Scene::addShader(textureShader);
     Scene::addShader(cubemapShader);
     Scene::addShader(reflectShader);
     Scene::addShader(refractShader);
+
 
     Scene::setCamera(&camera);
     Light* light0 = new Light();
@@ -257,6 +369,14 @@ void init() {
     btn0->registerClickEventListener(new ModelSwitchBtnEventListener());
     btn0->setProgram(colorShader->getProgramId());
     Scene::addChild(btn0);
+
+    /************ post-processing effect swtich button ************/
+    Entity* btn1 = new Entity("button1", buttonG, buttonM);
+    btn1->setPosition(Cvec3(-1.5, 1.9, -5));
+    btn1->setScale(Cvec3(0.05, 0.05, 0.05));
+    btn1->registerClickEventListener(new PostProcessingSwitchListener());
+    btn1->setProgram(colorShader->getProgramId());
+    Scene::addChild(btn1);
     
     /************ light color buttons ************/
     for (int i = 0; i < 2; ++i) {
@@ -290,13 +410,54 @@ void init() {
     
     Cubemap cubemap;
     cubemap.loadTextures("cubemap/posx.jpg", "cubemap/negx.jpg", "cubemap/posy.jpg", "cubemap/negy.jpg", "cubemap/posz.jpg", "cubemap/negz.jpg");
-
     Material* cubemapM = new Material();
     cubemapM->setCubemap(cubemap.getTexture());
     Cube* sb = new Cube(100);
     Entity* skybox = new Entity(sb, cubemapM);
     skybox->setProgram(cubemapShader->getProgramId());
     Scene::addChild(skybox);
+
+    
+    /*************** offscreen rendering ***************/
+    
+    //1. generate and bind a frame buffer
+    glGenFramebuffers(1, &frameBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+    //2. create an empty texture to render to
+    GLuint frameBufferTexture;
+    glGenTextures(1, &frameBufferTexture);
+    glBindTexture(GL_TEXTURE_2D, frameBufferTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1024, 1024, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //3. bind the texture to the FBO as a color attachment
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, frameBufferTexture, 0);
+    
+    //4. create a depth buffer texture
+    GLuint depthBufferTexture;
+    glGenTextures(1, &depthBufferTexture);
+    glBindTexture(GL_TEXTURE_2D, depthBufferTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //bind the depth buffer texture to the FBO as a depth buffer attachment
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 1024, 1024);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthBufferTexture, 0);
+    //5. unbind the created frame buffer
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    
+    Screen* plane = new Screen();
+    Material* planeM = new Material();
+    planeM->setDiffuseTextureId(frameBufferTexture);
+    screen = new Entity(plane, planeM);
+    screen->setProgram(screenShader->getProgramId());
+//    screen->setPosition(Cvec3(0, 0, -18));
+//    screen->setRotation(Quat::makeXRotation(90) * Quat::makeYRotation(180) * Quat::makeZRotation(30));
+//    screen->rejectAllLights();
+
+
+    screen->createMesh();
 
     Scene::createMeshes();//this call genereate vbo/ibo for the geometry of each Entity.
 }

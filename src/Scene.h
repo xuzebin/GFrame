@@ -29,7 +29,7 @@ private:
     static std::unordered_map<std::string, Entity*> entityTable;
     static std::unordered_map<int, Shader*> shaderTable;
     
-    static Camera* camera;
+
     
     Scene() {}
     
@@ -38,6 +38,8 @@ public:
     //currently only support 2 lights.
     static Light* light0;
     static Light* light1;
+    
+    static Camera* camera;
 
     
     static void setCamera(Camera* camera_) {
