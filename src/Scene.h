@@ -18,7 +18,8 @@
 #include "Light.h"
 #include "Raycaster.h"
 #include "Sphere.h"
-
+#include "FrameBufferObject.h"
+class ScreenShader;
 /**
  * A simple scene containing entities to be rendered.
  */
@@ -29,10 +30,22 @@ private:
     static std::unordered_map<std::string, Entity*> entityTable;
     static std::unordered_map<int, Shader*> shaderTable;
     
+    static FrameBufferObject* frameBufferObject;
+    static Entity* screen;
 
-    
-    Scene() {}
-    
+    Scene() {
+    }
+
+
+    static void renderInternal() {
+        for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
+            Shader* shader = shaderTable[(*it)->getProgram()];
+            if (shader == NULL) {
+                throw std::string("shader not exists");
+            }
+            (*it)->draw(camera, shader, light0, light1);
+        }
+    }
 
 public:
     //currently only support 2 lights.
@@ -79,6 +92,10 @@ public:
         for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
             (*it)->createMesh();
         }
+
+        if (screen != NULL) {
+            screen->createMesh();
+        }
     }
     
     static bool testIntersect(Entity* entity, int x, int y, int screenWidth, int screenHeight) {
@@ -88,31 +105,46 @@ public:
         Geometry* geometry = entity->geometry;
         return Raycaster::isPicked(x, y, screenWidth, screenHeight, camera->getProjectionMatrix(), camera->getViewMatrix(), camera->getPosition(), entity->getPosition(), geometry->getDiameter() / 2.0 * entity->getScale()[0]);
     }
-    
-//    static void render(ShaderProgram* shaderProgram) {
-//        if (camera == NULL) {
-//            throw std::string("Camera NULL");
-//        }
-//        
-////        glUseProgram(shaderProgram->programId);
-//        shaderProgram->use();
-//        for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
-//            (*it)->draw(camera, shaderProgram, light0, light1);
-//        }
-//    }
+
     static void render() {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         if (camera == NULL) {
             throw std::string("Camera NULL");
         }
         
-        for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
-            Shader* shader = shaderTable[(*it)->getProgram()];
-            if (shader == NULL) {
-                throw std::string("shader not exists");
-            }
-            (*it)->draw(camera, shader, light0, light1);
-        }
+        renderInternal();
+        glutSwapBuffers();
     }
+
+
+    static void renderToTexture() {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        if (camera == NULL) {
+            throw std::string("Camera not set");
+        }
+        if (frameBufferObject == NULL) {
+            throw std::string("FrameBufferObject not set");
+        }
+
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject->getFrameBuffer());
+        glViewport(0, 0, 1024, 1024);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        renderInternal();
+    }
+    static void renderToScreen(Shader* shader, GLsizei windowWidth, GLsizei windowHeight) {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, windowWidth, windowHeight);
+        if (screen != NULL) {
+            screen->draw(Scene::camera, shader, Scene::light0, Scene::light1);
+        } else {
+            throw std::string("screen not set");
+        }
+        glutSwapBuffers();
+    }
+
+
     
     static Entity* getEntity(std::string name) {
         if (entityTable.find(name) == entityTable.end()) {
@@ -173,11 +205,28 @@ public:
             std::cerr << "program: " << programId << " already exists." << std::endl;
         }
     }
+
+    //currently only support one fbo
+    static void addFrameBufferObject(FrameBufferObject* fbo) {
+        frameBufferObject = fbo;
+    }
+    static void removeFrameBufferObject() {
+        frameBufferObject = NULL;
+    }
+
+    //set the target that the texture in FBO is rendered to, which will be rendered to the window.
+    static void setScreen(Entity* screen) {
+        Scene::screen = screen;
+    }
 };
 
 std::unordered_map<std::string, Entity*> Scene::entityTable;
 std::unordered_map<int, Shader*> Scene::shaderTable;
 std::vector<Entity*> Scene::entities;
+
+FrameBufferObject* Scene::frameBufferObject = NULL;
+Entity* Scene::screen = NULL;
+
 Camera* Scene::camera = NULL;
 
 Light* Scene::light0 = NULL;

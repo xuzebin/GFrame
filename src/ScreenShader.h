@@ -21,8 +21,11 @@ protected:
     //texture uniforms
     GLint uScreenFrameBufferLoc;
 
-    //screen resolution
+    //screen resolution for fxaa shader
     GLint uResolutionLoc;
+
+    //exposure for hdr tone shader
+    GLint uExposureLoc;
 
     void getLocations(int programId) {
         aPositionLoc = glGetAttribLocation(programId, "aPosition");
@@ -30,6 +33,7 @@ protected:
 
         uScreenFrameBufferLoc = glGetUniformLocation(programId, "uScreenFrameBuffer");
         uResolutionLoc = glGetUniformLocation(programId, "uResolution");//used for fxaa shader
+        uExposureLoc = glGetUniformLocation(programId, "uExposure");//for hdr tone shader
     }
 
 public:
@@ -50,6 +54,9 @@ public:
 
         //fxaa shader
         glUniform2f(uResolutionLoc, 1024.0f, 1024.0f);
+
+        //hdr tone shader
+        glUniform1f(uExposureLoc, 3.0);
 
         entity->geometry->draw(aPositionLoc, -1, aTexCoordLoc, -1, -1);
     }

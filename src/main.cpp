@@ -22,10 +22,11 @@
 #include "ModelShader.h"
 #include "TextureShader.h"
 #include "ScreenShader.h"
+#include "ShadowShader.h"
 #include "Screen.h"
-
-int screenWidth = 800;
-int screenHeight = 800;
+#include "FrameBufferObject.h"
+int screenWidth = 600;
+int screenHeight = 600;
 
 ColorShader* colorShader;
 ModelShader* modelShader;
@@ -37,6 +38,10 @@ ScreenShader* screenShader;
 ScreenShader* grayShader;
 ScreenShader* colorInvertShader;
 ScreenShader* fxaaShader;
+ScreenShader* hdrToneShader;
+ScreenShader* hdrFxaaShader;
+
+//ShadowShader* shadowShader;
 
 ScreenShader* currentEffectShader = NULL;//record current effect for the whole scene (post-processing)
 
@@ -47,9 +52,6 @@ std::string currentModel = "model0";
 
 Light* currentMovingLight = Scene::getLight(0);
 
-
-
-GLuint frameBuffer;
 
 Entity* screen = NULL;//for post-processing
 
@@ -79,7 +81,7 @@ private:
 public:
     void onClick(Entity* button) {
         BtnEventListener::onClick(button);
-        effectSelected = (effectSelected + 1) % 4;
+        effectSelected = (effectSelected + 1) % 6;
         switch(effectSelected) {
             case 0:
             {
@@ -103,6 +105,18 @@ public:
             {
                 screen->setProgram(fxaaShader->getProgramId());
                 currentEffectShader = fxaaShader;
+                break;
+            }
+            case 4:
+            {
+                screen->setProgram(hdrToneShader->getProgramId());
+                currentEffectShader = hdrToneShader;
+                break;
+            }
+            case 5:
+            {
+                screen->setProgram(hdrFxaaShader->getProgramId());
+                currentEffectShader = hdrFxaaShader;
                 break;
             }
             default:
@@ -262,24 +276,13 @@ public:
 };
 
 
-
 void display(void) {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//    Scene::render();//render the scene directly to scren
 
-    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-    glViewport(0, 0, 1024, 1024);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //render to texture and then to screen
+    Scene::renderToTexture();
+    Scene::renderToScreen(currentEffectShader, screenWidth, screenHeight);
 
-    Scene::render();//render the scene
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, screenWidth, screenHeight);
-
-    if (screen != NULL) {
-        screen->draw(Scene::camera, currentEffectShader, Scene::light0, Scene::light1);
-    }
-
-    glutSwapBuffers();
 }
 
 void init() {
@@ -322,6 +325,14 @@ void init() {
     fxaaShader = new ScreenShader();
     fxaaShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_fxaa.glsl");
 
+    hdrToneShader = new ScreenShader();
+    hdrToneShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_hdr_tone.glsl");
+
+    hdrFxaaShader = new ScreenShader();
+    hdrFxaaShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_hdr_fxaa.glsl");
+//    shadowShader = new ShadowShader();
+//    shadowShader->createProgram("shaders/vertex_shader_shadow.glsl", "shaders/fragment_shader_shadow.glsl");
+
     currentEffectShader = screenShader;//default effect
 
 
@@ -351,14 +362,29 @@ void init() {
     Scene::addChild(model0);
 
 
-    Model* model1 = new Model("Spiderman.obj", "model1");
-    model1->setScale(Cvec3(1.3, 1.3, 1.3));
-    model1->setPosition(Cvec3(0, -2.3, -7));
-    model1->setRotation(Quat::makeYRotation(20));
-    model1->setVisible(false);
-    model1->setProgram(reflectShader->getProgramId());
-    Scene::addChild(model1);
-    
+//    Model* model2 = new Model("Monk_Giveaway_Fixed.obj", "model0");
+//    model2->setScale(Cvec3(0.5, 0.5, 0.5));
+//    model2->setPosition(Cvec3(2, -6, -8));
+//    model2->setRotation(Quat::makeYRotation(-20));
+//    model2->material->setColor(0.0, 0.8, 0.8);
+//    model2->setProgram(refractShader->getProgramId());
+//    Scene::addChild(model2);
+//
+//    Model* model1 = new Model("Spiderman.obj", "model1");
+//    model1->setScale(Cvec3(1.8, 1.8, 1.8));
+//    model1->setPosition(Cvec3(-2, -6, -8));
+//    model1->setRotation(Quat::makeYRotation(20));
+//    model1->setProgram(refractShader->getProgramId());
+//    Scene::addChild(model1);
+
+//    Model* model1 = new Model("Spiderman.obj", "model1");
+//    model1->setScale(Cvec3(1.3, 1.3, 1.3));
+//    model1->setPosition(Cvec3(0, -2.3, -7));
+//    model1->setRotation(Quat::makeYRotation(20));
+//    model1->setVisible(false);
+//    model1->setProgram(reflectShader->getProgramId());
+//    Scene::addChild(model1);
+
     
     /************ model swtich button ************/
     Geometry* buttonG = new Sphere(2, 40, 40);
@@ -399,17 +425,19 @@ void init() {
         btn->setProgram(colorShader->getProgramId());
         Scene::addChild(btn);
     }
-    
-    /************* ground ***************/
+
+//    ************ ground **************
 //    Material* gm = new Material("rock.jpg");
 //    Entity* ground = new Entity(new Plane(8), gm);
 //    ground->setPosition(Cvec3(0, -4, -13));
 //    ground->setProgram(textureShader->getProgramId());
 //    Scene::addChild(ground);
-    
-    
+//
+
     Cubemap cubemap;
-    cubemap.loadTextures("cubemap/posx.jpg", "cubemap/negx.jpg", "cubemap/posy.jpg", "cubemap/negy.jpg", "cubemap/posz.jpg", "cubemap/negz.jpg");
+//    cubemap.loadTextures("cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg");
+    cubemap.loadTextures("cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG");
+//    cubemap.loadTextures("cubemap/posx.jpg", "cubemap/negx.jpg", "cubemap/posy.jpg", "cubemap/negy.jpg", "cubemap/posz.jpg", "cubemap/negz.jpg");
     Material* cubemapM = new Material();
     cubemapM->setCubemap(cubemap.getTexture());
     Cube* sb = new Cube(100);
@@ -417,52 +445,101 @@ void init() {
     skybox->setProgram(cubemapShader->getProgramId());
     Scene::addChild(skybox);
 
-    
-    /*************** offscreen rendering ***************/
-    
-    //1. generate and bind a frame buffer
-    glGenFramebuffers(1, &frameBuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-    //2. create an empty texture to render to
-    GLuint frameBufferTexture;
-    glGenTextures(1, &frameBufferTexture);
-    glBindTexture(GL_TEXTURE_2D, frameBufferTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1024, 1024, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    //3. bind the texture to the FBO as a color attachment
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, frameBufferTexture, 0);
-    
-    //4. create a depth buffer texture
-    GLuint depthBufferTexture;
-    glGenTextures(1, &depthBufferTexture);
-    glBindTexture(GL_TEXTURE_2D, depthBufferTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    //bind the depth buffer texture to the FBO as a depth buffer attachment
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 1024, 1024);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthBufferTexture, 0);
-    //5. unbind the created frame buffer
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    
-    
+
+
+    FrameBufferObject* fbo = new FrameBufferObject(1024, 1024, true);
+    Scene::addFrameBufferObject(fbo);
+
     Screen* plane = new Screen();
     Material* planeM = new Material();
-    planeM->setDiffuseTextureId(frameBufferTexture);
+    planeM->setDiffuseTextureId(fbo->getFrameBufferTexture());
     screen = new Entity(plane, planeM);
     screen->setProgram(screenShader->getProgramId());
-//    screen->setPosition(Cvec3(0, 0, -18));
+    Scene::setScreen(screen);
+//    screen->setPosition(Cvec3(0, 0, -10));
 //    screen->setRotation(Quat::makeXRotation(90) * Quat::makeYRotation(180) * Quat::makeZRotation(30));
 //    screen->rejectAllLights();
 
 
-    screen->createMesh();
+
+
 
     Scene::createMeshes();//this call genereate vbo/ibo for the geometry of each Entity.
 }
+bool stereo = false;
+int screenshot(void)
+{
 
+    int width = screenWidth;
+    int height = screenHeight;
+    
+    int i,j;
+    FILE *fptr;
+    static int counter = 0; /* This supports animation sequences */
+    char fname[32];
+    unsigned char *image = (unsigned char*) malloc(3 * width * height * sizeof(unsigned char));
+    /* Allocate our buffer for the image */
+    if (image == NULL) {
+        fprintf(stderr,"Failed to allocate memory for image\n");
+        return 0;
+    }
 
+    glPixelStorei(GL_PACK_ALIGNMENT,1);
+
+    /* Open the file */
+    if (stereo)
+        sprintf(fname,"L_%04d.jpg",counter);
+    else
+        sprintf(fname,"C_%04d.jpg",counter);
+    if ((fptr = fopen(fname,"w")) == NULL) {
+        fprintf(stderr,"Failed to open file for window dump\n");
+        return 0;
+    }
+
+    /* Copy the image into our buffer */
+    glReadBuffer(GL_BACK_LEFT);
+    glReadPixels(0,0,width,height,GL_RGB,GL_UNSIGNED_BYTE,image);
+
+    /* Write the raw file */
+    /* fprintf(fptr,"P6\n%d %d\n255\n",width,height); for ppm */
+    for (j=height-1;j>=0;j--) {
+        for (i=0;i<width;i++) {
+            fputc(image[3*j*width+3*i+0],fptr);
+            fputc(image[3*j*width+3*i+1],fptr);
+            fputc(image[3*j*width+3*i+2],fptr);
+        }
+    }
+    fclose(fptr);
+
+    if (stereo) {
+        /* Open the file */
+        sprintf(fname,"R_%04d.jpg",counter);
+        if ((fptr = fopen(fname,"w")) == NULL) {
+            fprintf(stderr,"Failed to open file for window dump\n");
+            return 0;
+        }
+
+        /* Copy the image into our buffer */
+        glReadBuffer(GL_BACK_RIGHT);
+        glReadPixels(0,0,width,height,GL_RGB,GL_UNSIGNED_BYTE,image);
+
+        /* Write the raw file */
+        /* fprintf(fptr,"P6\n%d %d\n255\n",width,height); for ppm */
+        for (j=height-1;j>=0;j--) {
+            for (i=0;i<width;i++) {
+                fputc(image[3*j*width+3*i+0],fptr);
+                fputc(image[3*j*width+3*i+1],fptr);
+                fputc(image[3*j*width+3*i+2],fptr);
+            }
+        }
+        fclose(fptr);
+    }
+    
+    /* Clean up */
+    counter++;
+    free(image);
+    return 1;
+}
 
 //control light position in x and z coordinates
 void specialInput(int key, int x, int y) {
@@ -538,6 +615,10 @@ void keyboard(unsigned char key, int x, int y) {
             }
             break;
         }
+        case 'p':
+        case'P':
+            screenshot();
+            break;
         default:
             break;
     }

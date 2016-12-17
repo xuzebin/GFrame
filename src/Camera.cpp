@@ -23,6 +23,27 @@ void Camera::updateViewMatrix() {
 
 void Camera::setProjectionMatrix(const double fov, const double aspectRatio, const double zNear, const double zFar) {
     projectionMatrix = Matrix4::makeProjection(fov, aspectRatio, zNear, zFar);
+    //shifiting the film plane
+//    projectionMatrix(0, 2) = 0.5;
+//    projectionMatrix(1, 1) = 0.7;
+//    projectionMatrix(0, 0) = 1.446;
+//    projectionMatrix(0, 0) = 4.8;
+//    projectionMatrix(1, 1) = 4.8;
+//    projectionMatrix(0, 2) = 0.1;
+//    projectionMatrix(1, 2) = 0.1;
+
+//    Matrix4 q;
+//    for (int i = 0; i < 3; i++) {
+//        q(i, i) = 3;
+//    }
+//    projectionMatrix = q * projectionMatrix;
+
+    for (int i = 0; i < 16; i++) {
+        if (i % 4 == 0 && i != 0) {
+            std::cout << std::endl;
+        }
+        std::cout << projectionMatrix[i] << " ";
+    }
 }
 
 Matrix4 Camera::getViewMatrix() const {
