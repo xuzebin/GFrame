@@ -41,6 +41,9 @@ ScreenShader* fxaaShader;
 ScreenShader* hdrToneShader;
 ScreenShader* hdrFxaaShader;
 
+ScreenShader* horizontalBlurShader;
+ScreenShader* verticalBlurShader;
+
 //ShadowShader* shadowShader;
 
 ScreenShader* currentEffectShader = NULL;//record current effect for the whole scene (post-processing)
@@ -54,6 +57,9 @@ Light* currentMovingLight = Scene::getLight(0);
 
 
 Entity* screen = NULL;//for post-processing
+
+FrameBufferObject* firstFBO;
+FrameBufferObject* secondFBO;
 
 
 class BtnEventListener : public ClickEventListener {
@@ -276,12 +282,53 @@ public:
 };
 
 
+
 void display(void) {
 //    Scene::render();//render the scene directly to scren
+    //render to texture and then to screen using one fbo
 
-    //render to texture and then to screen
-    Scene::renderToTexture();
-    Scene::renderToScreen(currentEffectShader, screenWidth, screenHeight);
+
+    //blur effect rendering using 2 fbos
+    float time = (float) glutGet(GLUT_ELAPSED_TIME) / 1000.0f;//second passed
+    float blurSize = 0.01f - 0.001f * time;
+    std::cout << blurSize << std::endl;
+    if (blurSize < -1e-8) {
+        screen->material->setDiffuseTextureId(firstFBO->getFrameBufferTexture());
+        screen->setProgram(screenShader->getProgramId());
+        Scene::renderToTexture();
+        Scene::renderToScreen(currentEffectShader, screenWidth, screenHeight);
+    } else {
+        horizontalBlurShader->setBlurSize(blurSize);
+        verticalBlurShader->setBlurSize(blurSize);
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, firstFBO->getFrameBuffer());
+        glViewport(0, 0, 1024, 1024);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        Scene::renderLoop();//render the scene to the firstFBO
+
+        glBindFramebuffer(GL_FRAMEBUFFER, secondFBO->getFrameBuffer());
+        glViewport(0, 0, 1024, 1024);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        if (screen != NULL) {
+            screen->material->setDiffuseTextureId(firstFBO->getFrameBufferTexture());
+            screen->setProgram(horizontalBlurShader->getProgramId());
+            screen->draw(Scene::camera, horizontalBlurShader, Scene::light0, Scene::light1);
+        }
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, screenWidth, screenHeight);
+        if (screen != NULL) {
+            screen->material->setDiffuseTextureId(secondFBO->getFrameBufferTexture());
+            screen->setProgram(verticalBlurShader->getProgramId());
+            screen->draw(Scene::camera, verticalBlurShader, Scene::light0, Scene::light1);
+        }
+        
+        glutSwapBuffers();
+    }
 
 }
 
@@ -330,6 +377,13 @@ void init() {
 
     hdrFxaaShader = new ScreenShader();
     hdrFxaaShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_hdr_fxaa.glsl");
+
+    horizontalBlurShader = new ScreenShader();
+    horizontalBlurShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_horizontal_blur.glsl");
+
+    verticalBlurShader = new ScreenShader();
+    verticalBlurShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_vertical_blur.glsl");
+
 //    shadowShader = new ShadowShader();
 //    shadowShader->createProgram("shaders/vertex_shader_shadow.glsl", "shaders/fragment_shader_shadow.glsl");
 
@@ -447,20 +501,22 @@ void init() {
 
 
 
-    FrameBufferObject* fbo = new FrameBufferObject(1024, 1024, true);
-    Scene::addFrameBufferObject(fbo);
+    firstFBO = new FrameBufferObject(1024, 1024, true);
+    Scene::setFrameBufferObject(firstFBO);
+
+
+    secondFBO = new FrameBufferObject();
+
 
     Screen* plane = new Screen();
     Material* planeM = new Material();
-    planeM->setDiffuseTextureId(fbo->getFrameBufferTexture());
+    planeM->setDiffuseTextureId(firstFBO->getFrameBufferTexture());
     screen = new Entity(plane, planeM);
     screen->setProgram(screenShader->getProgramId());
     Scene::setScreen(screen);
 //    screen->setPosition(Cvec3(0, 0, -10));
 //    screen->setRotation(Quat::makeXRotation(90) * Quat::makeYRotation(180) * Quat::makeZRotation(30));
 //    screen->rejectAllLights();
-
-
 
 
 

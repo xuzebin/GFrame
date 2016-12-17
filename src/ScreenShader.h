@@ -27,6 +27,9 @@ protected:
     //exposure for hdr tone shader
     GLint uExposureLoc;
 
+    //blur size for blurring shader
+    GLint uBlurSizeLoc;
+
     void getLocations(int programId) {
         aPositionLoc = glGetAttribLocation(programId, "aPosition");
         aTexCoordLoc = glGetAttribLocation(programId, "aTexCoord");
@@ -34,7 +37,10 @@ protected:
         uScreenFrameBufferLoc = glGetUniformLocation(programId, "uScreenFrameBuffer");
         uResolutionLoc = glGetUniformLocation(programId, "uResolution");//used for fxaa shader
         uExposureLoc = glGetUniformLocation(programId, "uExposure");//for hdr tone shader
+        uBlurSizeLoc = glGetUniformLocation(programId, "uBlurSize");//for blur shaders
     }
+
+    float blurSize = 0.01;//size of kernal for gaussian filter shader
 
 public:
 
@@ -58,7 +64,17 @@ public:
         //hdr tone shader
         glUniform1f(uExposureLoc, 3.0);
 
+        glUniform1f(uBlurSizeLoc, blurSize);
+
         entity->geometry->draw(aPositionLoc, -1, aTexCoordLoc, -1, -1);
+    }
+
+    void setBlurSize(float blurSize) {
+        this->blurSize = blurSize;
+    }
+
+    float getBlurSize() {
+        return blurSize;
     }
 
 };

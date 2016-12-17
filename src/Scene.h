@@ -37,15 +37,7 @@ private:
     }
 
 
-    static void renderInternal() {
-        for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
-            Shader* shader = shaderTable[(*it)->getProgram()];
-            if (shader == NULL) {
-                throw std::string("shader not exists");
-            }
-            (*it)->draw(camera, shader, light0, light1);
-        }
-    }
+
 
 public:
     //currently only support 2 lights.
@@ -106,6 +98,16 @@ public:
         return Raycaster::isPicked(x, y, screenWidth, screenHeight, camera->getProjectionMatrix(), camera->getViewMatrix(), camera->getPosition(), entity->getPosition(), geometry->getDiameter() / 2.0 * entity->getScale()[0]);
     }
 
+    static void renderLoop() {
+        for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
+            Shader* shader = shaderTable[(*it)->getProgram()];
+            if (shader == NULL) {
+                throw std::string("shader not exists");
+            }
+            (*it)->draw(camera, shader, light0, light1);
+        }
+    }
+
     static void render() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -113,7 +115,7 @@ public:
             throw std::string("Camera NULL");
         }
         
-        renderInternal();
+        renderLoop();
         glutSwapBuffers();
     }
 
@@ -131,7 +133,7 @@ public:
         glViewport(0, 0, 1024, 1024);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        renderInternal();
+        renderLoop();
     }
     static void renderToScreen(Shader* shader, GLsizei windowWidth, GLsizei windowHeight) {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -207,7 +209,7 @@ public:
     }
 
     //currently only support one fbo
-    static void addFrameBufferObject(FrameBufferObject* fbo) {
+    static void setFrameBufferObject(FrameBufferObject* fbo) {
         frameBufferObject = fbo;
     }
     static void removeFrameBufferObject() {
