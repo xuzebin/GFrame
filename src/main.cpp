@@ -38,7 +38,7 @@ ScreenShader* screenShader;
 ScreenShader* grayShader;
 ScreenShader* colorInvertShader;
 ScreenShader* fxaaShader;
-ScreenShader* hdrToneShader;
+ScreenShader* toneMappingShader;
 ScreenShader* hdrFxaaShader;
 
 ScreenShader* horizontalBlurShader;
@@ -53,8 +53,7 @@ Camera camera(Cvec3(0, 0, 0), Quat::makeXRotation(0));
 
 std::string currentModel = "model0";
 
-Light* currentMovingLight = Scene::getLight(0);
-
+Light* currentMovingLight;
 
 Entity* screen = NULL;//for post-processing
 
@@ -115,8 +114,8 @@ public:
             }
             case 4:
             {
-                screen->setProgram(hdrToneShader->getProgramId());
-                currentEffectShader = hdrToneShader;
+                screen->setProgram(toneMappingShader->getProgramId());
+                currentEffectShader = toneMappingShader;
                 break;
             }
             case 5:
@@ -291,7 +290,7 @@ void display(void) {
     //blur effect rendering using 2 fbos
     float time = (float) glutGet(GLUT_ELAPSED_TIME) / 1000.0f;//second passed
     float blurSize = 0.01f - 0.001f * time;
-    std::cout << blurSize << std::endl;
+//    std::cout << blurSize << std::endl;
     if (blurSize < -1e-8) {
         screen->material->setDiffuseTextureId(firstFBO->getFrameBufferTexture());
         screen->setProgram(screenShader->getProgramId());
@@ -372,11 +371,11 @@ void init() {
     fxaaShader = new ScreenShader();
     fxaaShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_fxaa.glsl");
 
-    hdrToneShader = new ScreenShader();
-    hdrToneShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_hdr_tone.glsl");
+    toneMappingShader = new ScreenShader();
+    toneMappingShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_tone_mapping.glsl");
 
     hdrFxaaShader = new ScreenShader();
-    hdrFxaaShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_hdr_fxaa.glsl");
+    hdrFxaaShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_tonemapping_fxaa.glsl");
 
     horizontalBlurShader = new ScreenShader();
     horizontalBlurShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_horizontal_blur.glsl");
@@ -397,7 +396,6 @@ void init() {
     Scene::addShader(reflectShader);
     Scene::addShader(refractShader);
 
-
     Scene::setCamera(&camera);
     Light* light0 = new Light();
     light0->setPosition(1, 5, -5);//1,5,-5
@@ -406,10 +404,12 @@ void init() {
     Scene::setLight0(light0);
     Scene::setLight1(light1);
 
+    currentMovingLight = Scene::getLight(0);
+
     
     Model* model0 = new Model("Monk_Giveaway_Fixed.obj", "model0");
     model0->setScale(Cvec3(0.5, 0.5, 0.5));
-    model0->setPosition(Cvec3(0, -3.4, -10));
+    model0->setPosition(Cvec3(0, -3.4, -9));
     model0->setRotation(Quat::makeYRotation(20));
     model0->material->setColor(0.0, 0.8, 0.8);
     model0->setProgram(refractShader->getProgramId());
@@ -480,17 +480,12 @@ void init() {
         Scene::addChild(btn);
     }
 
-//    ************ ground **************
-//    Material* gm = new Material("rock.jpg");
-//    Entity* ground = new Entity(new Plane(8), gm);
-//    ground->setPosition(Cvec3(0, -4, -13));
-//    ground->setProgram(textureShader->getProgramId());
-//    Scene::addChild(ground);
-//
+
 
     Cubemap cubemap;
 //    cubemap.loadTextures("cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg");
     cubemap.loadTextures("cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG");
+//        cubemap.loadTextures("cubemap/building.png", "cubemap/building.png", "cubemap/building.png", "cubemap/building.png", "cubemap/building.png", "cubemap/building.png");
 //    cubemap.loadTextures("cubemap/posx.jpg", "cubemap/negx.jpg", "cubemap/posy.jpg", "cubemap/negy.jpg", "cubemap/posz.jpg", "cubemap/negz.jpg");
     Material* cubemapM = new Material();
     cubemapM->setCubemap(cubemap.getTexture());
@@ -517,6 +512,8 @@ void init() {
 //    screen->setPosition(Cvec3(0, 0, -10));
 //    screen->setRotation(Quat::makeXRotation(90) * Quat::makeYRotation(180) * Quat::makeZRotation(30));
 //    screen->rejectAllLights();
+
+
 
 
 
