@@ -30,6 +30,11 @@ protected:
     //blur size for blurring shader
     GLint uBlurSizeLoc;
 
+    //pass mouse offset in toonify filtering shader
+    GLint uMouseXOffsetLoc;
+
+    float mouseX = 0.5f;
+
     void getLocations(int programId) {
         aPositionLoc = glGetAttribLocation(programId, "aPosition");
         aTexCoordLoc = glGetAttribLocation(programId, "aTexCoord");
@@ -38,11 +43,15 @@ protected:
         uResolutionLoc = glGetUniformLocation(programId, "uResolution");//used for fxaa shader
         uExposureLoc = glGetUniformLocation(programId, "uExposure");//for hdr tone shader
         uBlurSizeLoc = glGetUniformLocation(programId, "uBlurSize");//for blur shaders
+        uMouseXOffsetLoc = glGetUniformLocation(programId, "uMouseXOffset");
     }
 
     float blurSize = 0.01;//size of kernal for gaussian filter shader
 
 public:
+    ~ScreenShader() {
+        glDeleteProgram(programId);
+    }
 
     void createProgram(const char* vertexShaderFileName, const char* fragmentShaderFileName) {
         Shader::createProgram(vertexShaderFileName, fragmentShaderFileName);
@@ -64,7 +73,11 @@ public:
         //hdr tone shader
         glUniform1f(uExposureLoc, 3.0);
 
+        //gaussian blur shader
         glUniform1f(uBlurSizeLoc, blurSize);
+
+        //toonify filtering shader
+        glUniform1f(uMouseXOffsetLoc, mouseX);
 
         entity->geometry->draw(aPositionLoc, -1, aTexCoordLoc, -1, -1);
     }
@@ -76,6 +89,12 @@ public:
     float getBlurSize() {
         return blurSize;
     }
+
+    void updateMouseX(float mouseX) {
+        this->mouseX = mouseX;
+    }
+
+
 
 };
 

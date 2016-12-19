@@ -61,9 +61,9 @@ public:
     FrameBufferObject(GLsizei width, GLsizei height) : FrameBufferObject(width, height, false) {
     }
 
-    FrameBufferObject(GLsizei width, GLsizei height, bool isHighPrecision) {
+    FrameBufferObject(GLsizei width, GLsizei height, bool isHighPrecision)
+                : highPrecision(isHighPrecision) {
         init(width, height);
-        highPrecision = isHighPrecision;
     }
 
     ~FrameBufferObject() {

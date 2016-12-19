@@ -40,11 +40,10 @@ ScreenShader* colorInvertShader;
 ScreenShader* fxaaShader;
 ScreenShader* toneMappingShader;
 ScreenShader* hdrFxaaShader;
-
 ScreenShader* horizontalBlurShader;
 ScreenShader* verticalBlurShader;
+ScreenShader* toonifyFilterShader;
 
-//ShadowShader* shadowShader;
 
 ScreenShader* currentEffectShader = NULL;//record current effect for the whole scene (post-processing)
 
@@ -59,6 +58,8 @@ Entity* screen = NULL;//for post-processing
 
 FrameBufferObject* firstFBO;
 FrameBufferObject* secondFBO;
+
+
 
 
 class BtnEventListener : public ClickEventListener {
@@ -86,7 +87,7 @@ private:
 public:
     void onClick(Entity* button) {
         BtnEventListener::onClick(button);
-        effectSelected = (effectSelected + 1) % 6;
+        effectSelected = (effectSelected + 1) % 7;
         switch(effectSelected) {
             case 0:
             {
@@ -124,6 +125,12 @@ public:
                 currentEffectShader = hdrFxaaShader;
                 break;
             }
+            case 6:
+            {
+                screen->setProgram(toonifyFilterShader->getProgramId());
+                currentEffectShader = toonifyFilterShader;
+                break;
+            }
             default:
                 throw std::string("no matched model selected");
         }
@@ -136,59 +143,37 @@ public:
     }
 };
 
-class ModelSwitchBtnEventListener : public BtnEventListener {
+class ProgramSwitchBtnEventListener : public BtnEventListener {
 private:
-    int modelSelected = 0;
+    int programSelected = 0;
 public:
     void onClick(Entity* button) {
         BtnEventListener::onClick(button);
-        modelSelected = (modelSelected + 1) % 4;
-        switch(modelSelected) {
+        programSelected = (programSelected + 1) % 4;
+        Entity* monk = Scene::getEntity("model0");
+        switch(programSelected) {
             case 0:
             {
-                Entity* monk = Scene::getEntity("model0");
                 monk->setProgram(refractShader->getProgramId());
                 break;
             }
             case 1:
             {
-                Entity* monk = Scene::getEntity("model0");
                 monk->setProgram(reflectShader->getProgramId());
                 break;
             }
             case 2:
             {
-                Entity* monk = Scene::getEntity("model0");
                 monk->setProgram(modelShader->getProgramId());
                 break;
             }
             case 3:
             {
-                Entity* monk = Scene::getEntity("model0");
                 monk->setProgram(colorShader->getProgramId());
                 break;
             }
-
-//            case 0:
-//            {
-//                Entity* monk = Scene::getEntity("model0");
-//                Entity* spiderman = Scene::getEntity("model1");
-//                monk->setVisible(true);
-//                spiderman->setVisible(false);
-//                currentModel = "model0";
-//                break;
-//            }
-//            case 1:
-//            {
-//                Entity* monk = Scene::getEntity("model0");
-//                Entity* spiderman = Scene::getEntity("model1");
-//                monk->setVisible(false);
-//                spiderman->setVisible(true);
-//                currentModel = "model1";
-//                break;
-//            }
             default:
-                throw std::string("no matched model selected");
+                throw std::string("no matched program selected");
         }
     }
     void onHover(Entity* button) {
@@ -289,8 +274,8 @@ void display(void) {
 
     //blur effect rendering using 2 fbos
     float time = (float) glutGet(GLUT_ELAPSED_TIME) / 1000.0f;//second passed
-    float blurSize = 0.01f - 0.001f * time;
-//    std::cout << blurSize << std::endl;
+    float blurSize = 0.01f - 0.001f * time * 1.5f;
+
     if (blurSize < -1e-8) {
         screen->material->setDiffuseTextureId(firstFBO->getFrameBufferTexture());
         screen->setProgram(screenShader->getProgramId());
@@ -383,8 +368,9 @@ void init() {
     verticalBlurShader = new ScreenShader();
     verticalBlurShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_vertical_blur.glsl");
 
-//    shadowShader = new ShadowShader();
-//    shadowShader->createProgram("shaders/vertex_shader_shadow.glsl", "shaders/fragment_shader_shadow.glsl");
+    toonifyFilterShader = new ScreenShader();
+    toonifyFilterShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_toonify_filter.glsl");
+
 
     currentEffectShader = screenShader;//default effect
 
@@ -415,30 +401,6 @@ void init() {
     model0->setProgram(refractShader->getProgramId());
     Scene::addChild(model0);
 
-
-//    Model* model2 = new Model("Monk_Giveaway_Fixed.obj", "model0");
-//    model2->setScale(Cvec3(0.5, 0.5, 0.5));
-//    model2->setPosition(Cvec3(2, -6, -8));
-//    model2->setRotation(Quat::makeYRotation(-20));
-//    model2->material->setColor(0.0, 0.8, 0.8);
-//    model2->setProgram(refractShader->getProgramId());
-//    Scene::addChild(model2);
-//
-//    Model* model1 = new Model("Spiderman.obj", "model1");
-//    model1->setScale(Cvec3(1.8, 1.8, 1.8));
-//    model1->setPosition(Cvec3(-2, -6, -8));
-//    model1->setRotation(Quat::makeYRotation(20));
-//    model1->setProgram(refractShader->getProgramId());
-//    Scene::addChild(model1);
-
-//    Model* model1 = new Model("Spiderman.obj", "model1");
-//    model1->setScale(Cvec3(1.3, 1.3, 1.3));
-//    model1->setPosition(Cvec3(0, -2.3, -7));
-//    model1->setRotation(Quat::makeYRotation(20));
-//    model1->setVisible(false);
-//    model1->setProgram(reflectShader->getProgramId());
-//    Scene::addChild(model1);
-
     
     /************ model swtich button ************/
     Geometry* buttonG = new Sphere(2, 40, 40);
@@ -446,7 +408,7 @@ void init() {
     Entity* btn0 = new Entity("button0", buttonG, buttonM);
     btn0->setPosition(Cvec3(-1.8, 1.9, -5));
     btn0->setScale(Cvec3(0.05, 0.05, 0.05));
-    btn0->registerClickEventListener(new ModelSwitchBtnEventListener());
+    btn0->registerClickEventListener(new ProgramSwitchBtnEventListener());
     btn0->setProgram(colorShader->getProgramId());
     Scene::addChild(btn0);
 
@@ -485,8 +447,7 @@ void init() {
     Cubemap cubemap;
 //    cubemap.loadTextures("cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg");
     cubemap.loadTextures("cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG");
-//        cubemap.loadTextures("cubemap/building.png", "cubemap/building.png", "cubemap/building.png", "cubemap/building.png", "cubemap/building.png", "cubemap/building.png");
-//    cubemap.loadTextures("cubemap/posx.jpg", "cubemap/negx.jpg", "cubemap/posy.jpg", "cubemap/negy.jpg", "cubemap/posz.jpg", "cubemap/negz.jpg");
+
     Material* cubemapM = new Material();
     cubemapM->setCubemap(cubemap.getTexture());
     Cube* sb = new Cube(100);
@@ -509,90 +470,11 @@ void init() {
     screen = new Entity(plane, planeM);
     screen->setProgram(screenShader->getProgramId());
     Scene::setScreen(screen);
-//    screen->setPosition(Cvec3(0, 0, -10));
-//    screen->setRotation(Quat::makeXRotation(90) * Quat::makeYRotation(180) * Quat::makeZRotation(30));
-//    screen->rejectAllLights();
 
-
-
-
-
-    Scene::createMeshes();//this call genereate vbo/ibo for the geometry of each Entity.
+    //this call genereate vbo/ibo for the geometry of each Entity.
+    Scene::createMeshes();
 }
-bool stereo = false;
-int screenshot(void)
-{
 
-    int width = screenWidth;
-    int height = screenHeight;
-    
-    int i,j;
-    FILE *fptr;
-    static int counter = 0; /* This supports animation sequences */
-    char fname[32];
-    unsigned char *image = (unsigned char*) malloc(3 * width * height * sizeof(unsigned char));
-    /* Allocate our buffer for the image */
-    if (image == NULL) {
-        fprintf(stderr,"Failed to allocate memory for image\n");
-        return 0;
-    }
-
-    glPixelStorei(GL_PACK_ALIGNMENT,1);
-
-    /* Open the file */
-    if (stereo)
-        sprintf(fname,"L_%04d.jpg",counter);
-    else
-        sprintf(fname,"C_%04d.jpg",counter);
-    if ((fptr = fopen(fname,"w")) == NULL) {
-        fprintf(stderr,"Failed to open file for window dump\n");
-        return 0;
-    }
-
-    /* Copy the image into our buffer */
-    glReadBuffer(GL_BACK_LEFT);
-    glReadPixels(0,0,width,height,GL_RGB,GL_UNSIGNED_BYTE,image);
-
-    /* Write the raw file */
-    /* fprintf(fptr,"P6\n%d %d\n255\n",width,height); for ppm */
-    for (j=height-1;j>=0;j--) {
-        for (i=0;i<width;i++) {
-            fputc(image[3*j*width+3*i+0],fptr);
-            fputc(image[3*j*width+3*i+1],fptr);
-            fputc(image[3*j*width+3*i+2],fptr);
-        }
-    }
-    fclose(fptr);
-
-    if (stereo) {
-        /* Open the file */
-        sprintf(fname,"R_%04d.jpg",counter);
-        if ((fptr = fopen(fname,"w")) == NULL) {
-            fprintf(stderr,"Failed to open file for window dump\n");
-            return 0;
-        }
-
-        /* Copy the image into our buffer */
-        glReadBuffer(GL_BACK_RIGHT);
-        glReadPixels(0,0,width,height,GL_RGB,GL_UNSIGNED_BYTE,image);
-
-        /* Write the raw file */
-        /* fprintf(fptr,"P6\n%d %d\n255\n",width,height); for ppm */
-        for (j=height-1;j>=0;j--) {
-            for (i=0;i<width;i++) {
-                fputc(image[3*j*width+3*i+0],fptr);
-                fputc(image[3*j*width+3*i+1],fptr);
-                fputc(image[3*j*width+3*i+2],fptr);
-            }
-        }
-        fclose(fptr);
-    }
-    
-    /* Clean up */
-    counter++;
-    free(image);
-    return 1;
-}
 
 //control light position in x and z coordinates
 void specialInput(int key, int x, int y) {
@@ -670,7 +552,6 @@ void keyboard(unsigned char key, int x, int y) {
         }
         case 'p':
         case'P':
-            screenshot();
             break;
         default:
             break;
@@ -760,7 +641,6 @@ void motion(int x, int y) {
     Quat q2(0, -v1);
     
     Quat q = q1 * q2;
-//    Quat q(dot(v1, v2), cross(v1, v2));
     model->rotate(q);
 }
 
@@ -769,6 +649,9 @@ bool insideWindow(int x, int y) {
 }
 void passiveMotion(int x, int y) {
     if (insideWindow(x, y)) {
+        if (toonifyFilterShader != NULL) {
+            toonifyFilterShader->updateMouseX((float)x / screenWidth);
+        }
         Scene::updateMousePassiveMotion(x, y, screenWidth, screenHeight);
     }
 }
