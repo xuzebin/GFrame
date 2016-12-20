@@ -25,6 +25,7 @@
 #include "ShadowShader.h"
 #include "Screen.h"
 #include "FrameBufferObject.h"
+#include "Color.h"
 int screenWidth = 600;
 int screenHeight = 600;
 
@@ -42,7 +43,7 @@ ScreenShader* toneMappingShader;
 ScreenShader* hdrFxaaShader;
 ScreenShader* horizontalBlurShader;
 ScreenShader* verticalBlurShader;
-ScreenShader* toonifyFilterShader;
+ScreenShader* cartoonifyShader;
 
 
 ScreenShader* currentEffectShader = NULL;//record current effect for the whole scene (post-processing)
@@ -72,7 +73,7 @@ public:
     void onHover(Entity* button) {
         button->setPosition(button->initState.transform.getPosition());
         button->setScale(button->initState.transform.getScale() * 1.1);
-        button->material->setColor(button->initState.color + Cvec3f(0.2, 0, 0));
+        button->material->setColor(button->initState.color + Cvec3f(0.1, 0.1, 0.1));
     }
     void onIdle(Entity* button) {
         button->setPosition(button->initState.transform.getPosition());
@@ -127,8 +128,8 @@ public:
             }
             case 6:
             {
-                screen->setProgram(toonifyFilterShader->getProgramId());
-                currentEffectShader = toonifyFilterShader;
+                screen->setProgram(cartoonifyShader->getProgramId());
+                currentEffectShader = cartoonifyShader;
                 break;
             }
             default:
@@ -196,23 +197,23 @@ public:
             lightColor0 = (lightColor0 + 1) % 2;
             if (lightColor0 == 0) {
                 currentMovingLight = Scene::getLight(0);
-                Scene::light0->lightColor = Cvec3f(1, 1, 1);
-                button->initState.color = Cvec3f(0.8, 0, 0);
+                Scene::light0->lightColor = Color::WHITE;
+                button->initState.color = Color::YELLOW;
             } else {
                 currentMovingLight = NULL;
-                Scene::light0->lightColor = Cvec3f(0, 0, 0);
-                button->initState.color = Cvec3f(0.1, 0, 0);
+                Scene::light0->lightColor = Color::BLACK;
+                button->initState.color = Color::BLACK;
             }
         } else {
             lightColor1 = (lightColor1 + 1) % 2;
             if (lightColor1 == 0) {
                 currentMovingLight = Scene::getLight(1);
-                Scene::light1->lightColor = Cvec3f(1, 1, 1);
-                button->initState.color = Cvec3f(0.8, 0, 0);
+                Scene::light1->lightColor = Color::WHITE;
+                button->initState.color = Color::YELLOW;
             } else {
                 currentMovingLight = NULL;
-                Scene::light1->lightColor = Cvec3f(0, 0, 0);
-                button->initState.color = Cvec3f(0.1, 0, 0);
+                Scene::light1->lightColor = Color::BLACK;
+                button->initState.color = Color::BLACK;
             }
         }
         
@@ -227,8 +228,8 @@ public:
 
 class SpecularLightColorBtnEventListener : public BtnEventListener {
 private:
-    bool spcularLightColorOn0 = false;
-    bool spcularLightColorOn1 = false;
+    bool spcularLightColorOn0 = true;
+    bool spcularLightColorOn1 = true;
 public:
     void onClick(Entity* button) {
         BtnEventListener::onClick(button);
@@ -236,24 +237,24 @@ public:
         if (button->getName() == "button3") {
             spcularLightColorOn0 = !spcularLightColorOn0;
             if(spcularLightColorOn0) {
-                Scene::light0->specularLightColor = Cvec3f(0, 0, 0);
-                button->material->setColor(0.1, 0, 0);
-                button->initState.color = Cvec3f(0.1, 0, 0);
+                Scene::light0->specularLightColor = Color::WHITE;
+                button->material->setColor(Color::WHITE);
+                button->initState.color = Cvec3f(Color::WHITE);
             } else {
-                Scene::light0->specularLightColor = Cvec3f(1, 1, 1);
-                button->material->setColor(0.6, 0, 0);
-                button->initState.color = Cvec3f(0.6, 0, 0);
+                Scene::light0->specularLightColor = Color::BLACK;
+                button->material->setColor(Color::BLACK);
+                button->initState.color = Cvec3f(Color::BLACK);
             }
         } else {
             spcularLightColorOn1 = !spcularLightColorOn1;
             if(spcularLightColorOn1) {
-                Scene::light1->specularLightColor = Cvec3f(0, 0, 0);
-                button->material->setColor(0.1, 0, 0);
-                button->initState.color = Cvec3f(0.1, 0, 0);
+                Scene::light1->specularLightColor = Color::WHITE;
+                button->material->setColor(Color::WHITE);
+                button->initState.color = Color::WHITE;
             } else {
-                Scene::light1->specularLightColor = Cvec3f(1, 1, 1);
-                button->material->setColor(0.6, 0, 0);
-                button->initState.color = Cvec3f(0.6, 0, 0);
+                Scene::light1->specularLightColor = Color::BLACK;
+                button->material->setColor(Color::BLACK);
+                button->initState.color = Color::BLACK;
             }
         }
     }
@@ -266,7 +267,6 @@ public:
 };
 
 
-
 void display(void) {
 //    Scene::render();//render the scene directly to scren
     //render to texture and then to screen using one fbo
@@ -274,7 +274,7 @@ void display(void) {
 
     //blur effect rendering using 2 fbos
     float time = (float) glutGet(GLUT_ELAPSED_TIME) / 1000.0f;//second passed
-    float blurSize = 0.01f - 0.001f * time * 1.5f;
+    float blurSize = 0.02f - 0.001f * time * 15.0f;
 
     if (blurSize < -1e-8) {
         screen->material->setDiffuseTextureId(firstFBO->getFrameBufferTexture());
@@ -368,8 +368,8 @@ void init() {
     verticalBlurShader = new ScreenShader();
     verticalBlurShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_vertical_blur.glsl");
 
-    toonifyFilterShader = new ScreenShader();
-    toonifyFilterShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_toonify_filter.glsl");
+    cartoonifyShader = new ScreenShader();
+    cartoonifyShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_cartoonify.glsl");
 
 
     currentEffectShader = screenShader;//default effect
@@ -402,9 +402,9 @@ void init() {
     Scene::addChild(model0);
 
     
-    /************ model swtich button ************/
+    /************ program swtich button ************/
     Geometry* buttonG = new Sphere(2, 40, 40);
-    Material* buttonM = new Material(Cvec3f(0.6, 0.0, 0.0));
+    Material* buttonM = new Material(Color::RED);
     Entity* btn0 = new Entity("button0", buttonG, buttonM);
     btn0->setPosition(Cvec3(-1.8, 1.9, -5));
     btn0->setScale(Cvec3(0.05, 0.05, 0.05));
@@ -422,7 +422,7 @@ void init() {
     
     /************ light color buttons ************/
     for (int i = 0; i < 2; ++i) {
-        Material* buttonM = new Material(Cvec3f(0.6, 0.0, 0.0));
+        Material* buttonM = new Material(Color::YELLOW);
         Entity* btn = new Entity("button" + std::to_string(i + 1), buttonG, buttonM);
         btn->setPosition(Cvec3(-1.8, 1.9 - (i + 1) / 3.0, -5));
         btn->setScale(Cvec3(0.05, 0.05, 0.05));
@@ -433,7 +433,7 @@ void init() {
     
     /************ specular light color buttons ************/
     for (int i = 0; i < 2; ++i) {
-        Material* buttonM = new Material(Cvec3f(0.6, 0.0, 0.0));
+        Material* buttonM = new Material(Color::WHITE);
         Entity* btn = new Entity("button" + std::to_string(i + 3), buttonG, buttonM);
         btn->setPosition(Cvec3(-1.5, 1.9 - (i + 1) / 3.0, -5));
         btn->setScale(Cvec3(0.05, 0.05, 0.05));
@@ -443,16 +443,18 @@ void init() {
     }
 
 
-
     Cubemap cubemap;
 //    cubemap.loadTextures("cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg");
-    cubemap.loadTextures("cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG");
+//    cubemap.loadTextures("cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG");
+
+    cubemap.loadTextures("cubemap/Bridge/posx.jpg", "cubemap/Bridge/negx.jpg", "cubemap/Bridge/posy.jpg", "cubemap/Bridge/negy.jpg", "cubemap/Bridge/posz.jpg", "cubemap/Bridge/negz.jpg");
 
     Material* cubemapM = new Material();
     cubemapM->setCubemap(cubemap.getTexture());
     Cube* sb = new Cube(100);
     Entity* skybox = new Entity(sb, cubemapM);
     skybox->setProgram(cubemapShader->getProgramId());
+    skybox->setRotation(Quat::makeYRotation(180));
     Scene::addChild(skybox);
 
 
@@ -649,8 +651,8 @@ bool insideWindow(int x, int y) {
 }
 void passiveMotion(int x, int y) {
     if (insideWindow(x, y)) {
-        if (toonifyFilterShader != NULL) {
-            toonifyFilterShader->updateMouseX((float)x / screenWidth);
+        if (cartoonifyShader != NULL) {
+            cartoonifyShader->updateMouseX((float)x / screenWidth);
         }
         Scene::updateMousePassiveMotion(x, y, screenWidth, screenHeight);
     }

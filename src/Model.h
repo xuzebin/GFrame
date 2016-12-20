@@ -49,7 +49,7 @@ public:
         float deltaU0 = texcoord1[0] - texcoord2[0];
         float deltaU1 = texcoord3[0] - texcoord1[0];
         binormal = side0 * deltaU1 - side1 * deltaU0;
-//        normalize(binormal);
+        normalize(binormal);
 
         Cvec3f tangentCross = cross(tangent, binormal);
         if (dot(tangentCross, normal) < 0.0f) {

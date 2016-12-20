@@ -15,6 +15,7 @@
 #ifndef Material_h
 #define Material_h
 
+
 /**
  * Currently just wrap texture and color uniform.
  * More to add in the future.
@@ -26,6 +27,7 @@ private:
     Texture texture;
     
 public:
+
     Material() {}
 
     Material(Cvec3f color_) : color(color_) {}
