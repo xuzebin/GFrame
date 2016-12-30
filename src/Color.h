@@ -14,12 +14,9 @@
 class Color {
 public:
     static const Cvec3f RED;
-
     static const Cvec3f YELLOW;
     static const Cvec3f DARK_YELLOW;
-
     static const Cvec3f BLACK;
-
     static const Cvec3f WHITE;
 };
 

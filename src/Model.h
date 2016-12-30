@@ -68,7 +68,7 @@ public:
         material->setDiffuseTexture(materials[0].diffuse_texname);
         material->setSpecularTexture(materials[0].specular_texname);
         material->setNormalTexture(materials[0].normal_texname);
-        
+
         if (ret) {
             for (int i = 0; i < shapes.size(); i++) {
                 for (int j = 0; j < shapes[i].mesh.indices.size(); j++) {

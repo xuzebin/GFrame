@@ -9,7 +9,7 @@
 #ifndef Skybox_h
 #define Skybox_h
 
-#include "Cube.h"
+class Cube;
 
 ////The difference between SkyBox and Cube here is that SkyBox flips normals to point inside the box.
 class SkyBox : public Cube {

@@ -37,13 +37,13 @@ void Camera::setProjectionMatrix(const double fov, const double aspectRatio, con
 //        q(i, i) = 3;
 //    }
 //    projectionMatrix = q * projectionMatrix;
-
-    for (int i = 0; i < 16; i++) {
-        if (i % 4 == 0 && i != 0) {
-            std::cout << std::endl;
-        }
-        std::cout << projectionMatrix[i] << " ";
-    }
+//
+//    for (int i = 0; i < 16; i++) {
+//        if (i % 4 == 0 && i != 0) {
+//            std::cout << std::endl;
+//        }
+//        std::cout << projectionMatrix[i] << " ";
+//    }
 }
 
 Matrix4 Camera::getViewMatrix() const {

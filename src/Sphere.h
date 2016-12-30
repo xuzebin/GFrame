@@ -9,7 +9,7 @@
 #ifndef Sphere_h
 #define Sphere_h
 
-#include "Geometry.h"
+class Geometry;
 
 class Sphere : public Geometry {
     
@@ -40,7 +40,6 @@ public:
         //if stereo, divide v coordinate of texture by 2.
         if (stereo) {
             for(std::vector<Vertex>::iterator it = vtx.begin(); it != vtx.end(); ++it) {
-//                it->normal *= -1;
                 it->texCoord[1] = it->texCoord[1] / 2.0;
             }
         }

@@ -9,7 +9,7 @@
 #ifndef Cube_h
 #define Cube_h
 
-#include "Geometry.h"
+class Geometry;
 
 class Cube : public Geometry {
     

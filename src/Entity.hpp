@@ -79,15 +79,8 @@ protected:
     //indicate which shaderprogram to use
     int programId;
     
-//    GLfloat modelMat[16];
-//    GLfloat modelViewMat[16];
-//    GLfloat projectionMat[16];
-//    GLfloat normalMat[16];
-//    
-    
     //currently we have only one event listener for each entity.
     ClickEventListener* clickEventListener;
-
 
     //by default: open 2 lights(..00011)
     int lightSwitch = 3;//0001 indicates light0 opens, 0010 indicates light1 opens, 0011 indicates light0 and light1 open, and so on.

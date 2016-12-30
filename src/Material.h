@@ -15,6 +15,7 @@
 #ifndef Material_h
 #define Material_h
 
+#define DEBUG false
 
 /**
  * Currently just wrap texture and color uniform.
@@ -80,9 +81,13 @@ public:
     void setDiffuseTexture(std::string diffuseTexName) {
         if (diffuseTexName != "") {
             texture.setDiffuseTexture(loadGLTexture(diffuseTexName.c_str()));
+#if DEBUG
             std::cout << "diffuse texture set: " << diffuseTexName << std::endl;
+#endif
         } else {
+#if DEBUG
             std::cerr << "diffuse texture name empty" << std::endl;
+#endif
         }
     }
     
@@ -93,18 +98,26 @@ public:
     void setSpecularTexture(std::string specularTexName) {
         if (specularTexName != "") {
             texture.setSpecularTexture(loadGLTexture(specularTexName.c_str()));
+#if DEBUG
             std::cout << "specular texture set: " << specularTexName << std::endl;
+#endif
         } else {
+#if DEBUG
             std::cerr << "specular texture name empty" << std::endl;
+#endif
         }
     }
     
     void setNormalTexture(std::string normalTexName) {
         if (normalTexName != "") {
             texture.setNormalTexture(loadGLTexture(normalTexName.c_str()));
+#if DEBUG
             std::cout << "normal texture set: " << normalTexName << std::endl;
+#endif
         } else {
+#if DEBUG
             std::cerr << "normal texture name empty" << std::endl;
+#endif
         }
     }
     

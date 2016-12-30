@@ -4,8 +4,6 @@
 #include "geometrymaker.h"
 #include "matrix4.h"
 #include "quat.h"
-#include "Geometry.h"
-#include "Entity.h"
 #include "Transform.h"
 #include "Material.h"
 #include "Camera.h"
@@ -447,7 +445,7 @@ void init() {
 //    cubemap.loadTextures("cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg");
 //    cubemap.loadTextures("cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG");
 
-    cubemap.loadTextures("cubemap/Bridge/posx.jpg", "cubemap/Bridge/negx.jpg", "cubemap/Bridge/posy.jpg", "cubemap/Bridge/negy.jpg", "cubemap/Bridge/posz.jpg", "cubemap/Bridge/negz.jpg");
+    cubemap.loadTextures("cubemap/posx.jpg", "cubemap/negx.jpg", "cubemap/posy.jpg", "cubemap/negy.jpg", "cubemap/posz.jpg", "cubemap/negz.jpg");
 
     Material* cubemapM = new Material();
     cubemapM->setCubemap(cubemap.getTexture());
