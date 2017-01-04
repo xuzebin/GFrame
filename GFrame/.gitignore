@@ -2,3 +2,4 @@ Makefile_
 *.*~
 build/
 .DS_Store
+main.cpp

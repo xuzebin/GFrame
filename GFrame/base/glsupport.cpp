@@ -133,7 +133,7 @@ void readAndCompileShader(GLuint programHandle, const char * vertexShaderFileNam
 GLuint loadGLTexture(const char *filePath) {
     int w,h,comp;
     unsigned char* image = stbi_load(filePath, &w, &h, &comp, STBI_rgb_alpha);
-    
+
     if(image == nullptr) {
         std::cout << "Unable to load image. Make sure the image is in the same path as the executable.\n";
         assert(false);

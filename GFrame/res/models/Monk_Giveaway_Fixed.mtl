@@ -10,9 +10,9 @@ Ni 1.500000
 d 1.000000
 illum 2
 
-map_Kd res/models/Monk_D.tga
-norm res/models/Monk_N.tga
-map_Ka res/models/Monk_D.tga
-map_d res/models/Monk_D.tga
-map_Ks res/models/Monk_Sc.tga
+map_Kd Monk_D.tga
+norm Monk_N.tga
+map_Ka Monk_D.tga
+map_d Monk_D.tga
+map_Ks Monk_Sc.tga
 

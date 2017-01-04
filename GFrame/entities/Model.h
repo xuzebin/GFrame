@@ -16,14 +16,16 @@
 class Texture;
 class Geometry;
 
-
-
 class Model : public Entity {
+
+private:
+    std::string basePath;
     
 public:
     
-    Model(const std::string fileName, std::string name) {
+    Model(const std::string fileName, std::string name, std::string basePath = "") {
         this->name = name;
+        this->basePath = basePath;
         
         material = new Material();
         
@@ -33,7 +35,7 @@ public:
         geometry = new Mesh(vtx, idx);
 
     }
-    
+
     void calcFaceTangent(const Cvec3f& v1, const Cvec3f& v2, const Cvec3f& v3, const Cvec2f& texcoord1, const Cvec2f& texcoord2, const Cvec2f& texcoord3, Cvec3f& tangent, Cvec3f& binormal) {
         
         Cvec3f side0 = v1 - v2;
@@ -63,12 +65,12 @@ public:
         std::vector<tinyobj::material_t> materials;
         std::string err;
 
-        std::string basePath = "res/models/";
         bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, fileName.c_str(), basePath.c_str(), true);
 
-        material->setDiffuseTexture(materials[0].diffuse_texname);
-        material->setSpecularTexture(materials[0].specular_texname);
-        material->setNormalTexture(materials[0].normal_texname);
+        material->setDiffuseTexture(basePath + materials[0].diffuse_texname);
+        material->setSpecularTexture(basePath + materials[0].specular_texname);
+        material->setNormalTexture(basePath + materials[0].normal_texname);
+
 
         if (ret) {
             for (int i = 0; i < shapes.size(); i++) {
