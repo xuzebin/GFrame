@@ -1,11 +1,3 @@
-//
-//  TextureShader.h
-//  TemplateProject
-//
-//  Created by xuzebin on 12/9/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #ifndef TextureShader_h
 #define TextureShader_h
 

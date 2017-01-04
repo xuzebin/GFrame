@@ -1,11 +1,3 @@
-//
-//  Screen.h
-//  TemplateProject
-//
-//  Created by xuzebin on 12/11/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #ifndef Screen_h
 #define Screen_h
 class Geometry;
@@ -25,17 +17,7 @@ public:
     }
 
     void createVBOs() {
-        //for screen, we dont' use indices to draw
         GLfloat screenPositions[] = {
-//            1.0f, 1.0f,
-//            -1.0f, 1.0f,
-//            -1.0f, -1.0f,
-//
-//            -1.0f, -1.0f,
-//            1.0f, -1.0f,
-//            1.0f, 1.0f
-
-            //TODO fix the flipped texture
             1.0f, 1.0f,
             1.0f, -1.0f,
             -1.0f, -1.0f,

@@ -1,11 +1,3 @@
-//
-//  FpsCamera.h
-//  TemplateProject
-//
-//  Created by xuzebin on 10/15/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #ifndef FpsCamera_h
 #define FpsCamera_h
 

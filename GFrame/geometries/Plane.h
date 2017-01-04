@@ -1,11 +1,3 @@
-//
-//  Plane.h
-//  TemplateProject
-//
-//  Created by xuzebin on 11/10/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #ifndef Plane_h
 #define Plane_h
 

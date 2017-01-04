@@ -1,11 +1,3 @@
-//
-//  Color.h
-//  TemplateProject
-//
-//  Created by xuzebin on 12/20/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #ifndef Color_h
 #define Color_h
 

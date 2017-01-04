@@ -1,11 +1,3 @@
-//
-//  Shader.h
-//  TemplateProject
-//
-//  Created by xuzebin on 12/9/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #ifndef Shader_h
 #define Shader_h
 

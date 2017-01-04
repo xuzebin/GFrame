@@ -1,11 +1,3 @@
-//
-//  Light.h
-//  TemplateProject
-//
-//  Created by xuzebin on 11/19/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #ifndef Light_h
 #define Light_h
 

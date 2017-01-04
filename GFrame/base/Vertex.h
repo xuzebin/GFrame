@@ -1,11 +1,3 @@
-//
-//  Vertex.h
-//  TemplateProject
-//
-//  Created by xuzebin on 11/10/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #ifndef Vertex_h
 #define Vertex_h
 

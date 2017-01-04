@@ -1,11 +1,3 @@
-//
-//  ScreenShader.h
-//  TemplateProject
-//
-//  Created by xuzebin on 12/11/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #ifndef ScreenShader_h
 #define ScreenShader_h
 

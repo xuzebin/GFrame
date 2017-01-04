@@ -1,11 +1,3 @@
-//
-//  Material.h
-//  TemplateProject
-//
-//  Created by xuzebin on 10/15/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #include "../base/cvec.h"
 #include "../base/stb_image.h"
 #include "../base/glsupport.h"

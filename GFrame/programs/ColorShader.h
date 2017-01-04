@@ -1,11 +1,3 @@
-//
-//  ColorShader.h
-//  TemplateProject
-//
-//  Created by xuzebin on 12/9/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #ifndef ColorShader_h
 #define ColorShader_h
 

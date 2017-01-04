@@ -1,11 +1,3 @@
-//
-//  Skybox.h
-//  TemplateProject
-//
-//  Created by xuzebin on 11/10/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #ifndef Skybox_h
 #define Skybox_h
 

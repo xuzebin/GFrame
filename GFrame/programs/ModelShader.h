@@ -1,11 +1,3 @@
-//
-//  ModelShader.h
-//  TemplateProject
-//
-//  Created by xuzebin on 12/9/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #ifndef ModelShader_h
 #define ModelShader_h
 

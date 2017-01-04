@@ -1,15 +1,6 @@
-//
-//  Sphere.h
-//  TemplateProject
-//
-//  Created by xuzebin on 11/10/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #ifndef Sphere_h
 #define Sphere_h
 
-//class Geometry;
 #include "Geometry.hpp"
 
 class Sphere : public Geometry {

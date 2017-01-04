@@ -1,11 +1,3 @@
-//
-//  Scene.h
-//  TemplateProject
-//
-//  Created by xuzebin on 10/20/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #ifndef Scene_h
 #define Scene_h
 

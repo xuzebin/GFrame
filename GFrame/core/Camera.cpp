@@ -1,11 +1,3 @@
-//
-//  Camera.cpp
-//  TemplateProject
-//
-//  Created by xuzebin on 11/10/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #include "Camera.hpp"
 
 // const Cvec3 Camera::UP_VEC = Cvec3(0, 1, 0);

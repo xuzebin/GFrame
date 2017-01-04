@@ -1,11 +1,3 @@
-//
-//  ShadowShader.h
-//  TemplateProject
-//
-//  Created by xuzebin on 12/11/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #ifndef ShadowShader_h
 #define ShadowShader_h
 class Shader;

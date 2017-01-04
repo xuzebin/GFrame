@@ -1,11 +1,3 @@
-//
-//  FrameBufferObject.h
-//  TemplateProject
-//
-//  Created by xuzebin on 12/17/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #ifndef FrameBufferObject_h
 #define FrameBufferObject_h
 

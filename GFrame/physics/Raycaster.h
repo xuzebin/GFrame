@@ -1,11 +1,3 @@
-//
-//  Raycaster.h
-//  TemplateProject
-//
-//  Created by xuzebin on 10/16/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #ifndef Raycaster_h
 #define Raycaster_h
 

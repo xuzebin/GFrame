@@ -1,11 +1,3 @@
-//
-//  Util.h
-//  TemplateProject
-//
-//  Created by xuzebin on 10/21/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #ifndef Util_h
 #define Util_h
 

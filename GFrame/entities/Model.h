@@ -1,11 +1,3 @@
-//
-//  Model.h
-//  TemplateProject
-//
-//  Created by xuzebin on 11/10/16.
-//  Copyright © 2016 Ivan Safrin. All rights reserved.
-//
-
 #ifndef Model_h
 #define Model_h
 
