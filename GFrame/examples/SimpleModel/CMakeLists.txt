@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 project(SimpleModel)
-add_executable(SimpleModel SimpleModel.cpp ../../base/glsupport.cpp ../../geometries/Mesh.cpp ../../geometries/Geometry.cpp ../../materials/Cubemap.cpp)
+add_executable(SimpleModel SimpleModel.cpp ../../base/glsupport.cpp ../../geometries/Mesh.cpp ../../geometries/Geometry.cpp)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 
