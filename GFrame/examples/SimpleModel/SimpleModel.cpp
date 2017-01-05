@@ -1,14 +1,14 @@
 #include <GLUT/glut.h>
-#include "../../base/glsupport.h"
-#include "../../base/quat.h"
-#include "../../core/Transform.h"
-#include "../../materials/Material.h"
-#include "../../core/Camera.hpp"
-#include "../../core/Scene.h"
-#include "../../entities/Model.h"
-#include "../../core/Light.h"
-#include "../../programs/Shader.h"
-#include "../../programs/ModelShader.h"
+#include "base/glsupport.h"
+#include "base/quat.h"
+#include "core/Transform.h"
+#include "materials/Material.h"
+#include "core/Camera.hpp"
+#include "core/Scene.h"
+#include "entities/Model.h"
+#include "core/Light.h"
+#include "programs/Shader.h"
+#include "programs/ModelShader.h"
 
 int screenWidth = 600;
 int screenHeight = 600;
@@ -27,9 +27,8 @@ void init(void) {
     glDepthFunc(GL_GREATER);
     glReadBuffer(GL_BACK);
     
-    std::string basePath = "../../";
-    std::string vertexShader = basePath + "shaders/vertex_shader_model.glsl";
-    std::string fragmentShader = basePath + "shaders/fragment_shader_model.glsl";
+    std::string vertexShader = "shaders/vertex_shader_model.glsl";
+    std::string fragmentShader = "shaders/fragment_shader_model.glsl";
 
     ModelShader* modelShader = new ModelShader();
     modelShader->createProgram(vertexShader.c_str(), fragmentShader.c_str());
@@ -44,7 +43,7 @@ void init(void) {
     Scene::setLight0(light0);
     Scene::setLight1(light1);
 
-    Model* model0 = new Model("../../res/models/Monk_Giveaway_Fixed.obj", "model0", "../../res/models/");
+    Model* model0 = new Model("res/models/Monk_Giveaway_Fixed.obj", "model0");
     model0->setScale(Cvec3(0.5, 0.5, 0.5));
     model0->setPosition(Cvec3(0, -3.4, -9));
     model0->setRotation(Quat::makeYRotation(20));

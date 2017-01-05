@@ -1,5 +1,5 @@
 Makefile_
 *.*~
-build/
 .DS_Store
-main.cpp
+CMakeLists.txt_
+clean.sh
