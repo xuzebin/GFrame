@@ -5,6 +5,7 @@ A tiny C++ OpenGL framework.
 ### Compile all the examples and the framework code.
 
 ```
+cd GFrame
 mkdir build
 cd build
 cmake ..
@@ -18,10 +19,10 @@ Run the MainExample:
 ./build/examples/MainExample
 ```
 
-Run the SimpleModel example:
+Run the TexturedModel example:
 
 ```        
-./build/examples/SimpleModel/SimpleModel
+./build/examples/TexturedModel/TexturedModel
 ```
 
 
