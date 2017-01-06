@@ -59,10 +59,11 @@ public:
 
         bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, fileName.c_str(), basePath.c_str(), true);
 
+        std::cout << "fileName: " << fileName << std::endl;
+        std::cout << "diffuse: " << materials[0].diffuse_texname << std::endl;
         material->setDiffuseTexture(basePath + materials[0].diffuse_texname);
         material->setSpecularTexture(basePath + materials[0].specular_texname);
         material->setNormalTexture(basePath + materials[0].normal_texname);
-
 
         if (ret) {
             for (int i = 0; i < shapes.size(); i++) {

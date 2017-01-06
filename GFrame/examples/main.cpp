@@ -394,7 +394,7 @@ void init() {
     currentMovingLight = Scene::getLight(0);
 
     
-    Model* model0 = new Model("res/models/Monk_Giveaway_Fixed.obj", "model0");
+    Model* model0 = new Model("res/models/Monk_Giveaway_Fixed.obj", "model0", "res/models/");
     model0->setScale(Cvec3(0.5, 0.5, 0.5));
     model0->setPosition(Cvec3(0, -3.4, -9));
     model0->setRotation(Quat::makeYRotation(20));
