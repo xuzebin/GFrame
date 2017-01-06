@@ -394,7 +394,7 @@ void init() {
     currentMovingLight = Scene::getLight(0);
 
     
-    Model* model0 = new Model("res/models/Monk_Giveaway_Fixed.obj", "model0", "res/models/");
+    Model* model0 = new Model("assets/models/Monk_Giveaway_Fixed.obj", "model0", "assets/models/");
     model0->setScale(Cvec3(0.5, 0.5, 0.5));
     model0->setPosition(Cvec3(0, -3.4, -9));
     model0->setRotation(Quat::makeYRotation(20));
@@ -445,10 +445,7 @@ void init() {
 
 
     Cubemap cubemap;
-//    cubemap.loadTextures("cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg", "cubemap/snow2.jpeg");
-//    cubemap.loadTextures("cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG", "cubemap/snow.PNG");
-
-    cubemap.loadTextures("res/cubemap/posx.jpg", "res/cubemap/negx.jpg", "res/cubemap/posy.jpg", "res/cubemap/negy.jpg", "res/cubemap/posz.jpg", "res/cubemap/negz.jpg");
+    cubemap.loadTextures("assets/cubemap/posx.jpg", "assets/cubemap/negx.jpg", "assets/cubemap/posy.jpg", "assets/cubemap/negy.jpg", "assets/cubemap/posz.jpg", "assets/cubemap/negz.jpg");
 
     Material* cubemapM = new Material();
     cubemapM->setCubemap(cubemap.getTexture());
