@@ -33,17 +33,17 @@ public:
         Cvec3f side0 = v1 - v2;
         Cvec3f side1 = v3 - v1;
         Cvec3f normal = cross(side1, side0);
-        normalize(normal);
+        //        normalize(normal);
         
         float deltaV0 = texcoord1[1] - texcoord2[1];
         float deltaV1 = texcoord3[1] - texcoord1[1];
         tangent = side0 * deltaV1 - side1 * deltaV0;
-        normalize(tangent);
+        //        normalize(tangent);
         
         float deltaU0 = texcoord1[0] - texcoord2[0];
         float deltaU1 = texcoord3[0] - texcoord1[0];
         binormal = side0 * deltaU1 - side1 * deltaU0;
-        normalize(binormal);
+        //        normalize(binormal);
 
         Cvec3f tangentCross = cross(tangent, binormal);
         if (dot(tangentCross, normal) < 0.0f) {
@@ -61,9 +61,15 @@ public:
 
         std::cout << "fileName: " << fileName << std::endl;
         std::cout << "diffuse: " << materials[0].diffuse_texname << std::endl;
-        material->setDiffuseTexture(basePath + materials[0].diffuse_texname);
-        material->setSpecularTexture(basePath + materials[0].specular_texname);
-        material->setNormalTexture(basePath + materials[0].normal_texname);
+        if (materials[0].diffuse_texname != "") {
+            material->setDiffuseTexture(basePath + materials[0].diffuse_texname);
+        }
+        if (materials[0].specular_texname != "") {
+            material->setSpecularTexture(basePath + materials[0].specular_texname);
+        }
+        if (materials[0].normal_texname != "") {
+            material->setNormalTexture(basePath + materials[0].normal_texname);
+        }
 
         if (ret) {
             for (int i = 0; i < shapes.size(); i++) {
