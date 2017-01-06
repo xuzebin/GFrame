@@ -13,7 +13,7 @@ public:
     
     Shader() {}
 
-    ~Shader() {
+    virtual ~Shader() {
         glDeleteProgram(programId);
     }
     void use() {

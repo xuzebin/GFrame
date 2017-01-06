@@ -64,6 +64,24 @@ void idle(void) {
     glutPostRedisplay();
 }
 
+void clear(void) {
+    Scene::removeAll();
+}
+
+void keyboard(unsigned char key, int x, int y) {
+    switch (key) {
+        case 'q':
+        case 'Q':
+        {
+            clear();
+            exit(0);
+            break;
+        }
+        default:
+            break;
+    }
+}
+
 int main(int argc, char **argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
@@ -73,6 +91,8 @@ int main(int argc, char **argv) {
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutIdleFunc(idle);
+
+    glutKeyboardFunc(keyboard);
 
     init();
     glutMainLoop();

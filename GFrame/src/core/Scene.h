@@ -29,9 +29,6 @@ private:
     Scene() {
     }
 
-
-
-
 public:
     //currently only support 2 lights.
     static Light* light0;
@@ -39,7 +36,6 @@ public:
     
     static Camera* camera;
 
-    
     static void setCamera(Camera* camera_) {
         camera = camera_;
     }
@@ -148,13 +144,15 @@ public:
         
         return entityTable[name];
     }
-    
+
     static void removeAll() {
         entities.clear();
         entityTable.clear();
+        shaderTable.clear();
+        delete light0;
+        delete light1;
     }
 
-    
     static void updateMouseEvent(int button , int state, int x, int y, int screenWidth, int screenHeight) {
         //test intersection
         
@@ -190,7 +188,6 @@ public:
             }
         }
     }
-    
     
     static void addShader(Shader* shader) {
         int programId = shader->getProgramId();

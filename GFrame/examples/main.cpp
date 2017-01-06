@@ -508,7 +508,6 @@ void specialInput(int key, int x, int y) {
     std::cout << "light pos: " << currentMovingLight->getPosition()[0] << "," << currentMovingLight->getPosition()[1] << "," << currentMovingLight->getPosition()[2]<< std::endl;
 }
 
-
 void keyboard(unsigned char key, int x, int y) {
 
     switch(key) {
@@ -550,14 +549,15 @@ void keyboard(unsigned char key, int x, int y) {
             }
             break;
         }
-        case 'p':
-        case'P':
+        case 'q':
+        case 'Q':
+            Scene::removeAll();
+            exit(0);
             break;
         default:
             break;
     }
 }
-
 
 Cvec2 getScreenSpaceCoordFromEyeSpace(const Cvec3& eyeSpaceCoord, const Matrix4& projection, int screenW, int screenH) {
     if (eyeSpaceCoord[2] > -1e-8) {
@@ -664,10 +664,6 @@ void reshape(int w, int h) {
 
 void idle(void) {
     glutPostRedisplay();
-}
-void display_(void) {
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glutSwapBuffers();
 }
 
 int main(int argc, char **argv) {
