@@ -1,5 +1,27 @@
-# GLFramework
-A tiny 3D graphics framework based on OpenGL using C++.
+# GFrame
+A tiny C++ OpenGL framework.
 
-I am currently studying Computer Graphics course so this is an experimental framework and just for fun and reference.
-I will continuously add new features to or refactor this framework based on what I have learned.
+## Compile
+### Compile all the examples and the framework code.
+
+```
+mkdir build
+cd build
+cmake ..
+make
+```
+
+## Run
+Run the MainExample:
+
+```
+./build/examples/MainExample
+```
+
+Run the SimpleModel example:
+
+```        
+./build/examples/SimpleModel/SimpleModel
+```
+
+
