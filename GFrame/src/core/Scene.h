@@ -70,7 +70,7 @@ public:
     
     //must be called and called once before rendering
     static void createMeshes() {
-        for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
+        for(auto it = entities.begin(); it != entities.end(); ++it) {
             (*it)->createMesh();
         }
 
@@ -88,7 +88,7 @@ public:
     }
 
     static void renderLoop() {
-        for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
+        for(auto it = entities.begin(); it != entities.end(); ++it) {
             Shader* shader = shaderTable[(*it)->getProgram()];
             if (shader == NULL) {
                 throw std::string("shader not exists");
@@ -158,7 +158,7 @@ public:
         
         if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
             //NOTE: currently only supports ray sphere intersection.
-            for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
+            for(auto it = entities.begin(); it != entities.end(); ++it) {
                 if ((*it)->clickEventListenerRegistered()) {
                     if (testIntersect(*it, x, y, screenWidth, screenHeight)) {
                         (*it)->notify(EventType::CLICK);
@@ -166,7 +166,7 @@ public:
                 }
             }
         } else {
-            for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
+            for(auto it = entities.begin(); it != entities.end(); ++it) {
                 if ((*it)->clickEventListenerRegistered()) {
                     if (testIntersect(*it, x, y, screenWidth, screenHeight)) {
                         (*it)->notify(EventType::HOVER);
@@ -178,7 +178,7 @@ public:
         }
     }
     static void updateMousePassiveMotion(int x, int y, int screenWidth, int screenHeight) {
-        for(std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it) {
+        for(auto it = entities.begin(); it != entities.end(); ++it) {
             if ((*it)->clickEventListenerRegistered()) {
                 if (testIntersect(*it, x, y, screenWidth, screenHeight)) {
                     (*it)->notify(EventType::HOVER);
