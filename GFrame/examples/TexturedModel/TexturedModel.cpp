@@ -15,6 +15,8 @@ int screenHeight = 600;
 Camera camera(Cvec3(0, 0, 0), Quat::makeXRotation(0));
 
 void display(void) {
+    Entity* model = Scene::getEntity("model0");
+    model->rotate(Quat::makeYRotation(0.5));
     Scene::render();
 }
 
