@@ -45,7 +45,7 @@ void init(void) {
     Scene::setLight0(light0);
     Scene::setLight1(light1);
 
-    Model* model0 = new Model("assets/models/ring.obj", "model0", "assets/models/");
+    Model* model0 = new Model("assets/models/ring/ring.obj", "model0", "assets/models/ring/");
     model0->material->setColor(0.2, 0.2, 0.2);
     model0->setScale(Cvec3(20, 20, 20));
     model0->setPosition(Cvec3(0, -0.5, -2));
