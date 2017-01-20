@@ -2,7 +2,7 @@
 A tiny C++ OpenGL framework.
 
 ## Build
-### Compile all the examples and the framework code.
+#### Compile all the examples and the framework code.
 
 ```
 cd GFrame
@@ -12,7 +12,7 @@ cmake ..
 make
 ```
 
-### Run
+#### Run
 Run the MainExample:
 
 ```
@@ -27,7 +27,7 @@ Run the TexturedModel example:
 
 ## Build as an Xcode project
 
-1. Generate an Xcode project:
+#### Generate an Xcode project:
 
 ```
 cd GFrame
@@ -36,7 +36,7 @@ cd build
 cmake .. -G Xcode
 ```
 
-2. Build the project in Xcode.
+#### Build the project in Xcode.
     * Run `ALL_BUILD`
     * Run `install`
     * Run examples
