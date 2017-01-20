@@ -37,6 +37,6 @@ cmake .. -G Xcode
 ```
 
 #### Build the project in Xcode.
-    * Run `ALL_BUILD`
-    * Run `install`
-    * Run examples
+1. Run `ALL_BUILD`
+2. Run `install`
+3. Run examples
