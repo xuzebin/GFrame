@@ -124,6 +124,7 @@ public:
     void setScale(Cvec3 scale);
     const Cvec3& getScale();
     const Matrix4& getModelMatrix();
+    void setModelMatrix(const Matrix4& m);
 
     void acceptLight(int lightID) {
         if (lightID < 0 || lightID > 2) {

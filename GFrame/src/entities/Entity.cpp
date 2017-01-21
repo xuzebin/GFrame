@@ -91,3 +91,7 @@ const Cvec3& Entity::getScale() {
 const Matrix4& Entity::getModelMatrix() {
     return transform.getModelMatrix();
 }
+
+void Entity::setModelMatrix(const Matrix4& m) {
+    transform.setModelMatrix(m);
+}
