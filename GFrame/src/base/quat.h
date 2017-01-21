@@ -119,6 +119,20 @@ public:
     r.q_[0] = std::cos(h);
     return r;
   }
+
+  static Quat makeRotationAroundAxis(const Cvec3& axis, const double ang) {
+      Cvec3 v = axis;
+      v.normalize();
+      Quat r;
+      const double h = 0.5 * ang * CS175_PI/180;
+      float sine = std::sin(h);
+      r.q_[0] = std::cos(h);
+      r.q_[1] = v[0] * sine;
+      r.q_[2] = v[1] * sine;
+      r.q_[3] = v[2] * sine;
+      return r;
+  }
+  
 };
 
 inline double dot(const Quat& q, const Quat& p) {
