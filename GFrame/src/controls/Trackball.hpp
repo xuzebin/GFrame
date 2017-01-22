@@ -58,12 +58,12 @@ public:
     void setRadius(float radius) { this->radius = radius; }
     void setScreenSize(int screenWidth, int screenHeight);
     void setRadiusAndScreenSize(float radius, int screenWidth, int screenHeight);
-    void setSpeed(float speed)  { this->speed = speed; }
+    void setSpeed(float speed)   { this->speed = speed; }
     
-    float getRadius() const     { return radius; }
-    int getScreenWidth() const  { return screenWidth; }
-    int getScreenHeight() const { return screenHeight; }
-    float getSpeed() const      { return speed; }
+    float getRadius() const      { return radius; }
+    int getScreenWidth() const   { return screenWidth; }
+    int getScreenHeight() const  { return screenHeight; }
+    float getSpeed() const       { return speed; }
 
     Quat getQuatBetween(const Cvec3& v1, const Cvec3& v2);
     

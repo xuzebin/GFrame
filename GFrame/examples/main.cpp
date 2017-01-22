@@ -14,7 +14,7 @@
 #include "geometries/Skybox.h"
 #include "geometries/Sphere.h"
 #include "entities/Model.h"
-#include "core/Light.h"
+#include "core/Light.hpp"
 #include "programs/Shader.h"
 #include "programs/ColorShader.h"
 #include "programs/ModelShader.h"

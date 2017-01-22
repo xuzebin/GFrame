@@ -1,11 +1,11 @@
+#ifndef Material_h
+#define Material_h
+
 #include "../base/cvec.h"
 #include "../base/stb_image.h"
 #include "../base/glsupport.h"
 #include "Texture.hpp"
 #include "Cubemap.hpp"
-
-#ifndef Material_h
-#define Material_h
 
 #define DEBUG true
 

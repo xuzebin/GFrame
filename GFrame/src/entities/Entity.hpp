@@ -2,16 +2,14 @@
 #define Entity_hpp
 
 #include <stdio.h>
-#include <list>
 #include "../core/Transform.h"
 #include "../geometries/Geometry.hpp"
 #include "../materials/Material.h"
-#include "../core/Camera.hpp"
+//#include "../core/Camera.hpp"
 #include "../programs/Shader.h"
-#include "../core/Light.h"
+#include "../core/Light.hpp"
 
-
-
+class Camera;
 class Entity;
 
 enum EventType {
@@ -20,7 +18,6 @@ enum EventType {
     IDLE = 2,
     SCROLL = 3
 };
-
 
 
 class ClickEventListener {
@@ -59,7 +56,7 @@ protected:
     
     std::string name;
     
-    inline void setName(int counter) {
+    void setName(int counter) {
         if (name.empty()) {
             name = "Entity" + std::to_string(counter);
         }
@@ -106,25 +103,25 @@ public:
         delete material;
     }
     
-    void setProgram(int programId);
-    int getProgram();
+//    void setProgram(int programId);
+//    int getProgram();
     void createMesh();
     void draw(Camera* camera, Shader* shader, Light* light0, Light* light1);
-    std::string getName();
-    void setVisible(bool visible);
-    bool isVisible() const;
-    void setDepthTest(bool enable);
-    bool depthTestEnabled() const;
-    void setPosition(Cvec3 position);    
-    void translate(Cvec3 translation);
-    const Cvec3& getPosition();
-    void setRotation(Quat rotation);
-    void rotate(Quat rotation);
-    const Quat& getRotation();
-    void setScale(Cvec3 scale);
-    const Cvec3& getScale();
-    const Matrix4& getModelMatrix();
-    void setModelMatrix(const Matrix4& m);
+//    std::string getName();
+//    void setVisible(bool visible);
+//    bool isVisible() const;
+//    void setDepthTest(bool enable);
+//    bool depthTestEnabled() const;
+//    void setPosition(Cvec3 position);    
+//    void translate(Cvec3 translation);
+//    const Cvec3& getPosition();
+//    void setRotation(Quat rotation);
+//    void rotate(Quat rotation);
+//    const Quat& getRotation();
+//    void setScale(Cvec3 scale);
+//    const Cvec3& getScale();
+//    const Matrix4& getModelMatrix();
+//    void setModelMatrix(const Matrix4& m);
 
     void acceptLight(int lightID) {
         if (lightID < 0 || lightID > 2) {
@@ -167,12 +164,8 @@ public:
         }
         clickEventListener = listener;
     }
-    inline void removeClickEventListener() {
-        clickEventListener = NULL;
-    }
-    bool clickEventListenerRegistered() {
-        return clickEventListener != NULL;
-    }
+    void removeClickEventListener()     { clickEventListener = NULL; }
+    bool clickEventListenerRegistered() { return clickEventListener != NULL; }
     
     void notify(EventType type) {
         if (clickEventListener != NULL) {
@@ -191,6 +184,41 @@ public:
             }
         }
     }
+
+
+    void setProgram(int programId)        { this->programId = programId; }
+
+    int getProgram() const                { return programId; }
+
+    std::string getName() const           { return name; }
+
+    void setVisible(bool visible)         { this->visible = visible; }
+
+    bool isVisible() const                { return this->visible; }
+
+    void setDepthTest(bool enable)        { depthTest = enable; }
+
+    bool depthTestEnabled() const         { return depthTest; }
+
+    void setPosition(Cvec3 position)      { transform.setPosition(position); }
+
+    void translate(Cvec3 translation)     { transform.translate(translation); }
+
+    const Cvec3& getPosition()            { return transform.getPosition(); }
+
+    void setRotation(Quat rotation)       { transform.setRotation(rotation); }
+
+    void rotate(Quat rotation)            { transform.rotate(rotation); }
+
+    const Quat& getRotation()             { return transform.getRotation(); }
+
+    void setScale(Cvec3 scale)            { transform.setScale(scale); }
+
+    const Cvec3& getScale()               { return transform.getScale(); }
+    
+    const Matrix4& getModelMatrix()       { return transform.getModelMatrix(); }
+    
+    void setModelMatrix(const Matrix4& m) { transform.setModelMatrix(m); }
 };
 
 

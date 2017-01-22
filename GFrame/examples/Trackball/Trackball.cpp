@@ -3,13 +3,15 @@
 #include "base/quat.h"
 #include "core/Transform.h"
 #include "materials/Material.h"
-#include "core/Camera.hpp"
 #include "core/Scene.h"
+#include "core/Camera.hpp"
 #include "entities/Model.h"
-#include "core/Light.h"
-#include "programs/Shader.h"
+#include "core/Light.hpp"
+//#include "programs/Shader.h"
 #include "programs/ColorShader.h"
 #include "controls/Trackball.hpp"
+class Shader;
+
 
 int screenWidth = 600;
 int screenHeight = 600;

@@ -5,13 +5,16 @@
 #include <vector>
 #include <string>
 #include "../entities/Entity.hpp"
-#include "../entities/Entity.cpp"
+//#include "../entities/Entity.cpp"
 #include "Camera.hpp"
-#include "../programs/Shader.h"
-#include "Light.h"
+//#include "../programs/Shader.h"
+//#include "Light.hpp"
 #include "../physics/Raycaster.h"
 #include "../geometries/Sphere.h"
 #include "../glObjects/FrameBufferObject.h"
+
+class Light;
+class Shader;
 class ScreenShader;
 /**
  * A simple scene containing entities to be rendered.

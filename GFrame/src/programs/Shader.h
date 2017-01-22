@@ -3,6 +3,7 @@
 
 class Entity;
 class Light;
+class Camera;
 
 class Shader {
     

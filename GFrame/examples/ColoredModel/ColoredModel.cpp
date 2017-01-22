@@ -6,7 +6,7 @@
 #include "core/Camera.hpp"
 #include "core/Scene.h"
 #include "entities/Model.h"
-#include "core/Light.h"
+#include "core/Light.hpp"
 #include "programs/Shader.h"
 #include "programs/ColorShader.h"
 
