@@ -6,7 +6,7 @@
 #include "core/Transform.hpp"
 #include "materials/Material.h"
 #include "core/Camera.hpp"
-#include "core/Scene.h"
+#include "core/Scene.hpp"
 #include "helper/Util.h"
 #include "geometries/Geometry.hpp"
 #include "geometries/Cube.h"

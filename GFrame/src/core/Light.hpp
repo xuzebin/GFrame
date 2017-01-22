@@ -19,7 +19,7 @@ public:
 
     void updatePositionInEyeSpace(const Matrix4& viewMatrix);
     
-    const Cvec3& getPosition() { return position; }
+    const Cvec3& getPosition() const { return position; }
     const Cvec3& getPositionInEyeSpace(const Matrix4& viewMatrix);
     
 public:

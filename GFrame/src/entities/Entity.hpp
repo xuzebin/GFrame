@@ -5,7 +5,6 @@
 #include "../core/Transform.hpp"
 #include "../geometries/Geometry.hpp"
 #include "../materials/Material.h"
-//#include "../core/Camera.hpp"
 #include "../programs/Shader.h"
 #include "../core/Light.hpp"
 
@@ -103,25 +102,9 @@ public:
         delete material;
     }
     
-//    void setProgram(int programId);
-//    int getProgram();
+
     void createMesh();
     void draw(Camera* camera, Shader* shader, Light* light0, Light* light1);
-//    std::string getName();
-//    void setVisible(bool visible);
-//    bool isVisible() const;
-//    void setDepthTest(bool enable);
-//    bool depthTestEnabled() const;
-//    void setPosition(Cvec3 position);    
-//    void translate(Cvec3 translation);
-//    const Cvec3& getPosition();
-//    void setRotation(Quat rotation);
-//    void rotate(Quat rotation);
-//    const Quat& getRotation();
-//    void setScale(Cvec3 scale);
-//    const Cvec3& getScale();
-//    const Matrix4& getModelMatrix();
-//    void setModelMatrix(const Matrix4& m);
 
     void acceptLight(int lightID) {
         if (lightID < 0 || lightID > 2) {
@@ -185,40 +168,25 @@ public:
         }
     }
 
-
     void setProgram(int programId)        { this->programId = programId; }
+    void setVisible(bool visible)         { this->visible = visible; }
+    void setDepthTest(bool enable)        { depthTest = enable; }
+    void setPosition(Cvec3 position)      { transform.setPosition(position); }
+    void translate(Cvec3 translation)     { transform.translate(translation); }
+    void setRotation(Quat rotation)       { transform.setRotation(rotation); }
+    void rotate(Quat rotation)            { transform.rotate(rotation); }
+    void setScale(Cvec3 scale)            { transform.setScale(scale); }
+    void setModelMatrix(const Matrix4& m) { transform.setModelMatrix(m); }
 
     int getProgram() const                { return programId; }
-
     std::string getName() const           { return name; }
-
-    void setVisible(bool visible)         { this->visible = visible; }
-
     bool isVisible() const                { return this->visible; }
-
-    void setDepthTest(bool enable)        { depthTest = enable; }
-
     bool depthTestEnabled() const         { return depthTest; }
-
-    void setPosition(Cvec3 position)      { transform.setPosition(position); }
-
-    void translate(Cvec3 translation)     { transform.translate(translation); }
-
-    const Cvec3& getPosition()            { return transform.getPosition(); }
-
-    void setRotation(Quat rotation)       { transform.setRotation(rotation); }
-
-    void rotate(Quat rotation)            { transform.rotate(rotation); }
-
-    const Quat& getRotation()             { return transform.getRotation(); }
-
-    void setScale(Cvec3 scale)            { transform.setScale(scale); }
-
-    const Cvec3& getScale()               { return transform.getScale(); }
-    
+    const Cvec3& getPosition() const      { return transform.getPosition(); }
+    const Quat& getRotation() const       { return transform.getRotation(); }
+    const Cvec3& getScale() const         { return transform.getScale(); }
     const Matrix4& getModelMatrix()       { return transform.getModelMatrix(); }
-    
-    void setModelMatrix(const Matrix4& m) { transform.setModelMatrix(m); }
+    float getBoundingBoxLength()          { return geometry->getBoundingBoxLength() * getScale()[0]; }
 };
 
 

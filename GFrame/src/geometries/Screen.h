@@ -13,7 +13,7 @@ protected:
 public:
     Screen() {
         this->size = 2;
-        this->minSphereDiameter = size;
+        this->boundingBoxLength = size;
     }
 
     void createVBOs() {

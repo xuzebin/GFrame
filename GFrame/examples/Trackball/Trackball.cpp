@@ -3,7 +3,7 @@
 #include "base/quat.h"
 #include "core/Transform.hpp"
 #include "materials/Material.h"
-#include "core/Scene.h"
+#include "core/Scene.hpp"
 #include "core/Camera.hpp"
 #include "entities/Model.h"
 #include "core/Light.hpp"

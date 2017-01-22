@@ -22,7 +22,7 @@ private:
 protected:
     unsigned short indicesNum;
     
-    float minSphereDiameter;//currently all objects are considered sphere when testing intersection
+    float boundingBoxLength;//currently all objects are considered sphere when testing intersection
     
 public:
     virtual void createVBOs() = 0;
@@ -32,8 +32,8 @@ public:
     void createVBOs(std::vector<Vertex> vtx, std::vector<unsigned short> idx);
     virtual void draw(const GLuint aPositionLocation, const GLuint aNomralLocation, const GLuint aTexCoordLocation, const GLuint aBinormalLocation, const GLuint aTangentLocation);
     
-    inline float getDiameter() {
-        return minSphereDiameter;
+    float getBoundingBoxLength() {
+        return boundingBoxLength;
     }
 };
 
