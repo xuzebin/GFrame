@@ -6,6 +6,10 @@ Transform::Transform() : RigidBodyTransform(),
 {
 }
 
+Transform::~Transform()
+{
+}
+
 void Transform::setScale(const Cvec3& scale) {
     this->scale = scale;
     isMatrixDirty = true;

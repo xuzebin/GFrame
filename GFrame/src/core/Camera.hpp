@@ -15,7 +15,8 @@ public:
     static const double Z_FAR;
 
     Camera();
-    Camera(const Cvec3& position, const Quat& rotation);
+    Camera(const Cvec3& position, const Quat& rotation, double fov = 45.0);
+    ~Camera();
 
     const Matrix4& getViewMatrix() const       { return viewMatrix; }
     const Matrix4& getProjectionMatrix() const { return projectionMatrix; }
@@ -23,9 +24,9 @@ public:
     double getFov() const                      { return fov; }
 
     void updateView(const Cvec3& target)       { viewMatrix = setLookat(position, target, UP_VEC); }
-    
     void rotate(const Quat& rotation);
     void setPosition(const Cvec3& position);
+    void setFov(double fov);
 
 private:
     void setViewMatrix(const Cvec3& position, const Quat& rotation);
@@ -41,7 +42,7 @@ private:
     Matrix4 viewMatrix;
     Matrix4 projectionMatrix;
 
-    double fov = 45.0;
+    double fov;
 };
 
 #endif /* Camera_hpp */

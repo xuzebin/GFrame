@@ -60,7 +60,7 @@ public:
     static void setScreen(Entity* screen)                    { Scene::screen = screen; }
 
 private:
-    Scene() {}
+    Scene();
 
     static std::vector<Entity*> entities;
     static std::unordered_map<std::string, Entity*> entityTable;

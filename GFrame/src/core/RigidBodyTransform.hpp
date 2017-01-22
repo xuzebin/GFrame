@@ -13,7 +13,8 @@ class RigidBodyTransform {
 public:
     
     RigidBodyTransform();
-    
+    ~RigidBodyTransform();
+
     void setRotation(const Quat& rotation);
     void setPosition(const Cvec3& position);
     void translate(const Cvec3& translation);

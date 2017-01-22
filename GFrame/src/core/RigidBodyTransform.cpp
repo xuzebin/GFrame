@@ -4,6 +4,10 @@ RigidBodyTransform::RigidBodyTransform() : isMatrixDirty(true)
 {
 }
 
+RigidBodyTransform::~RigidBodyTransform()
+{
+}
+
 void RigidBodyTransform::setRotation(const Quat& rotation) {
     this->rotation = rotation;
     isMatrixDirty = true;

@@ -11,17 +11,14 @@ class Transform : public RigidBodyTransform {
 public:
     
     Transform();
+    ~Transform();
     
     void setScale(const Cvec3& scale);
-
     void setModelMatrix(const Matrix4& m);
-
     void setPivot(double x, double y, double z);
 
     const Cvec3& getPivot() const { return pivot; }
-    
     const Cvec3& getScale() const { return scale; }
-
     const Matrix4& getModelMatrix();
     
     Transform& operator = (const Transform& t);

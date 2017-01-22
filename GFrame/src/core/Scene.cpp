@@ -12,6 +12,10 @@ Camera* Scene::camera = NULL;
 Light* Scene::light0 = NULL;
 Light* Scene::light1 = NULL;
 
+Scene::Scene()
+{
+}
+
 Light* Scene::getLight(int index) {
     switch(index) {
         case 0:

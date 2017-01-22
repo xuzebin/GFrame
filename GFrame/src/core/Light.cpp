@@ -1,7 +1,7 @@
 #include "Light.hpp"
 
 Light::Light() : isPositionDirty(true), 
-                 lightColor(Cvec3f(1, 1, 1)), 
+                 lightColor(Cvec3f(1, 1, 1)),
                  specularLightColor(Cvec3f(1, 1, 1)) 
 {
 }
