@@ -5,7 +5,7 @@
 #include "materials/Material.h"
 #include "core/Camera.hpp"
 #include "core/Scene.hpp"
-#include "entities/Model.h"
+#include "entities/Model.hpp"
 #include "core/Light.hpp"
 #include "programs/Shader.h"
 #include "programs/ColorShader.h"

@@ -13,7 +13,7 @@
 #include "geometries/Plane.h"
 #include "geometries/Skybox.h"
 #include "geometries/Sphere.h"
-#include "entities/Model.h"
+#include "entities/Model.hpp"
 #include "core/Light.hpp"
 #include "programs/Shader.h"
 #include "programs/ColorShader.h"
@@ -409,7 +409,7 @@ void init() {
     /************ program swtich button ************/
     Geometry* buttonG = new Sphere(2, 40, 40);
     Material* buttonM = new Material(Color::RED);
-    Entity* btn0 = new Entity("button0", buttonG, buttonM);
+    Entity* btn0 = new Entity(buttonG, buttonM, "button0");
     btn0->setPosition(Cvec3(-1.8, 1.9, -5));
     btn0->setScale(Cvec3(0.05, 0.05, 0.05));
     btn0->registerClickEventListener(new ProgramSwitchBtnEventListener());
@@ -417,7 +417,7 @@ void init() {
     Scene::addChild(btn0);
 
     /************ post-processing effect swtich button ************/
-    Entity* btn1 = new Entity("button1", buttonG, buttonM);
+    Entity* btn1 = new Entity(buttonG, buttonM, "button1");
     btn1->setPosition(Cvec3(-1.5, 1.9, -5));
     btn1->setScale(Cvec3(0.05, 0.05, 0.05));
     btn1->registerClickEventListener(new PostProcessingSwitchListener());
@@ -427,7 +427,7 @@ void init() {
     /************ light color buttons ************/
     for (int i = 0; i < 2; ++i) {
         Material* buttonM = new Material(Color::YELLOW);
-        Entity* btn = new Entity("button" + std::to_string(i + 1), buttonG, buttonM);
+        Entity* btn = new Entity(buttonG, buttonM, ("button" + std::to_string(i + 1)));
         btn->setPosition(Cvec3(-1.8, 1.9 - (i + 1) / 3.0, -5));
         btn->setScale(Cvec3(0.05, 0.05, 0.05));
         btn->registerClickEventListener(new LightColorBtnEventListener());
@@ -438,7 +438,7 @@ void init() {
     /************ specular light color buttons ************/
     for (int i = 0; i < 2; ++i) {
         Material* buttonM = new Material(Color::WHITE);
-        Entity* btn = new Entity("button" + std::to_string(i + 3), buttonG, buttonM);
+        Entity* btn = new Entity(buttonG, buttonM, ("button" + std::to_string(i + 3)));
         btn->setPosition(Cvec3(-1.5, 1.9 - (i + 1) / 3.0, -5));
         btn->setScale(Cvec3(0.05, 0.05, 0.05));
         btn->registerClickEventListener(new SpecularLightColorBtnEventListener());
