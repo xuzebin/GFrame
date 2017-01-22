@@ -40,3 +40,6 @@ cmake .. -G Xcode
 1. Run `ALL_BUILD`
 2. Run `install`
 3. Run examples
+
+## TODO
+1. Add support for different platforms. Currently only support Mac OSX.
