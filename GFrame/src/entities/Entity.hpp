@@ -2,7 +2,7 @@
 #define Entity_hpp
 
 #include <stdio.h>
-#include "../core/Transform.h"
+#include "../core/Transform.hpp"
 #include "../geometries/Geometry.hpp"
 #include "../materials/Material.h"
 //#include "../core/Camera.hpp"

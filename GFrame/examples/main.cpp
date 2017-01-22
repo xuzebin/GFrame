@@ -3,7 +3,7 @@
 #include "base/geometrymaker.h"
 #include "base/matrix4.h"
 #include "base/quat.h"
-#include "core/Transform.h"
+#include "core/Transform.hpp"
 #include "materials/Material.h"
 #include "core/Camera.hpp"
 #include "core/Scene.h"

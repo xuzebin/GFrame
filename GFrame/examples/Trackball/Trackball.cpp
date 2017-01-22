@@ -1,7 +1,7 @@
 #include <GLUT/glut.h>
 #include "base/glsupport.h"
 #include "base/quat.h"
-#include "core/Transform.h"
+#include "core/Transform.hpp"
 #include "materials/Material.h"
 #include "core/Scene.h"
 #include "core/Camera.hpp"

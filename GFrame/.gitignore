@@ -1,5 +1,5 @@
 Makefile_
-*.*~
+*~
 .DS_Store
 CMakeLists.txt_
 clean.sh
