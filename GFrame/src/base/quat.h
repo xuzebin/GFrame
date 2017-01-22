@@ -233,5 +233,4 @@ inline Quat interpolateCatmullRom(const Quat& q0,
 	return slerp(m, n, t);
 }
 
-
 #endif

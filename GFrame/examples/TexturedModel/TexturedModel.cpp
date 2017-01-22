@@ -66,16 +66,12 @@ void idle(void) {
     glutPostRedisplay();
 }
 
-void clear(void) {
-    Scene::removeAll();
-}
-
 void keyboard(unsigned char key, int x, int y) {
     switch (key) {
         case 'q':
         case 'Q':
         {
-            clear();
+            Scene::removeAll();
             exit(0);
             break;
         }

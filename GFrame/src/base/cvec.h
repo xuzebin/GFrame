@@ -7,7 +7,7 @@
 
 #include <cmath>
 #include <cassert>
-
+#include <iostream>
 
 
 static const double CS175_PI = 3.14159265358979323846264338327950288;
@@ -130,16 +130,31 @@ public:
     return *this /= std::sqrt(dot(*this, *this));
   }
     
-    friend std::ostream& operator << (std::ostream& os, const Cvec& v) {
-        os << "[";
-        for (int i = 0; i < n - 1; ++i) {
-            os << v[i] << ",";
-        }
-        os << v[n - 1] << "]";
-        return os;
-    }
+  friend std::ostream& operator << (std::ostream& os, const Cvec& v) {
+      os << "[";
+      for (int i = 0; i < n - 1; ++i) {
+          os << v[i] << ",";
+      }
+      os << v[n - 1] << "]";
+      return os;
+  }
     
 };
+
+template<typename T>
+inline bool equal(const Cvec<T,2>& v1, const Cvec<T,2>& v2, float epsilon) {
+    return fabs(v1[0] - v2[0]) < epsilon && fabs(v1[1] - v2[1]) < epsilon;
+}
+
+template<typename T>
+inline bool equal(const Cvec<T,3>& v1, const Cvec<T,3>& v2, float epsilon) {
+    return fabs(v1[0] - v2[0]) < epsilon && fabs(v1[1] - v2[1]) < epsilon && fabs(v1[2] - v2[2]) < epsilon;
+}
+
+template<typename T>
+inline bool equal(const Cvec<T,4>& v1, const Cvec<T,4>& v2, float epsilon) {
+    return fabs(v1[0] - v2[0]) < epsilon && fabs(v1[1] - v2[1]) < epsilon && fabs(v1[2] - v2[2]) < epsilon && fabs(v1[3] - v2[3]) < epsilon;
+}
 
 template<typename T>
 inline Cvec<T,3> cross(const Cvec<T,3>& a, const Cvec<T,3>& b) {

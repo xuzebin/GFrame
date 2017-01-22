@@ -9,14 +9,14 @@
 #include "core/Light.h"
 #include "programs/Shader.h"
 #include "programs/ColorShader.h"
+#include "controls/Trackball.hpp"
 
 int screenWidth = 600;
 int screenHeight = 600;
 Camera camera(Cvec3(0, 0, 0), Quat::makeXRotation(0));
+Trackball trackball;
 
 void display(void) {
-    Entity* model = Scene::getEntity("model0");
-    model->rotate(Quat::makeYRotation(0.5));
     Scene::render();
 }
 
@@ -47,11 +47,16 @@ void init(void) {
 
     Model* model0 = new Model("assets/models/ring/ring.obj", "model0", "assets/models/ring/");
     model0->material->setColor(0.2, 0.2, 0.2);
-    model0->setScale(Cvec3(20, 20, 20));
-    model0->setPosition(Cvec3(0, -0.5, -2));
+    model0->setScale(Cvec3(25, 25, 25));
+    model0->setPosition(Cvec3(0, -0.4, -2));
     model0->setRotation(Quat::makeYRotation(30));
     model0->setProgram(colorShader->getProgramId());
+    model0->transform.setPivot(0, 0.2, 0);
     Scene::addChild(model0);
+
+    //set trackball params
+    trackball.setScreenSize(screenWidth, screenHeight);
+    trackball.setRadius(screenWidth < screenHeight ? screenWidth / 2 : screenHeight / 2);
 
     // genereate vbo/ibo for the geometry of each Entity.
     Scene::createMeshes();
@@ -61,6 +66,8 @@ void reshape(int w, int h) {
     glViewport(0, 0, w, h);
     screenWidth = w;
     screenHeight = h;
+    trackball.setScreenSize(w, h);
+    trackball.setRadius(w < h ? w / 2 : h / 2);
 }
 
 void idle(void) {
@@ -81,6 +88,29 @@ void keyboard(unsigned char key, int x, int y) {
     }
 }
 
+bool mouseLeftDown = false;
+
+void mouse(int button, int state, int x, int y) {
+    if (button == GLUT_LEFT_BUTTON) {
+        if (state == GLUT_DOWN) {
+            trackball.record(x, y);
+            mouseLeftDown = true;
+        } else if (state == GLUT_UP) {
+            mouseLeftDown = false;
+        }
+    }
+}
+
+void motion(int x, int y) {
+    if (mouseLeftDown) {
+        Entity* model = Scene::getEntity("model0");
+        if (model != NULL) {
+            Quat rotation = trackball.getRotation(x, y);
+            model->setRotation(rotation);
+        }
+    }
+}
+
 int main(int argc, char **argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
@@ -92,6 +122,8 @@ int main(int argc, char **argv) {
     glutIdleFunc(idle);
 
     glutKeyboardFunc(keyboard);
+    glutMouseFunc(mouse);
+    glutMotionFunc(motion);
 
     init();
     glutMainLoop();

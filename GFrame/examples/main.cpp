@@ -25,6 +25,7 @@
 #include "glObjects/FrameBufferObject.h"
 #include "materials/Color.h"
 #include "materials/Cubemap.hpp"
+#include "controls/Trackball.hpp"
 
 int screenWidth = 600;
 int screenHeight = 600;
@@ -60,6 +61,7 @@ Entity* screen = NULL;//for post-processing
 FrameBufferObject* firstFBO;
 FrameBufferObject* secondFBO;
 
+Trackball trackball;
 
 
 
@@ -400,6 +402,7 @@ void init() {
     model0->setRotation(Quat::makeYRotation(20));
     model0->material->setColor(0.0, 0.8, 0.8);
     model0->setProgram(refractShader->getProgramId());
+    model0->transform.setPivot(0, 3, 0);
     Scene::addChild(model0);
 
     
@@ -470,6 +473,11 @@ void init() {
     screen = new Entity(plane, planeM);
     screen->setProgram(screenShader->getProgramId());
     Scene::setScreen(screen);
+
+
+    //set trackball params
+    float radius = screenWidth < screenHeight ? screenWidth / 2 : screenHeight / 2;
+    trackball.setRadiusAndScreenSize(radius, screenWidth, screenHeight);
 
     //this call genereate vbo/ibo for the geometry of each Entity.
     Scene::createMeshes();
@@ -559,89 +567,22 @@ void keyboard(unsigned char key, int x, int y) {
     }
 }
 
-Cvec2 getScreenSpaceCoordFromEyeSpace(const Cvec3& eyeSpaceCoord, const Matrix4& projection, int screenW, int screenH) {
-    if (eyeSpaceCoord[2] > -1e-8) {
-        throw string("z > 0");
-    }
-    Cvec4 p = projection * Cvec4(eyeSpaceCoord, 1);
-    Cvec3 clippedCoord = Cvec3(p[0], p[1], p[2]) / p[3];
-    return Cvec2(clippedCoord[0] * screenW / 2.0 + (screenW - 1) / 2.0, clippedCoord[1] * screenH / 2.0 + (screenH - 1) / 2.0);
-}
-
-Cvec2 getScreenSpaceCoordFromWorldSpace(const Matrix4& modelMatrix, const Matrix4& projection, int screenW, int screenH) {
-    Cvec4 eyeSpaceCoord = inv(camera.getViewMatrix()) * modelMatrix * Cvec4(0, 0, 0, 1);
-    return getScreenSpaceCoordFromEyeSpace(Cvec3(eyeSpaceCoord), projection, screenW, screenH);
-}
-
-double getScreenToEyeScale(double z, double fovy, int screenHeight) {
-    if (z > -1e-8) {
-        throw string("z > 0");
-    }
-    return -(z * tan(fovy * CS175_PI / 360.0)) * 2 / screenHeight;
-}
-
-Cvec3 getPickedPointOnSphereInScreenSpace(Entity* entity, int x, int y) {
-    Cvec2 centerInScreenSpace = getScreenSpaceCoordFromWorldSpace(entity->getModelMatrix(), camera.getProjectionMatrix(), screenWidth, screenHeight);
-    
-    double r = screenWidth / 2;
-    double cr = r / getScreenToEyeScale(entity->getPosition()[2], camera.getFov(), screenHeight);//here assume RBT in eye space.
-
-    double x_cx = x - centerInScreenSpace[0];
-    double y_cy = y - centerInScreenSpace[1];
-    
-    double pickedZ2 = cr * cr - x_cx * x_cx - y_cy * y_cy;
-    pickedZ2 = pickedZ2 < 0 ? 0 : pickedZ2;
-    double pickedZ = sqrt(pickedZ2);
-
-    return Cvec3(x, y, pickedZ);
-}
-
-Cvec3 prev_pos;
-Cvec3 cur_pos;
-bool rotating = false;
 void mouse(int button, int state, int x, int y) {
     Scene::updateMouseEvent(button, state, x, y, screenWidth, screenHeight);
-    
+
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-        Entity* model = Scene::getEntity(currentModel);
-        if (model == NULL) {
-            std::cerr << "model not found in the scene" << std::endl;
-            return;
-        }
-        
-        cur_pos = getPickedPointOnSphereInScreenSpace(model, x, screenHeight - y);
-        prev_pos = cur_pos;
-        rotating = true;
-    } else {
-        rotating = false;
+        trackball.record(x, y);
     }
-    
 }
 
 void motion(int x, int y) {
-    if (!rotating) {
-        return;
-    }
-
     Entity* model = Scene::getEntity(currentModel);
-    if (model == NULL) {
+    if (model != NULL) {
+        Quat rotation = trackball.getRotation(x, y);
+        model->setRotation(rotation);
+    } else {
         std::cerr << "model not found in the scene" << std::endl;
-        return;
     }
-
-    cur_pos = getPickedPointOnSphereInScreenSpace(model, x, screenHeight - y);
-    
-    Cvec2 center = getScreenSpaceCoordFromWorldSpace(model->getModelMatrix(), camera.getProjectionMatrix(), screenWidth, screenHeight);
-    Cvec3 c(center, 0);
-    
-    Cvec3 v1 = normalize(prev_pos - c);
-    Cvec3 v2 = normalize(cur_pos - c);
-    
-    Quat q1(0, v2);
-    Quat q2(0, -v1);
-    
-    Quat q = q1 * q2;
-    model->rotate(q);
 }
 
 bool insideWindow(int x, int y) {
@@ -660,6 +601,10 @@ void reshape(int w, int h) {
     glViewport(0, 0, w, h);
     screenWidth = w;
     screenHeight = h;
+
+    //set trackball params
+    trackball.setScreenSize(screenWidth, screenHeight);
+    trackball.setRadius(screenWidth < screenHeight ? screenWidth / 2 : screenHeight / 2);
 }
 
 void idle(void) {
