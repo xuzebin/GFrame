@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include "../core/Transform.hpp"
 #include "../geometries/Geometry.hpp"
-#include "../materials/Material.h"
+#include "../materials/Material.hpp"
 #include "../programs/Shader.h"
 #include "../core/Light.hpp"
 

@@ -1,9 +1,17 @@
 #include "Cubemap.hpp"
 #include "../base/glsupport.h"
 
+Cubemap::Cubemap() : texture(0)
+{
+}
+
+Cubemap::~Cubemap()
+{
+}
+
 void Cubemap::loadTextures(std::string posX, std::string negX,
-                   std::string posY, std::string negY,
-                   std::string posZ, std::string negZ) {
+                           std::string posY, std::string negY,
+                           std::string posZ, std::string negZ) {
     
     std::vector<std::string> cubemapFiles;
     cubemapFiles.push_back(posX);

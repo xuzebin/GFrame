@@ -2,7 +2,7 @@
 
 #include "Model.hpp"
 #include "../base/tiny_obj_loader.h"
-#include "../materials/Material.h"
+#include "../materials/Material.hpp"
 #include "../geometries/Geometry.hpp"
 
 Model::Model(const std::string fileName, std::string name, std::string basePath) : fileName(fileName),

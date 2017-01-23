@@ -4,7 +4,7 @@
 #include "base/matrix4.h"
 #include "base/quat.h"
 #include "core/Transform.hpp"
-#include "materials/Material.h"
+#include "materials/Material.hpp"
 #include "core/Camera.hpp"
 #include "core/Scene.hpp"
 #include "helper/Util.h"
