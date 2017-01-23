@@ -2,6 +2,16 @@
 #include "Geometry.hpp"
 #include "../base/geometrymaker.h"
 
+Geometry::Geometry() : indicesNum(0),
+                       boundingBoxLength(0),
+                       created(false)
+{
+}
+
+Geometry::~Geometry()
+{
+}
+
 Geometry& Geometry::operator = (const Geometry& g) {
     vertexVBO = g.vertexVBO;
     indexVBO = g.indexVBO;

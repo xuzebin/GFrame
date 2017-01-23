@@ -2,13 +2,11 @@
 #define Plane_h
 
 class Plane : public Geometry {
-    
-protected:
-    float size;
-    
 public:
     Plane(float size) {
         this->size = size;
+
+        indicesNum = 0;
         boundingBoxLength = size;
     }
     
@@ -23,6 +21,9 @@ public:
         
         Geometry::createVBOs(vtx, idx);
     }
+
+protected:
+    float size;
 };
 
 #endif /* Plane_h */

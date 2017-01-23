@@ -7,7 +7,9 @@ class Cube;
 class SkyBox : public Cube {
 
 public:
-    SkyBox(int size) : Cube(size) {}
+    SkyBox(int size) : Cube(size) 
+    {
+    }
 
     void createVBOs() {
         int vertexBufferLen, indexBufferLen;

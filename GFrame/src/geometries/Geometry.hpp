@@ -12,29 +12,26 @@
  * we use this type for polymorphism in Entity class.
  */
 class Geometry {
-    
-private:
-    GLuint vertexVBO;
-    GLuint indexVBO;
-    
-    bool created = false;
-    
-protected:
-    unsigned short indicesNum;
-    
-    float boundingBoxLength;//currently all objects are considered sphere when testing intersection
-    
 public:
     virtual void createVBOs() = 0;
-    virtual ~Geometry() {};
+    virtual ~Geometry();
     
     Geometry& operator = (const Geometry& g);
     void createVBOs(std::vector<Vertex> vtx, std::vector<unsigned short> idx);
     virtual void draw(const GLuint aPositionLocation, const GLuint aNomralLocation, const GLuint aTexCoordLocation, const GLuint aBinormalLocation, const GLuint aTangentLocation);
     
-    float getBoundingBoxLength() {
-        return boundingBoxLength;
-    }
+    float getBoundingBoxLength() { return boundingBoxLength; }
+
+protected:
+    Geometry();
+    unsigned short indicesNum;
+    float boundingBoxLength;//currently all objects are considered sphere when testing intersection
+
+private:
+    GLuint vertexVBO;
+    GLuint indexVBO;
+    
+    bool created;
 };
 
 

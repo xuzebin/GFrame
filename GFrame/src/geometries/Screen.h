@@ -3,16 +3,11 @@
 class Geometry;
 
 class Screen : public Geometry {
-
-protected:
-    float size;
-
-    GLuint positionVBO;
-    GLuint texCoordVBO;
-
 public:
     Screen() {
         this->size = 2;
+        
+        indicesNum = 0;
         this->boundingBoxLength = size;
     }
 
@@ -67,6 +62,12 @@ public:
         glDisableVertexAttribArray(aPositionLocation);
         glDisableVertexAttribArray(aTexCoordLocation);
     }
+
+protected:
+    float size;
+
+    GLuint positionVBO;
+    GLuint texCoordVBO;
 };
 
 #endif /* Screen_h */

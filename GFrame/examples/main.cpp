@@ -22,7 +22,7 @@
 #include "programs/ScreenShader.h"
 #include "programs/ShadowShader.h"
 #include "geometries/Screen.h"
-#include "glObjects/FrameBufferObject.h"
+#include "glObjects/FrameBufferObject.hpp"
 #include "materials/Color.h"
 #include "materials/Cubemap.hpp"
 #include "controls/Trackball.hpp"

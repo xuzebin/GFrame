@@ -2,34 +2,22 @@
 #define Mesh_hpp
 
 #include <stdio.h>
-#include <iostream>
 #include <vector>
-#include "../base/cvec.h"
-#include "../base/tiny_obj_loader.h"
 #include "Geometry.hpp"
-
 
 class Mesh : public Geometry {
     
+public:
+    Mesh(std::vector<Vertex> vtx, std::vector<unsigned short> idx);
+    ~Mesh();
+
+    void createVBOs();
+
 private:
     std::vector<Vertex> vtx;
     std::vector<unsigned short> idx;
     
-    void clearDataInMemoery() {
-        vtx.clear();
-        idx.clear();
-    }
-
-public:
-    
-    Mesh(std::vector<Vertex> vtx, std::vector<unsigned short> idx) {
-        this->vtx = vtx;
-        this->idx = idx;
-    }
-
-    void createVBOs();
-    
-
+    void clearDataInMemoery();
 };
 
 

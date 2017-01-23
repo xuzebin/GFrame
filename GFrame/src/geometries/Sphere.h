@@ -4,19 +4,15 @@
 #include "Geometry.hpp"
 
 class Sphere : public Geometry {
-    
-protected:
-    float radius;
-    float slices;
-    float stacks;
-    
-    bool stereo;
 public:
+
     Sphere(float radius, float slices, float stacks, bool stereo = false) {
         this->radius = radius;
         this->slices = slices;
         this->stacks = stacks;
         this->stereo = stereo;
+
+        indicesNum = 0;
         boundingBoxLength = 2 * radius;
     }
     
@@ -39,10 +35,17 @@ public:
         Geometry::createVBOs(vtx, idx);
     }
     
-    float getRadius() {
-        return radius;
-    }
+    float getRadius() const { return radius; }
+    float getSlices() const { return slices; }
+    float getStacks() const { return stacks; }
+    bool isStereo() const   { return stereo; }
+
+protected:
+    float radius;
+    float slices;
+    float stacks;
     
+    bool stereo;
 };
 
 

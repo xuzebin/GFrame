@@ -4,14 +4,12 @@
 class Geometry;
 
 class Cube : public Geometry {
-    
-protected:
-    float size;
-    
 public:
     
     Cube(float size) {
         this->size = size;
+
+        indicesNum = 0;
         boundingBoxLength = size;
     }
     
@@ -26,6 +24,9 @@ public:
         
         Geometry::createVBOs(vtx, idx);
     }
+
+protected:
+    float size;
 };
 
 #endif /* Cube_h */

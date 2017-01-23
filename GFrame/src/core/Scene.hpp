@@ -8,7 +8,7 @@
 #include "Camera.hpp"
 #include "../physics/Raycaster.h"
 #include "../geometries/Sphere.h"
-#include "../glObjects/FrameBufferObject.h"
+#include "../glObjects/FrameBufferObject.hpp"
 
 class Light;
 class Shader;
