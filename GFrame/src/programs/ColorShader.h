@@ -4,53 +4,6 @@
 class Shader;
 
 class ColorShader : public Shader {
-private:
-    //attributes
-    GLint aPositionLoc;
-    GLint aNormalLoc;
-    GLint aTexCoordLoc;
-    
-    //matrix uniforms
-    GLint uModelViewMatrixLoc;
-    GLint uProjectionMatrixLoc;
-    GLint uNormalMatrixLoc;
-    
-    //lights uniforms
-    GLint uLightPositionLoc0;
-    GLint uLightColorLoc0;
-    GLint uSpecularLightColorLoc0;
-    
-    GLint uLightPositionLoc1;
-    GLint uLightColorLoc1;
-    GLint uSpecularLightColorLoc1;
-    
-    //other uniforms
-    GLint uColorLoc;
-    
-    void getLocations(int programId) {
-        aPositionLoc = glGetAttribLocation(programId, "aPosition");
-        aNormalLoc = glGetAttribLocation(programId, "aNormal");
-        aTexCoordLoc = glGetAttribLocation(programId, "aTexCoord");
-        
-        uModelViewMatrixLoc = glGetUniformLocation(programId, "uModelViewMatrix");
-        uProjectionMatrixLoc = glGetUniformLocation(programId, "uProjectionMatrix");
-        uNormalMatrixLoc = glGetUniformLocation(programId, "uNormalMatrix");
-        uColorLoc = glGetUniformLocation(programId, "uColor");
-        
-        uLightPositionLoc0 = glGetUniformLocation(programId, "uLight[0].lightPosition");
-        uLightColorLoc0 = glGetUniformLocation(programId, "uLight[0].lightColor");
-        uSpecularLightColorLoc0 = glGetUniformLocation(programId, "uLight[0].specularLightColor");
-        
-        uLightPositionLoc1 = glGetUniformLocation(programId, "uLight[1].lightPosition");
-        uLightColorLoc1 = glGetUniformLocation(programId, "uLight[1].lightColor");
-        uSpecularLightColorLoc1 = glGetUniformLocation(programId, "uLight[1].specularLightColor");
-    }
-    
-    GLfloat modelMat[16];
-    GLfloat modelViewMat[16];
-    GLfloat projectionMat[16];
-    GLfloat normalMat[16];
-    
 public:
     
     void createProgram(const char* vertexShaderFileName, const char* fragmentShaderFileName) {
@@ -109,6 +62,53 @@ public:
         
         entity->geometry->draw(aPositionLoc, aNormalLoc, aTexCoordLoc, -1, -1);
     }
+
+private:
+    void getLocations(int programId) {
+        aPositionLoc = glGetAttribLocation(programId, "aPosition");
+        aNormalLoc = glGetAttribLocation(programId, "aNormal");
+        aTexCoordLoc = glGetAttribLocation(programId, "aTexCoord");
+        
+        uModelViewMatrixLoc = glGetUniformLocation(programId, "uModelViewMatrix");
+        uProjectionMatrixLoc = glGetUniformLocation(programId, "uProjectionMatrix");
+        uNormalMatrixLoc = glGetUniformLocation(programId, "uNormalMatrix");
+        uColorLoc = glGetUniformLocation(programId, "uColor");
+        
+        uLightPositionLoc0 = glGetUniformLocation(programId, "uLight[0].lightPosition");
+        uLightColorLoc0 = glGetUniformLocation(programId, "uLight[0].lightColor");
+        uSpecularLightColorLoc0 = glGetUniformLocation(programId, "uLight[0].specularLightColor");
+        
+        uLightPositionLoc1 = glGetUniformLocation(programId, "uLight[1].lightPosition");
+        uLightColorLoc1 = glGetUniformLocation(programId, "uLight[1].lightColor");
+        uSpecularLightColorLoc1 = glGetUniformLocation(programId, "uLight[1].specularLightColor");
+    }
+
+    //attributes
+    GLint aPositionLoc;
+    GLint aNormalLoc;
+    GLint aTexCoordLoc;
+    
+    //matrix uniforms
+    GLint uModelViewMatrixLoc;
+    GLint uProjectionMatrixLoc;
+    GLint uNormalMatrixLoc;
+    
+    //lights uniforms
+    GLint uLightPositionLoc0;
+    GLint uLightColorLoc0;
+    GLint uSpecularLightColorLoc0;
+    
+    GLint uLightPositionLoc1;
+    GLint uLightColorLoc1;
+    GLint uSpecularLightColorLoc1;
+    
+    //other uniforms
+    GLint uColorLoc;
+    
+    GLfloat modelMat[16];
+    GLfloat modelViewMat[16];
+    GLfloat projectionMat[16];
+    GLfloat normalMat[16];
 };
 
 #endif /* ColorShader_h */

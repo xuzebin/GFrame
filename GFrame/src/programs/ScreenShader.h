@@ -4,42 +4,6 @@
 class Shader;
 
 class ScreenShader : public Shader {
-
-protected:
-    //attributes
-    GLint aPositionLoc;
-    GLint aTexCoordLoc;
-
-    //texture uniforms
-    GLint uScreenFrameBufferLoc;
-
-    //screen resolution for fxaa shader
-    GLint uResolutionLoc;
-
-    //exposure for hdr tone shader
-    GLint uExposureLoc;
-
-    //blur size for blurring shader
-    GLint uBlurSizeLoc;
-
-    //pass mouse offset in toonify filtering shader
-    GLint uMouseXOffsetLoc;
-
-    float mouseX = 0.5f;
-
-    void getLocations(int programId) {
-        aPositionLoc = glGetAttribLocation(programId, "aPosition");
-        aTexCoordLoc = glGetAttribLocation(programId, "aTexCoord");
-
-        uScreenFrameBufferLoc = glGetUniformLocation(programId, "uScreenFrameBuffer");
-        uResolutionLoc = glGetUniformLocation(programId, "uResolution");//used for fxaa shader
-        uExposureLoc = glGetUniformLocation(programId, "uExposure");//for hdr tone shader
-        uBlurSizeLoc = glGetUniformLocation(programId, "uBlurSize");//for blur shaders
-        uMouseXOffsetLoc = glGetUniformLocation(programId, "uMouseXOffset");
-    }
-
-    float blurSize = 0.01;//size of kernal for gaussian filter shader
-
 public:
     ~ScreenShader() {
         glDeleteProgram(programId);
@@ -87,7 +51,40 @@ public:
     }
 
 
+protected:
+    void getLocations(int programId) {
+        aPositionLoc = glGetAttribLocation(programId, "aPosition");
+        aTexCoordLoc = glGetAttribLocation(programId, "aTexCoord");
 
+        uScreenFrameBufferLoc = glGetUniformLocation(programId, "uScreenFrameBuffer");
+        uResolutionLoc = glGetUniformLocation(programId, "uResolution");//used for fxaa shader
+        uExposureLoc = glGetUniformLocation(programId, "uExposure");//for hdr tone shader
+        uBlurSizeLoc = glGetUniformLocation(programId, "uBlurSize");//for blur shaders
+        uMouseXOffsetLoc = glGetUniformLocation(programId, "uMouseXOffset");
+    }
+
+    //attributes
+    GLint aPositionLoc;
+    GLint aTexCoordLoc;
+
+    //texture uniforms
+    GLint uScreenFrameBufferLoc;
+
+    //screen resolution for fxaa shader
+    GLint uResolutionLoc;
+
+    //exposure for hdr tone shader
+    GLint uExposureLoc;
+
+    //blur size for blurring shader
+    GLint uBlurSizeLoc;
+
+    //pass mouse offset in toonify filtering shader
+    GLint uMouseXOffsetLoc;
+
+    float mouseX = 0.5f;
+
+    float blurSize = 0.01;//size of kernal for gaussian filter shader
 };
 
 #endif /* ScreenShader_h */

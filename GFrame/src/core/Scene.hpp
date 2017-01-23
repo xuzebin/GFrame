@@ -1,24 +1,27 @@
 #ifndef Scene_hpp
 #define Scene_hpp
 
+#include <GLUT/glut.h>
 #include <unordered_map>
 #include <vector>
 #include <string>
-#include "../entities/Entity.hpp"
-#include "Camera.hpp"
-#include "../physics/Raycaster.h"
-#include "../geometries/Sphere.h"
-#include "../glObjects/FrameBufferObject.hpp"
 
+class Camera;
+class Entity;
 class Light;
 class Shader;
 class ScreenShader;
+class Raycaster;
+class FrameBufferObject;
+
 /**
  * A simple scene containing entities to be rendered.
  */
 class Scene {
 
 public:
+    ~Scene();
+
     //currently only support 2 lights.
     static Light* light0;
     static Light* light1;
@@ -68,6 +71,8 @@ private:
     
     static FrameBufferObject* frameBufferObject;
     static Entity* screen;
+
+    static Raycaster raycaster;
 };
 
 

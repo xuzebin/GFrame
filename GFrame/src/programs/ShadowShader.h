@@ -3,63 +3,6 @@
 class Shader;
 
 class ShadowShader : public Shader {
-protected:
-    //attributes
-    GLint aPositionLoc;
-    GLint aNormalLoc;
-    GLint aTexCoordLoc;
-
-    //matrix uniforms
-    GLint uModelMatrixLoc;
-    GLint uModelViewMatrixLoc;
-    GLint uProjectionMatrixLoc;
-    GLint uNormalMatrixLoc;
-
-    //light uniforms
-    GLint uLightPositionLoc;
-    GLint uLightColorLoc;
-    GLint uSpecularLightColorLoc;
-
-    //texture uniforms
-    GLint uShadowTextureLoc;
-
-    //color uniform
-    GLint uColorLoc;
-
-
-    //spot light uniforms
-    GLint uSpotDirectionLoc;
-    GLint uSpotExponentLoc;
-    GLint uSpotCosCutoffLoc;
-
-    void getLocations(int programId) {
-        aPositionLoc = glGetAttribLocation(programId, "aPosition");
-        aNormalLoc = glGetAttribLocation(programId, "aNormal");
-        aTexCoordLoc = glGetAttribLocation(programId, "aTexCoord");
-
-        uModelMatrixLoc = glGetUniformLocation(programId, "uModelMatrix");
-        uModelViewMatrixLoc = glGetUniformLocation(programId, "uModelViewMatrix");
-        uProjectionMatrixLoc = glGetUniformLocation(programId, "uProjectionMatrix");
-        uNormalMatrixLoc = glGetUniformLocation(programId, "uNormalMatrix");
-        uColorLoc = glGetUniformLocation(programId, "uColor");
-
-        uLightPositionLoc = glGetUniformLocation(programId, "uLightPosition");
-        uLightColorLoc = glGetUniformLocation(programId, "uLightColor");
-        uSpecularLightColorLoc = glGetUniformLocation(programId, "uSpecularLightColor");
-
-        uShadowTextureLoc = glGetUniformLocation(programId, "uShadowTexture");
-
-        uSpotDirectionLoc = glGetUniformLocation(programId, "uSpotDirection");
-        uSpotExponentLoc = glGetUniformLocation(programId, "uSpotExponent");
-        uSpotCosCutoffLoc = glGetUniformLocation(programId, "uSpotCosCutoff");
-    }
-
-    GLfloat modelMat[16];
-    GLfloat modelViewMat[16];
-    GLfloat projectionMat[16];
-    GLfloat normalMat[16];
-
-
 public:
 
     void createProgram(const char* vertexShaderFileName, const char* fragmentShaderFileName) {
@@ -132,6 +75,62 @@ public:
 
         entity->geometry->draw(aPositionLoc, aNormalLoc, aTexCoordLoc, -1, -1);
     }
+protected:
+    void getLocations(int programId) {
+        aPositionLoc = glGetAttribLocation(programId, "aPosition");
+        aNormalLoc = glGetAttribLocation(programId, "aNormal");
+        aTexCoordLoc = glGetAttribLocation(programId, "aTexCoord");
+
+        uModelMatrixLoc = glGetUniformLocation(programId, "uModelMatrix");
+        uModelViewMatrixLoc = glGetUniformLocation(programId, "uModelViewMatrix");
+        uProjectionMatrixLoc = glGetUniformLocation(programId, "uProjectionMatrix");
+        uNormalMatrixLoc = glGetUniformLocation(programId, "uNormalMatrix");
+        uColorLoc = glGetUniformLocation(programId, "uColor");
+
+        uLightPositionLoc = glGetUniformLocation(programId, "uLightPosition");
+        uLightColorLoc = glGetUniformLocation(programId, "uLightColor");
+        uSpecularLightColorLoc = glGetUniformLocation(programId, "uSpecularLightColor");
+
+        uShadowTextureLoc = glGetUniformLocation(programId, "uShadowTexture");
+
+        uSpotDirectionLoc = glGetUniformLocation(programId, "uSpotDirection");
+        uSpotExponentLoc = glGetUniformLocation(programId, "uSpotExponent");
+        uSpotCosCutoffLoc = glGetUniformLocation(programId, "uSpotCosCutoff");
+    }
+
+    //attributes
+    GLint aPositionLoc;
+    GLint aNormalLoc;
+    GLint aTexCoordLoc;
+
+    //matrix uniforms
+    GLint uModelMatrixLoc;
+    GLint uModelViewMatrixLoc;
+    GLint uProjectionMatrixLoc;
+    GLint uNormalMatrixLoc;
+
+    //light uniforms
+    GLint uLightPositionLoc;
+    GLint uLightColorLoc;
+    GLint uSpecularLightColorLoc;
+
+    //texture uniforms
+    GLint uShadowTextureLoc;
+
+    //color uniform
+    GLint uColorLoc;
+
+
+    //spot light uniforms
+    GLint uSpotDirectionLoc;
+    GLint uSpotExponentLoc;
+    GLint uSpotCosCutoffLoc;
+
+    GLfloat modelMat[16];
+    GLfloat modelViewMat[16];
+    GLfloat projectionMat[16];
+    GLfloat normalMat[16];
+
 };
 
 #endif /* ShadowShader_h */

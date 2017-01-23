@@ -4,69 +4,6 @@
 class Shader;
 
 class TextureShader : public Shader {
-    
-protected:
-    //attributes
-    GLint aPositionLoc;
-    GLint aNormalLoc;
-    GLint aTexCoordLoc;
-    
-    //matrix uniforms
-    GLint uModelMatrixLoc;
-    GLint uModelViewMatrixLoc;
-    GLint uProjectionMatrixLoc;
-    GLint uNormalMatrixLoc;
-    
-    //lights uniforms
-    GLint uLightPositionLoc0;
-    GLint uLightColorLoc0;
-    GLint uSpecularLightColorLoc0;
-    
-    GLint uLightPositionLoc1;
-    GLint uLightColorLoc1;
-    GLint uSpecularLightColorLoc1;
-    
-    //texture uniforms
-    GLint uDiffuseTextureLoc;
-    
-    //color uniform
-    GLint uColorLoc;
-    
-    //cubemap
-    GLint uEnvironmentMapLoc;
-    
-    
-    
-    void getLocations(int programId) {
-        aPositionLoc = glGetAttribLocation(programId, "aPosition");
-        aNormalLoc = glGetAttribLocation(programId, "aNormal");
-        aTexCoordLoc = glGetAttribLocation(programId, "aTexCoord");
-        
-        uModelMatrixLoc = glGetUniformLocation(programId, "uModelMatrix");
-        uModelViewMatrixLoc = glGetUniformLocation(programId, "uModelViewMatrix");
-        uProjectionMatrixLoc = glGetUniformLocation(programId, "uProjectionMatrix");
-        uNormalMatrixLoc = glGetUniformLocation(programId, "uNormalMatrix");
-        uColorLoc = glGetUniformLocation(programId, "uColor");
-        
-        uLightPositionLoc0 = glGetUniformLocation(programId, "uLight[0].lightPosition");
-        uLightColorLoc0 = glGetUniformLocation(programId, "uLight[0].lightColor");
-        uSpecularLightColorLoc0 = glGetUniformLocation(programId, "uLight[0].specularLightColor");
-        
-        uLightPositionLoc1 = glGetUniformLocation(programId, "uLight[1].lightPosition");
-        uLightColorLoc1 = glGetUniformLocation(programId, "uLight[1].lightColor");
-        uSpecularLightColorLoc1 = glGetUniformLocation(programId, "uLight[1].specularLightColor");
-        
-        uDiffuseTextureLoc = glGetUniformLocation(programId, "uDiffuseTexture");
-
-        uEnvironmentMapLoc = glGetUniformLocation(programId, "uEnvironmentMap");
-    }
-    
-    GLfloat modelMat[16];
-    GLfloat modelViewMat[16];
-    GLfloat projectionMat[16];
-    GLfloat normalMat[16];
-
-
 public:
     
     void createProgram(const char* vertexShaderFileName, const char* fragmentShaderFileName) {
@@ -159,6 +96,65 @@ public:
         
         entity->geometry->draw(aPositionLoc, aNormalLoc, aTexCoordLoc, -1, -1);
     }
+
+protected:
+    void getLocations(int programId) {
+        aPositionLoc = glGetAttribLocation(programId, "aPosition");
+        aNormalLoc = glGetAttribLocation(programId, "aNormal");
+        aTexCoordLoc = glGetAttribLocation(programId, "aTexCoord");
+        
+        uModelMatrixLoc = glGetUniformLocation(programId, "uModelMatrix");
+        uModelViewMatrixLoc = glGetUniformLocation(programId, "uModelViewMatrix");
+        uProjectionMatrixLoc = glGetUniformLocation(programId, "uProjectionMatrix");
+        uNormalMatrixLoc = glGetUniformLocation(programId, "uNormalMatrix");
+        uColorLoc = glGetUniformLocation(programId, "uColor");
+        
+        uLightPositionLoc0 = glGetUniformLocation(programId, "uLight[0].lightPosition");
+        uLightColorLoc0 = glGetUniformLocation(programId, "uLight[0].lightColor");
+        uSpecularLightColorLoc0 = glGetUniformLocation(programId, "uLight[0].specularLightColor");
+        
+        uLightPositionLoc1 = glGetUniformLocation(programId, "uLight[1].lightPosition");
+        uLightColorLoc1 = glGetUniformLocation(programId, "uLight[1].lightColor");
+        uSpecularLightColorLoc1 = glGetUniformLocation(programId, "uLight[1].specularLightColor");
+        
+        uDiffuseTextureLoc = glGetUniformLocation(programId, "uDiffuseTexture");
+
+        uEnvironmentMapLoc = glGetUniformLocation(programId, "uEnvironmentMap");
+    }
+
+    //attributes
+    GLint aPositionLoc;
+    GLint aNormalLoc;
+    GLint aTexCoordLoc;
+    
+    //matrix uniforms
+    GLint uModelMatrixLoc;
+    GLint uModelViewMatrixLoc;
+    GLint uProjectionMatrixLoc;
+    GLint uNormalMatrixLoc;
+    
+    //lights uniforms
+    GLint uLightPositionLoc0;
+    GLint uLightColorLoc0;
+    GLint uSpecularLightColorLoc0;
+    
+    GLint uLightPositionLoc1;
+    GLint uLightColorLoc1;
+    GLint uSpecularLightColorLoc1;
+    
+    //texture uniforms
+    GLint uDiffuseTextureLoc;
+    
+    //color uniform
+    GLint uColorLoc;
+    
+    //cubemap
+    GLint uEnvironmentMapLoc;
+    
+    GLfloat modelMat[16];
+    GLfloat modelViewMat[16];
+    GLfloat projectionMat[16];
+    GLfloat normalMat[16];
 };
 
 #endif /* TextureShader_h */

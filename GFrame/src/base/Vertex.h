@@ -5,6 +5,7 @@
 #include "geometrymaker.h"
 
 struct Vertex {
+
     Cvec3f position;
     Cvec3f normal;
     Cvec2f texCoord;
@@ -13,6 +14,7 @@ struct Vertex {
     Cvec3f tangent;
     
     Vertex() {}
+    ~Vertex() {}
     
     Vertex& operator = (const GenericVertex& v) {
         position = v.pos;

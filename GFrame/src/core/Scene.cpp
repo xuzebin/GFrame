@@ -1,4 +1,8 @@
 #include "Scene.hpp"
+#include "Camera.hpp"
+#include "../entities/Entity.hpp"
+#include "../physics/Raycaster.hpp"
+#include "../glObjects/FrameBufferObject.hpp"
 
 std::unordered_map<std::string, Entity*> Scene::entityTable;
 std::unordered_map<int, Shader*> Scene::shaderTable;
@@ -12,8 +16,15 @@ Camera* Scene::camera = NULL;
 Light* Scene::light0 = NULL;
 Light* Scene::light1 = NULL;
 
+Raycaster Scene::raycaster;
+
 Scene::Scene()
 {
+}
+
+Scene::~Scene()
+{
+    removeAll();
 }
 
 Light* Scene::getLight(int index) {
@@ -46,7 +57,7 @@ bool Scene::testIntersect(Entity* entity, int x, int y, int screenWidth, int scr
     if (entity == NULL) {
         return false;
     }
-    return Raycaster::isPicked(x, y, screenWidth, screenHeight, camera->getProjectionMatrix(), camera->getViewMatrix(), camera->getPosition(), entity->getPosition(), entity->getBoundingBoxLength() / 2.0);
+    return raycaster.isPicked(x, y, screenWidth, screenHeight, camera->getProjectionMatrix(), camera->getViewMatrix(), camera->getPosition(), entity->getPosition(), entity->getBoundingBoxLength() / 2.0);
 }
 
 void Scene::renderLoop() {
@@ -159,3 +170,4 @@ void Scene::addShader(Shader* shader) {
         std::cerr << "program: " << programId << " already exists." << std::endl;
     }
 }
+
