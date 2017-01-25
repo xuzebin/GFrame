@@ -31,7 +31,7 @@ void Entity::createMesh()  {
     initState.color = material->getColor();
 }
 
-void Entity::draw(Camera* camera, Shader* shader, Light* light0, Light* light1) {
+void Entity::draw(std::shared_ptr<Camera> camera, Shader* shader, std::shared_ptr<Light> light0, std::shared_ptr<Light> light1) {
     if (!isVisible()) {
         return;
     }

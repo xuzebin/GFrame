@@ -14,7 +14,7 @@ public:
         getLocations(programId);
     }
 
-    void setLocationsAndDraw(Entity* entity, Camera* camera, Light* light0, Light* light1) {
+    void setLocationsAndDraw(Entity* entity, std::shared_ptr<Camera> camera, std::shared_ptr<Light> light0, std::shared_ptr<Light> light1) {
         glUseProgram(programId);
 
         if (entity->material->hasDiffuseTexture()) {//we store the screen frame buffer texture in diffuse texture.

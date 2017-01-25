@@ -15,7 +15,7 @@ public:
         getLocations(programId);
     }
     
-    void setLocationsAndDraw(Entity* entity, Camera* camera, Light* light0, Light* light1) {
+    void setLocationsAndDraw(Entity* entity, std::shared_ptr<Camera> camera, std::shared_ptr<Light> light0, std::shared_ptr<Light> light1) {
         glUseProgram(programId);
         
         Matrix4 projectionMatrix = camera->getProjectionMatrix();
@@ -47,7 +47,7 @@ public:
         Cvec3f color = entity->material->getColor();
         glUniform3f(uColorLoc, color[0], color[1], color[2]);
         
-        if (light0 != NULL) {
+        if (light0 != nullptr) {
             Cvec3 lightPosEye0 = light0->getPositionInEyeSpace(viewMatrix);
             glUniform3f(uLightPositionLoc0, lightPosEye0[0], lightPosEye0[1], lightPosEye0[2]);
             Cvec3f lightColor = light0->lightColor;
@@ -55,7 +55,7 @@ public:
             Cvec3f specularLightColor = light0->specularLightColor;
             glUniform3f(uSpecularLightColorLoc0, specularLightColor[0], specularLightColor[1], specularLightColor[2]);
         }
-        if (light1 != NULL) {
+        if (light1 != nullptr) {
             Cvec3 lightPosEye1 = light1->getPositionInEyeSpace(viewMatrix);
             glUniform3f(uLightPositionLoc1, lightPosEye1[0], lightPosEye1[1], lightPosEye1[2]);
             Cvec3f lightColor = light1->lightColor;

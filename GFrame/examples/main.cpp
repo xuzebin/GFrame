@@ -7,7 +7,6 @@
 #include "materials/Material.hpp"
 #include "core/Camera.hpp"
 #include "core/Scene.hpp"
-#include "helper/Util.h"
 #include "geometries/Geometry.hpp"
 #include "geometries/Cube.h"
 #include "geometries/Plane.h"
@@ -50,11 +49,12 @@ ScreenShader* cartoonifyShader;
 ScreenShader* currentEffectShader = NULL;//record current effect for the whole scene (post-processing)
 
 
-Camera camera(Cvec3(0, 0, 0), Quat::makeXRotation(0));
+//Camera camera(Cvec3(0, 0, 0), Quat::makeXRotation(0));
+
 
 std::string currentModel = "model0";
 
-Light* currentMovingLight;
+std::shared_ptr<Light> currentMovingLight;
 
 Entity* screen = NULL;//for post-processing
 
@@ -129,7 +129,7 @@ public:
                 break;
             }
             case 6:
-            {
+           {
                 screen->setProgram(cartoonifyShader->getProgramId());
                 currentEffectShader = cartoonifyShader;
                 break;
@@ -199,22 +199,22 @@ public:
             lightColor0 = (lightColor0 + 1) % 2;
             if (lightColor0 == 0) {
                 currentMovingLight = Scene::getLight(0);
-                Scene::light0->lightColor = Color::WHITE;
+                Scene::getLight(0)->lightColor = Color::WHITE;
                 button->initState.color = Color::YELLOW;
             } else {
                 currentMovingLight = NULL;
-                Scene::light0->lightColor = Color::BLACK;
+                Scene::getLight(0)->lightColor = Color::BLACK;
                 button->initState.color = Color::BLACK;
             }
         } else {
             lightColor1 = (lightColor1 + 1) % 2;
             if (lightColor1 == 0) {
                 currentMovingLight = Scene::getLight(1);
-                Scene::light1->lightColor = Color::WHITE;
+                Scene::getLight(1)->lightColor = Color::WHITE;
                 button->initState.color = Color::YELLOW;
             } else {
                 currentMovingLight = NULL;
-                Scene::light1->lightColor = Color::BLACK;
+                Scene::getLight(1)->lightColor = Color::BLACK;
                 button->initState.color = Color::BLACK;
             }
         }
@@ -239,22 +239,22 @@ public:
         if (button->getName() == "button3") {
             spcularLightColorOn0 = !spcularLightColorOn0;
             if(spcularLightColorOn0) {
-                Scene::light0->specularLightColor = Color::WHITE;
+                Scene::getLight(0)->specularLightColor = Color::WHITE;
                 button->material->setColor(Color::WHITE);
                 button->initState.color = Cvec3f(Color::WHITE);
             } else {
-                Scene::light0->specularLightColor = Color::BLACK;
+                Scene::getLight(0)->specularLightColor = Color::BLACK;
                 button->material->setColor(Color::BLACK);
                 button->initState.color = Cvec3f(Color::BLACK);
             }
         } else {
             spcularLightColorOn1 = !spcularLightColorOn1;
             if(spcularLightColorOn1) {
-                Scene::light1->specularLightColor = Color::WHITE;
+                Scene::getLight(1)->specularLightColor = Color::WHITE;
                 button->material->setColor(Color::WHITE);
                 button->initState.color = Color::WHITE;
             } else {
-                Scene::light1->specularLightColor = Color::BLACK;
+                Scene::getLight(1)->specularLightColor = Color::BLACK;
                 button->material->setColor(Color::BLACK);
                 button->initState.color = Color::BLACK;
             }
@@ -302,7 +302,7 @@ void display(void) {
         if (screen != NULL) {
             screen->material->setDiffuseTextureId(firstFBO->getFrameBufferTexture());
             screen->setProgram(horizontalBlurShader->getProgramId());
-            screen->draw(Scene::camera, horizontalBlurShader, Scene::light0, Scene::light1);
+            screen->draw(Scene::camera, horizontalBlurShader, Scene::getLight(0), Scene::getLight(1));
         }
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -310,7 +310,7 @@ void display(void) {
         if (screen != NULL) {
             screen->material->setDiffuseTextureId(secondFBO->getFrameBufferTexture());
             screen->setProgram(verticalBlurShader->getProgramId());
-            screen->draw(Scene::camera, verticalBlurShader, Scene::light0, Scene::light1);
+            screen->draw(Scene::camera, verticalBlurShader, Scene::getLight(0), Scene::getLight(1));
         }
         
         glutSwapBuffers();
@@ -385,11 +385,16 @@ void init() {
     Scene::addShader(reflectShader);
     Scene::addShader(refractShader);
 
-    Scene::setCamera(&camera);
-    Light* light0 = new Light();
-    light0->setPosition(1, 5, -5);//1,5,-5
-    Light* light1 = new Light();
-    light1->setPosition(-1, 0, -4);//0,0,-6  , 1,5,0
+
+    auto camera = std::make_shared<Camera>(Cvec3(0, 0, 0), Quat::makeXRotation(0));
+    Scene::setCamera(camera);
+    
+    auto light0 = std::make_shared<Light>();
+    light0->setPosition(1, 5, -5);
+
+    auto light1 = std::make_shared<Light>();
+    light1->setPosition(-1, 0, -4);
+
     Scene::setLight0(light0);
     Scene::setLight1(light1);
 
@@ -521,11 +526,11 @@ void keyboard(unsigned char key, int x, int y) {
     switch(key) {
         case 'l':
         case 'L':
-            camera.rotate(Quat::makeYRotation(10));
+            Scene::getCamera()->rotate(Quat::makeYRotation(10));
             break;
         case 'k':
         case 'K':
-            camera.rotate(Quat::makeYRotation(-10));
+            Scene::getCamera()->rotate(Quat::makeYRotation(-10));
             break;
         case 's':
         case 'S':

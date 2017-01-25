@@ -22,18 +22,14 @@ class Scene {
 public:
     ~Scene();
 
-    //currently only support 2 lights.
-    static Light* light0;
-    static Light* light1;
-    
-    static Camera* camera;
+    static std::shared_ptr<Camera> camera;
 
-    static void setCamera(Camera* camera_) { camera = camera_; }
-    static void setLight0(Light* light)    { light0 = light; }
-    static void setLight1(Light* light)    { light1 = light; }
+    static void setCamera(std::shared_ptr<Camera> camera) { Scene::camera = camera; }
+    static void setLight0(std::shared_ptr<Light> light)   { light0 = light; }
+    static void setLight1(std::shared_ptr<Light> light)   { light1 = light; }
 
-    static Camera* getCamera() { return camera; }
-    static Light* getLight(int index);
+    static std::shared_ptr<Camera> getCamera()            { return camera; }
+    static std::shared_ptr<Light> getLight(int index);
 
     static void addChild(Entity* entity);
 
@@ -72,7 +68,10 @@ private:
     static FrameBufferObject* frameBufferObject;
     static Entity* screen;
 
-    static Raycaster raycaster;
+    static std::unique_ptr<Raycaster> raycaster;
+
+    static std::shared_ptr<Light> light0;
+    static std::shared_ptr<Light> light1;
 };
 
 

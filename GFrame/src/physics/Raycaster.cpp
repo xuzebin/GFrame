@@ -9,9 +9,9 @@ Raycaster::~Raycaster()
 {
 }
 
-bool Raycaster::isPicked(int x, int y, int screenWidth, int screenHeight, const Matrix4& projectionMatrix, const Matrix4& viewMatrix, const Cvec3& cameraPosition, const Cvec3& center, double radius) {
-    Cvec3 rayDirection = castRay(x, y, screenWidth, screenHeight, projectionMatrix, viewMatrix);
-    return raySphereIntersect(center, radius, cameraPosition, rayDirection);
+bool Raycaster::isPicked(int x, int y, int screenWidth, int screenHeight, const Matrix4& projectionMatrix, const Matrix4& viewMatrix, const Cvec3& cameraPosition, const Cvec3& center, double radius, double zNear) {
+    const Cvec3& rayDirection = castRay(x, y, screenWidth, screenHeight, projectionMatrix, viewMatrix);
+    return raySphereIntersect(center, radius, cameraPosition, rayDirection, zNear);
 }
     
 //get ray direction
@@ -39,9 +39,9 @@ const Cvec3& Raycaster::castRay(int x, int y, int windowWidth, int windowHeight,
 }
 
 //ray sphere intersection
-bool Raycaster::raySphereIntersect(const Cvec3& center, double radius, const Cvec3& cameraPosition, const Cvec3& rayDirection) {
+bool Raycaster::raySphereIntersect(const Cvec3& center, double radius, const Cvec3& cameraPosition, const Cvec3& rayDirection, double zNear) {
     Cvec3 nearPos = cameraPosition;
-    nearPos += Cvec3(0, 0, Camera::Z_NEAR);
+    nearPos += Cvec3(0, 0, zNear);
     Cvec3 toCenterDirection = center - nearPos;
     double t = dot(toCenterDirection, rayDirection);
         

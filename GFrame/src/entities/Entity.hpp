@@ -44,7 +44,7 @@ public:
     ~Entity();
 
     void createMesh();
-    void draw(Camera* camera, Shader* shader, Light* light0, Light* light1);
+    void draw(std::shared_ptr<Camera> camera, Shader* shader, std::shared_ptr<Light> light0, std::shared_ptr<Light> light1);
 
     void acceptLight(int lightID);
     void rejectLight(int lightID);

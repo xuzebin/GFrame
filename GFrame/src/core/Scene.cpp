@@ -10,13 +10,12 @@ std::vector<Entity*> Scene::entities;
 
 FrameBufferObject* Scene::frameBufferObject = NULL;
 Entity* Scene::screen = NULL;
+std::shared_ptr<Camera> Scene::camera(nullptr);
 
-Camera* Scene::camera = NULL;
+std::shared_ptr<Light> Scene::light0(nullptr);
+std::shared_ptr<Light> Scene::light1(nullptr);
 
-Light* Scene::light0 = NULL;
-Light* Scene::light1 = NULL;
-
-Raycaster Scene::raycaster;
+std::unique_ptr<Raycaster> Scene::raycaster(nullptr);
 
 Scene::Scene()
 {
@@ -27,7 +26,7 @@ Scene::~Scene()
     removeAll();
 }
 
-Light* Scene::getLight(int index) {
+std::shared_ptr<Light> Scene::getLight(int index) {
     switch(index) {
         case 0:
             return light0;
@@ -57,7 +56,14 @@ bool Scene::testIntersect(Entity* entity, int x, int y, int screenWidth, int scr
     if (entity == NULL) {
         return false;
     }
-    return raycaster.isPicked(x, y, screenWidth, screenHeight, camera->getProjectionMatrix(), camera->getViewMatrix(), camera->getPosition(), entity->getPosition(), entity->getBoundingBoxLength() / 2.0);
+//      if (raycaster == NULL) {
+//         raycaster = new Raycaster();
+//     }
+    if (raycaster == nullptr) {
+        raycaster.reset(new Raycaster());
+    }
+    return raycaster->isPicked(x, y, screenWidth, screenHeight, camera->getProjectionMatrix(), camera->getViewMatrix(), camera->getPosition(), entity->getPosition(), entity->getBoundingBoxLength() / 2.0, camera->getZNear());
+
 }
 
 void Scene::renderLoop() {
@@ -120,14 +126,11 @@ void Scene::removeAll() {
     entities.clear();
     entityTable.clear();
     shaderTable.clear();
-    delete light0;
-    delete light1;
 }
 
 //TODO change method name
 void Scene::updateMouseEvent(int button , int state, int x, int y, int screenWidth, int screenHeight) {
     //test intersection
-        
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
         //NOTE: currently only supports ray sphere intersection.
         for(auto it = entities.begin(); it != entities.end(); ++it) {

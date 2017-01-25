@@ -14,7 +14,6 @@ class Shader;
 
 int screenWidth = 600;
 int screenHeight = 600;
-Camera camera(Cvec3(0, 0, 0), Quat::makeXRotation(0));
 Trackball trackball;
 
 void display(void) {
@@ -37,12 +36,15 @@ void init(void) {
     colorShader->createProgram(vertexShader.c_str(), fragmentShader.c_str());
     Scene::addShader(colorShader);
 
-    Scene::setCamera(&camera);
+    auto camera = make_shared<Camera>(Cvec3(0, 0, 0), Quat::makeXRotation(0));
+    Scene::setCamera(camera);
 
-    Light* light0 = new Light();
+    auto light0 = std::make_shared<Light>();
     light0->setPosition(1, 5, -5);
-    Light* light1 = new Light();
+
+    auto light1 = std::make_shared<Light>();
     light1->setPosition(-1, 0, -4);
+
     Scene::setLight0(light0);
     Scene::setLight1(light1);
 
