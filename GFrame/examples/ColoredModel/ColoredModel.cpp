@@ -15,7 +15,7 @@ int screenHeight = 600;
 
 
 void display(void) {
-    Entity* model = Scene::getEntity("model0");
+    auto model = Scene::getEntity("model0");
     model->rotate(Quat::makeYRotation(0.5));
     Scene::render();
 }
@@ -32,7 +32,7 @@ void init(void) {
     std::string vertexShader = "shaders/vertex_shader_simple.glsl";
     std::string fragmentShader = "shaders/fragment_shader_color.glsl";
 
-    ColorShader* colorShader = new ColorShader();
+    auto colorShader = std::make_shared<ColorShader>();
     colorShader->createProgram(vertexShader.c_str(), fragmentShader.c_str());
     Scene::addShader(colorShader);
 
@@ -47,12 +47,12 @@ void init(void) {
     Scene::setLight0(light0);
     Scene::setLight1(light1);
 
-    Model* model0 = new Model("assets/models/ring/ring.obj", "model0", "assets/models/ring/");
+    auto model0 = std::make_shared<Model>("assets/models/ring/ring.obj", "model0", "assets/models/ring/");
     model0->material->setColor(0.2, 0.2, 0.2);
     model0->setScale(Cvec3(20, 20, 20));
     model0->setPosition(Cvec3(0, -0.5, -2));
     model0->setRotation(Quat::makeYRotation(30));
-    model0->setProgram(colorShader->getProgramId());
+    model0->setShader(colorShader);
     Scene::addChild(model0);
 
     // genereate vbo/ibo for the geometry of each Entity.
@@ -74,7 +74,6 @@ void keyboard(unsigned char key, int x, int y) {
         case 'q':
         case 'Q':
         {
-            Scene::removeAll();
             exit(0);
             break;
         }

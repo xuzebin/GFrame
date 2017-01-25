@@ -32,7 +32,7 @@ void init(void) {
     std::string vertexShader = "shaders/vertex_shader_simple.glsl";
     std::string fragmentShader = "shaders/fragment_shader_color.glsl";
 
-    ColorShader* colorShader = new ColorShader();
+    auto colorShader = std::make_shared<ColorShader>();
     colorShader->createProgram(vertexShader.c_str(), fragmentShader.c_str());
     Scene::addShader(colorShader);
 
@@ -48,12 +48,12 @@ void init(void) {
     Scene::setLight0(light0);
     Scene::setLight1(light1);
 
-    Model* model0 = new Model("assets/models/ring/ring.obj", "model0", "assets/models/ring/");
+    auto model0 = std::make_shared<Model>("assets/models/ring/ring.obj", "model0", "assets/models/ring/");
     model0->material->setColor(0.2, 0.2, 0.2);
     model0->setScale(Cvec3(25, 25, 25));
     model0->setPosition(Cvec3(0, -0.4, -2));
     model0->setRotation(Quat::makeYRotation(30));
-    model0->setProgram(colorShader->getProgramId());
+    model0->setShader(colorShader);
     model0->transform.setPivot(0, 0.2, 0);
     Scene::addChild(model0);
 
@@ -82,7 +82,6 @@ void keyboard(unsigned char key, int x, int y) {
         case 'q':
         case 'Q':
         {
-            Scene::removeAll();
             exit(0);
             break;
         }
@@ -106,7 +105,7 @@ void mouse(int button, int state, int x, int y) {
 
 void motion(int x, int y) {
     if (mouseLeftDown) {
-        Entity* model = Scene::getEntity("model0");
+        auto model = Scene::getEntity("model0");
         if (model != NULL) {
             Quat rotation = trackball.getRotation(x, y);
             model->setRotation(rotation);

@@ -31,26 +31,26 @@ public:
     static const std::shared_ptr<Light>& getLight(int index);
     static const std::shared_ptr<Entity>& getEntity(std::string name);
 
+
     //must be called and called once before rendering
     static void createMeshes();
     
-    static bool testIntersect(const std::shared_ptr<Entity>& entity, int x, int y, int screenWidth, int screenHeight);
+    static bool testIntersect(const std::shared_ptr<Entity> entity&, int x, int y, int screenWidth, int screenHeight);
 
     static void renderLoop();
     static void render();
     static void renderToTexture();
-    static void renderToScreen(GLsizei windowWidth, GLsizei windowHeight);
+    static void renderToScreen(Shader* shader, GLsizei windowWidth, GLsizei windowHeight);
 
     static void removeAll();
 
     static void updateMouseEvent(int button , int state, int x, int y, int screenWidth, int screenHeight);
     static void updateMousePassiveMotion(int x, int y, int screenWidth, int screenHeight);
-    static void addShader(std::shared_ptr<Shader> shader);
+    static void addShader(Shader* shader);
 
     //currently only support one fbo
-    static void setFrameBufferObject(std::shared_ptr<FrameBufferObject> fbo) { frameBufferObject = fbo; }
-    static void removeFrameBufferObject()                                    { frameBufferObject = NULL; }
-
+    static void setFrameBufferObject(FrameBufferObject* fbo) { frameBufferObject = fbo; }
+    static void removeFrameBufferObject()                    { frameBufferObject = NULL; }
     //set the target that the texture in FBO is rendered to, which will be rendered to the window.
     static void setScreen(std::shared_ptr<Entity> screen)                    { Scene::screen = screen; }
 
@@ -61,15 +61,16 @@ private:
 
     static std::vector<std::shared_ptr<Entity> > entities;
     static std::unordered_map<std::string, std::shared_ptr<Entity> > entityTable;
-    static std::unordered_map<int, std::shared_ptr<Shader> > shaderTable;
+    static std::unordered_map<int, Shader*> shaderTable;
     
-    static std::shared_ptr<FrameBufferObject> frameBufferObject;
+    static FrameBufferObject* frameBufferObject;
 
     static std::shared_ptr<Entity> screen;
-    static std::shared_ptr<Light> light0;
-    static std::shared_ptr<Light> light1;
 
     static std::unique_ptr<Raycaster> raycaster;
+
+    static std::shared_ptr<Light> light0;
+    static std::shared_ptr<Light> light1;
 };
 
 

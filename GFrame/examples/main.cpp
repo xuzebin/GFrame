@@ -29,40 +29,22 @@
 int screenWidth = 600;
 int screenHeight = 600;
 
-ColorShader* colorShader;
-ModelShader* modelShader;
-TextureShader* textureShader;
-TextureShader* cubemapShader;
-TextureShader* refractShader;
-TextureShader* reflectShader;
-ScreenShader* screenShader;
-ScreenShader* grayShader;
-ScreenShader* colorInvertShader;
-ScreenShader* fxaaShader;
-ScreenShader* toneMappingShader;
-ScreenShader* hdrFxaaShader;
-ScreenShader* horizontalBlurShader;
-ScreenShader* verticalBlurShader;
-ScreenShader* cartoonifyShader;
-
-
-ScreenShader* currentEffectShader = NULL;//record current effect for the whole scene (post-processing)
-
-
-//Camera camera(Cvec3(0, 0, 0), Quat::makeXRotation(0));
+std::shared_ptr<ColorShader> colorShader;
+std::shared_ptr<ModelShader> modelShader;
+std::shared_ptr<TextureShader> textureShader, cubemapShader, refractShader, reflectShader;
+std::shared_ptr<ScreenShader> screenShader, grayShader, colorInvertShader, fxaaShader, toneMappingShader, hdrFxaaShader, horizontalBlurShader, verticalBlurShader, cartoonifyShader;
 
 
 std::string currentModel = "model0";
 
 std::shared_ptr<Light> currentMovingLight;
 
-Entity* screen = NULL;//for post-processing
+std::shared_ptr<Entity> screen(nullptr);//for post-processing
 
-FrameBufferObject* firstFBO;
-FrameBufferObject* secondFBO;
+std::shared_ptr<FrameBufferObject> firstFBO(nullptr);
+std::shared_ptr<FrameBufferObject> secondFBO(nullptr);
 
 Trackball trackball;
-
 
 
 class BtnEventListener : public ClickEventListener {
@@ -94,44 +76,37 @@ public:
         switch(effectSelected) {
             case 0:
             {
-                screen->setProgram(screenShader->getProgramId());
-                currentEffectShader = screenShader;
+                screen->setShader(screenShader);
                 break;
             }
             case 1:
             {
-                screen->setProgram(grayShader->getProgramId());
-                currentEffectShader = grayShader;
+                screen->setShader(grayShader);
                 break;
             }
             case 2:
             {
-                screen->setProgram(colorInvertShader->getProgramId());
-                currentEffectShader = colorInvertShader;
+                screen->setShader(colorInvertShader);
                 break;
             }
             case 3:
             {
-                screen->setProgram(fxaaShader->getProgramId());
-                currentEffectShader = fxaaShader;
+                screen->setShader(fxaaShader);
                 break;
             }
             case 4:
             {
-                screen->setProgram(toneMappingShader->getProgramId());
-                currentEffectShader = toneMappingShader;
+                screen->setShader(toneMappingShader);
                 break;
             }
             case 5:
             {
-                screen->setProgram(hdrFxaaShader->getProgramId());
-                currentEffectShader = hdrFxaaShader;
+                screen->setShader(hdrFxaaShader);
                 break;
             }
             case 6:
-           {
-                screen->setProgram(cartoonifyShader->getProgramId());
-                currentEffectShader = cartoonifyShader;
+            {
+                screen->setShader(cartoonifyShader);
                 break;
             }
             default:
@@ -153,26 +128,26 @@ public:
     void onClick(Entity* button) {
         BtnEventListener::onClick(button);
         programSelected = (programSelected + 1) % 4;
-        Entity* monk = Scene::getEntity("model0");
+        auto monk = Scene::getEntity("model0");
         switch(programSelected) {
             case 0:
             {
-                monk->setProgram(refractShader->getProgramId());
+                monk->setShader(refractShader);
                 break;
             }
             case 1:
             {
-                monk->setProgram(reflectShader->getProgramId());
+                monk->setShader(reflectShader);
                 break;
             }
             case 2:
             {
-                monk->setProgram(modelShader->getProgramId());
+                monk->setShader(modelShader);
                 break;
             }
             case 3:
             {
-                monk->setProgram(colorShader->getProgramId());
+                monk->setShader(colorShader);
                 break;
             }
             default:
@@ -273,16 +248,14 @@ void display(void) {
 //    Scene::render();//render the scene directly to scren
     //render to texture and then to screen using one fbo
 
-
     //blur effect rendering using 2 fbos
     float time = (float) glutGet(GLUT_ELAPSED_TIME) / 1000.0f;//second passed
     float blurSize = 0.02f - 0.001f * time * 15.0f;
 
     if (blurSize < -1e-8) {
         screen->material->setDiffuseTextureId(firstFBO->getFrameBufferTexture());
-        screen->setProgram(screenShader->getProgramId());
         Scene::renderToTexture();
-        Scene::renderToScreen(currentEffectShader, screenWidth, screenHeight);
+        Scene::renderToScreen(screenWidth, screenHeight);
     } else {
         horizontalBlurShader->setBlurSize(blurSize);
         verticalBlurShader->setBlurSize(blurSize);
@@ -301,16 +274,16 @@ void display(void) {
 
         if (screen != NULL) {
             screen->material->setDiffuseTextureId(firstFBO->getFrameBufferTexture());
-            screen->setProgram(horizontalBlurShader->getProgramId());
-            screen->draw(Scene::camera, horizontalBlurShader, Scene::getLight(0), Scene::getLight(1));
+            screen->setShader(horizontalBlurShader);
+            screen->draw(Scene::getCamera(), horizontalBlurShader, Scene::getLight(0), Scene::getLight(1));
         }
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, screenWidth, screenHeight);
         if (screen != NULL) {
             screen->material->setDiffuseTextureId(secondFBO->getFrameBufferTexture());
-            screen->setProgram(verticalBlurShader->getProgramId());
-            screen->draw(Scene::camera, verticalBlurShader, Scene::getLight(0), Scene::getLight(1));
+            screen->setShader(verticalBlurShader);
+            screen->draw(Scene::getCamera(), verticalBlurShader, Scene::getLight(0), Scene::getLight(1));
         }
         
         glutSwapBuffers();
@@ -329,53 +302,50 @@ void init() {
     glReadBuffer(GL_BACK);
     
     
-    colorShader = new ColorShader();
+    colorShader = std::make_shared<ColorShader>();
     colorShader->createProgram("shaders/vertex_shader_simple.glsl", "shaders/fragment_shader_color.glsl");
     
-    modelShader = new ModelShader();
+    modelShader = std::make_shared<ModelShader>();
     modelShader->createProgram("shaders/vertex_shader_model.glsl", "shaders/fragment_shader_model.glsl");
     
-    textureShader = new TextureShader();
+    textureShader = std::make_shared<TextureShader>();
     textureShader->createProgram("shaders/vertex_shader_simple.glsl", "shaders/fragment_shader_texture.glsl");
 
-    cubemapShader = new TextureShader();
+    cubemapShader = std::make_shared<TextureShader>();
     cubemapShader->createProgram("shaders/vertex_shader_cubemap.glsl", "shaders/fragment_shader_cubemap.glsl");
     
-    reflectShader = new TextureShader();
+    reflectShader = std::make_shared<TextureShader>();
     reflectShader->createProgram("shaders/vertex_shader_simple.glsl", "shaders/fragment_shader_environment_reflect.glsl");
     
-    refractShader = new TextureShader();
+    refractShader = std::make_shared<TextureShader>();
     refractShader->createProgram("shaders/vertex_shader_simple.glsl", "shaders/fragment_shader_environment_refract.glsl");
     
-    screenShader = new ScreenShader();
+    screenShader = std::make_shared<ScreenShader>();
     screenShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_offscreen.glsl");
 
-    grayShader = new ScreenShader();
+    grayShader = std::make_shared<ScreenShader>();
     grayShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_blackwhite.glsl");
 
-    colorInvertShader = new ScreenShader();
+    colorInvertShader = std::make_shared<ScreenShader>();
     colorInvertShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_colorinvert.glsl");
 
-    fxaaShader = new ScreenShader();
+    fxaaShader = std::make_shared<ScreenShader>();
     fxaaShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_fxaa.glsl");
 
-    toneMappingShader = new ScreenShader();
+    toneMappingShader = std::make_shared<ScreenShader>();
     toneMappingShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_tone_mapping.glsl");
 
-    hdrFxaaShader = new ScreenShader();
+    hdrFxaaShader = std::make_shared<ScreenShader>();
     hdrFxaaShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_tonemapping_fxaa.glsl");
 
-    horizontalBlurShader = new ScreenShader();
+    horizontalBlurShader = std::make_shared<ScreenShader>();
     horizontalBlurShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_horizontal_blur.glsl");
 
-    verticalBlurShader = new ScreenShader();
+    verticalBlurShader = std::make_shared<ScreenShader>();
     verticalBlurShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_vertical_blur.glsl");
 
-    cartoonifyShader = new ScreenShader();
+    cartoonifyShader = std::make_shared<ScreenShader>();
     cartoonifyShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_cartoonify.glsl");
-
-
-    currentEffectShader = screenShader;//default effect
 
 
     Scene::addShader(colorShader);
@@ -401,12 +371,12 @@ void init() {
     currentMovingLight = Scene::getLight(0);
 
     
-    Model* model0 = new Model("assets/models/monk/Monk_Giveaway_Fixed.obj", "model0", "assets/models/monk/");
+    auto model0 = std::make_shared<Model>("assets/models/monk/Monk_Giveaway_Fixed.obj", "model0", "assets/models/monk/");
     model0->setScale(Cvec3(0.5, 0.5, 0.5));
     model0->setPosition(Cvec3(0, -3.4, -9));
     model0->setRotation(Quat::makeYRotation(20));
     model0->material->setColor(0.0, 0.8, 0.8);
-    model0->setProgram(refractShader->getProgramId());
+    model0->setShader(refractShader);
     model0->transform.setPivot(0, 3, 0);
     Scene::addChild(model0);
 
@@ -414,40 +384,40 @@ void init() {
     /************ program swtich button ************/
     Geometry* buttonG = new Sphere(2, 40, 40);
     Material* buttonM = new Material(Color::RED);
-    Entity* btn0 = new Entity(buttonG, buttonM, "button0");
+    auto btn0 = std::make_shared<Entity>(buttonG, buttonM, "button0");
     btn0->setPosition(Cvec3(-1.8, 1.9, -5));
     btn0->setScale(Cvec3(0.05, 0.05, 0.05));
     btn0->registerClickEventListener(new ProgramSwitchBtnEventListener());
-    btn0->setProgram(colorShader->getProgramId());
+    btn0->setShader(colorShader);
     Scene::addChild(btn0);
 
     /************ post-processing effect swtich button ************/
-    Entity* btn1 = new Entity(buttonG, buttonM, "button1");
+    auto btn1 = std::make_shared<Entity>(buttonG, buttonM, "button1");
     btn1->setPosition(Cvec3(-1.5, 1.9, -5));
     btn1->setScale(Cvec3(0.05, 0.05, 0.05));
     btn1->registerClickEventListener(new PostProcessingSwitchListener());
-    btn1->setProgram(colorShader->getProgramId());
+    btn1->setShader(colorShader);
     Scene::addChild(btn1);
     
     /************ light color buttons ************/
     for (int i = 0; i < 2; ++i) {
         Material* buttonM = new Material(Color::YELLOW);
-        Entity* btn = new Entity(buttonG, buttonM, ("button" + std::to_string(i + 1)));
+        auto btn = std::make_shared<Entity>(buttonG, buttonM, ("button" + std::to_string(i + 1)));
         btn->setPosition(Cvec3(-1.8, 1.9 - (i + 1) / 3.0, -5));
         btn->setScale(Cvec3(0.05, 0.05, 0.05));
         btn->registerClickEventListener(new LightColorBtnEventListener());
-        btn->setProgram(colorShader->getProgramId());
+        btn->setShader(colorShader);
         Scene::addChild(btn);
     }
     
     /************ specular light color buttons ************/
     for (int i = 0; i < 2; ++i) {
         Material* buttonM = new Material(Color::WHITE);
-        Entity* btn = new Entity(buttonG, buttonM, ("button" + std::to_string(i + 3)));
+        auto btn = std::make_shared<Entity>(buttonG, buttonM, ("button" + std::to_string(i + 3)));
         btn->setPosition(Cvec3(-1.5, 1.9 - (i + 1) / 3.0, -5));
         btn->setScale(Cvec3(0.05, 0.05, 0.05));
         btn->registerClickEventListener(new SpecularLightColorBtnEventListener());
-        btn->setProgram(colorShader->getProgramId());
+        btn->setShader(colorShader);
         Scene::addChild(btn);
     }
 
@@ -458,25 +428,25 @@ void init() {
     Material* cubemapM = new Material();
     cubemapM->setCubemap(cubemap.getTexture());
     Cube* sb = new Cube(100);
-    Entity* skybox = new Entity(sb, cubemapM);
-    skybox->setProgram(cubemapShader->getProgramId());
+    auto skybox = std::make_shared<Entity>(sb, cubemapM);
+    skybox->setShader(cubemapShader);
     skybox->setRotation(Quat::makeYRotation(180));
     Scene::addChild(skybox);
 
 
 
-    firstFBO = new FrameBufferObject(1024, 1024, true);
+    firstFBO = std::make_shared<FrameBufferObject>(1024, 1024, true);
     Scene::setFrameBufferObject(firstFBO);
 
 
-    secondFBO = new FrameBufferObject();
+    secondFBO = std::make_shared<FrameBufferObject>();
 
 
     Screen* plane = new Screen();
     Material* planeM = new Material();
     planeM->setDiffuseTextureId(firstFBO->getFrameBufferTexture());
-    screen = new Entity(plane, planeM);
-    screen->setProgram(screenShader->getProgramId());
+    screen = std::make_shared<Entity>(plane, planeM);
+    screen->setShader(screenShader);
     Scene::setScreen(screen);
 
 
@@ -535,14 +505,14 @@ void keyboard(unsigned char key, int x, int y) {
         case 's':
         case 'S':
         {
-            Entity* model = Scene::getEntity(currentModel);
+            auto model = Scene::getEntity(currentModel);
             model->setScale(model->getScale() * 1.1);
             break;
         }
         case 'd':
         case 'D':
         {
-            Entity* model = Scene::getEntity(currentModel);
+            auto model = Scene::getEntity(currentModel);
             model->setScale(model->getScale() / 1.1);
             break;
         }
@@ -564,7 +534,6 @@ void keyboard(unsigned char key, int x, int y) {
         }
         case 'q':
         case 'Q':
-            Scene::removeAll();
             exit(0);
             break;
         default:
@@ -581,7 +550,7 @@ void mouse(int button, int state, int x, int y) {
 }
 
 void motion(int x, int y) {
-    Entity* model = Scene::getEntity(currentModel);
+    auto model = Scene::getEntity(currentModel);
     if (model != NULL) {
         Quat rotation = trackball.getRotation(x, y);
         model->setRotation(rotation);

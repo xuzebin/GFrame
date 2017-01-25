@@ -44,7 +44,7 @@ public:
     ~Entity();
 
     void createMesh();
-    void draw(std::shared_ptr<Camera> camera, Shader* shader, std::shared_ptr<Light> light0, std::shared_ptr<Light> light1);
+    void draw(std::shared_ptr<Camera> camera, std::shared_ptr<Shader> shader, std::shared_ptr<Light> light0, std::shared_ptr<Light> light1);
 
     void acceptLight(int lightID);
     void rejectLight(int lightID);
@@ -57,7 +57,7 @@ public:
     
     void notify(EventType type);
 
-    void setProgram(int programId)        { this->programId = programId; }
+//     void setProgram(int programId)        { this->programId = programId; }
     void setVisible(bool visible)         { this->visible = visible; }
     void setDepthTest(bool enable)        { this->depthTest = enable; }
     void setPosition(Cvec3 position)      { transform.setPosition(position); }
@@ -67,7 +67,7 @@ public:
     void setScale(Cvec3 scale)            { transform.setScale(scale); }
     void setModelMatrix(const Matrix4& m) { transform.setModelMatrix(m); }
 
-    int getProgram() const                { return this->programId; }
+    int getProgram() const                { return shader->getProgramId(); }
     std::string getName() const           { return this->name; }
     bool isVisible() const                { return this->visible; }
     bool depthTestEnabled() const         { return this->depthTest; }
@@ -77,6 +77,8 @@ public:
     const Matrix4& getModelMatrix()       { return transform.getModelMatrix(); }
     float getBoundingBoxLength()          { return geometry->getBoundingBoxLength() * getScale()[0]; }
 
+    void setShader(const std::shared_ptr<Shader>& shader)  { this->shader = shader; }
+    const std::shared_ptr<Shader>& getShader()             { return shader; }
 
 public:
     Entity* parent;
@@ -102,6 +104,8 @@ protected:
 
     //by default: open 2 lights(..00011)
     int lightSwitch = 3;//0001 indicates light0 opens, 0010 indicates light1 opens, 0011 indicates light0 and light1 open, and so on.
+
+    std::shared_ptr<Shader> shader;
 };
 
 #endif /* Entity_hpp */
