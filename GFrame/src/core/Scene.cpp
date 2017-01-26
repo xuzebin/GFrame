@@ -32,7 +32,8 @@ const std::shared_ptr<Light>& Scene::getLight(int index) {
         case 1:
             return light1;
         default:
-            throw std::string("no matched light index");
+            std::cerr << "No matched light index" << std::endl;
+            return nullptr;
     }
 }
 
@@ -55,7 +56,7 @@ bool Scene::testIntersect(const std::shared_ptr<Entity>& entity, int x, int y, i
     if (entity == NULL) {
         return false;
     }
-
+    //lazy initialization
     if (raycaster == nullptr) {
         raycaster.reset(new Raycaster());
     }
@@ -71,25 +72,18 @@ void Scene::renderLoop() {
 }
 
 void Scene::render() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    assert(("Camera not set", camera != nullptr));
 
-    if (camera == NULL) {
-        throw std::string("Camera NULL");
-    }
-        
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     renderLoop();
     glutSwapBuffers();
 }
 
 void Scene::renderToTexture() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    if (camera == NULL) {
-        throw std::string("Camera not set");
-    }
-    if (frameBufferObject == NULL) {
-        throw std::string("FrameBufferObject not set");
-    }
+    assert(("Camera not set", camera != nullptr));
+    assert(("FrameBufferObject not set", frameBufferObject != nullptr));
 
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject->getFrameBuffer());
     glViewport(0, 0, 1024, 1024);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -98,13 +92,12 @@ void Scene::renderToTexture() {
 }
 
 void Scene::renderToScreen(GLsizei windowWidth, GLsizei windowHeight) {
+    assert(("Screen not set", screen != nullptr));
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, windowWidth, windowHeight);
-    if (screen != NULL) {
-        screen->draw(Scene::camera, screen->getShader(), Scene::light0, Scene::light1);
-    } else {
-        throw std::string("screen not set");
-    }
+    screen->draw(Scene::camera, screen->getShader(), Scene::light0, Scene::light1);
+
     glutSwapBuffers();
 }
 

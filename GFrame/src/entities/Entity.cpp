@@ -5,8 +5,8 @@ int Entity::id_counter = 0;
 Entity::Entity(Geometry* geometry, Material* material, std::string name) : name(name),
                                                                            geometry(geometry),
                                                                            material(material),
-                                                                           parent(NULL),
-                                                                           clickEventListener(NULL),
+                                                                           parent(nullptr),
+                                                                           clickEventListener(nullptr),
                                                                            visible(true),
                                                                            depthTest(true)
 
@@ -21,11 +21,9 @@ Entity::~Entity() {
 }
 
 void Entity::createMesh()  {
-    if (geometry == NULL) {
-        throw string("Geometry NULL");
-    }
+    assert(("Geometry not set", geometry != nullptr));
+
     geometry->createVBOs();
-    
     
     initState.transform = transform;
     initState.color = material->getColor();
@@ -35,19 +33,16 @@ void Entity::draw(std::shared_ptr<Camera> camera, std::shared_ptr<Shader> shader
     if (!isVisible()) {
         return;
     }
-    if (material == NULL) {
-        throw string("Material NULL");
-    }
-    if (geometry == NULL) {
-        throw std::string("Geometry NULL");
-    }
-    
+    assert(("Geometry not set", geometry != nullptr));
+    assert(("Material not set", material != nullptr));
+
     shader->setLocationsAndDraw(this, camera, light0, light1);
 }
 
 void Entity::acceptLight(int lightID) {
     if (lightID < 0 || lightID > 1) {
-        throw std::string("invalid lightID");
+        std::cerr << "invalid lightID" << std::endl;
+        return;
     }
     int mask = 1;
     mask <<= lightID;
@@ -57,7 +52,8 @@ void Entity::acceptLight(int lightID) {
 
 void Entity::rejectLight(int lightID) {
     if (lightID < 0 || lightID > 1) {
-        throw std::string("invalid lightID");
+        std::cerr << "invalid lightID" << std::endl;
+        return;
     }
     int mask = 1;
     mask <<= lightID;
@@ -68,7 +64,8 @@ void Entity::rejectLight(int lightID) {
 
 bool Entity::isLightOn(int lightID) {
     if (lightID < 0 || lightID > 1) {
-        throw std::string("invalid lightID");
+        std::cerr << "invalid lightID" << std::endl;
+        return false;
     }
     int mask = 1;
     mask <<= lightID;
@@ -78,9 +75,8 @@ bool Entity::isLightOn(int lightID) {
 }
 
 void Entity::registerClickEventListener(ClickEventListener* listener) {
-    if (listener == NULL) {
-        throw std::string("ClickEventListener object NULL");
-    }
+    assert(("ClickEventListener null", listener != nullptr));
+
     clickEventListener = listener;
 }
 
@@ -97,7 +93,8 @@ void Entity::notify(EventType type) {
                 clickEventListener->onIdle(this);
                 break;
             default:
-                throw std::string("no matched event type");
+                std::cerr << "no matched event type" << std::endl;
+                return;
         }
     }
 }
