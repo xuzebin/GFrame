@@ -45,7 +45,6 @@ public:
 
     static void updateMouseEvent(int button , int state, int x, int y, int screenWidth, int screenHeight);
     static void updateMousePassiveMotion(int x, int y, int screenWidth, int screenHeight);
-    static void addShader(std::shared_ptr<Shader> shader);
 
     //currently only support one fbo
     static void setFrameBufferObject(std::shared_ptr<FrameBufferObject> fbo) { frameBufferObject = fbo; }
@@ -61,7 +60,6 @@ private:
 
     static std::vector<std::shared_ptr<Entity> > entities;
     static std::unordered_map<std::string, std::shared_ptr<Entity> > entityTable;
-    static std::unordered_map<int, std::shared_ptr<Shader> > shaderTable;
     
     static std::shared_ptr<FrameBufferObject> frameBufferObject;
 

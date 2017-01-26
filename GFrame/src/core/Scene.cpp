@@ -5,7 +5,6 @@
 #include "../glObjects/FrameBufferObject.hpp"
 
 std::unordered_map<std::string, std::shared_ptr<Entity> > Scene::entityTable;
-std::unordered_map<int, std::shared_ptr<Shader> > Scene::shaderTable;
 std::vector<std::shared_ptr<Entity> > Scene::entities;
 
 std::shared_ptr<FrameBufferObject> Scene::frameBufferObject(nullptr);
@@ -66,10 +65,6 @@ bool Scene::testIntersect(const std::shared_ptr<Entity>& entity, int x, int y, i
 
 void Scene::renderLoop() {
     for(auto it = entities.begin(); it != entities.end(); ++it) {
-//         Shader* shader = shaderTable[(*it)->getProgram()];
-//         if (shader == NULL) {
-//             throw std::string("shader not exists");
-//         }
         auto shader = (*it)->getShader();
         (*it)->draw(camera, shader, light0, light1);
     }
@@ -123,7 +118,6 @@ const std::shared_ptr<Entity>& Scene::getEntity(std::string name) {
 void Scene::removeAll() {
     entities.clear();
     entityTable.clear();
-    shaderTable.clear();
 }
 
 //TODO change method name
@@ -162,13 +156,3 @@ void Scene::updateMousePassiveMotion(int x, int y, int screenWidth, int screenHe
         }
     }
 }
-    
-void Scene::addShader(std::shared_ptr<Shader> shader) {
-    int programId = shader->getProgramId();
-    if (shaderTable.find(programId) == shaderTable.end()) {
-        shaderTable[programId] = shader;
-    } else {
-        std::cerr << "program: " << programId << " already exists." << std::endl;
-    }
-}
-

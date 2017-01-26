@@ -347,15 +347,6 @@ void init() {
     cartoonifyShader = std::make_shared<ScreenShader>();
     cartoonifyShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_cartoonify.glsl");
 
-
-    Scene::addShader(colorShader);
-    Scene::addShader(modelShader);
-    Scene::addShader(textureShader);
-    Scene::addShader(cubemapShader);
-    Scene::addShader(reflectShader);
-    Scene::addShader(refractShader);
-
-
     auto camera = std::make_shared<Camera>(Cvec3(0, 0, 0), Quat::makeXRotation(0));
     Scene::setCamera(camera);
     

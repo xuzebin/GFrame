@@ -34,7 +34,6 @@ void init(void) {
 
     auto modelShader = std::make_shared<ModelShader>();
     modelShader->createProgram(vertexShader.c_str(), fragmentShader.c_str());
-    Scene::addShader(modelShader);
 
     auto camera = std::make_shared<Camera>(Cvec3(0, 0, 0), Quat::makeXRotation(0));
     Scene::setCamera(camera);
