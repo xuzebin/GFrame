@@ -17,7 +17,6 @@ Entity::Entity(Geometry* geometry, Material* material, std::string name) : name(
 Entity::~Entity() {
     delete material;
     delete geometry;
-    delete clickEventListener;
 }
 
 void Entity::createMesh()  {
@@ -74,14 +73,14 @@ bool Entity::isLightOn(int lightID) {
     return (bit != 0);
 }
 
-void Entity::registerClickEventListener(ClickEventListener* listener) {
+void Entity::registerClickEventListener(std::unique_ptr<ClickEventListener> listener) {
     assert(("ClickEventListener null", listener != nullptr));
 
-    clickEventListener = listener;
+    clickEventListener = std::move(listener);
 }
 
 void Entity::notify(EventType type) {
-    if (clickEventListener != NULL) {
+    if (clickEventListener != nullptr) {
         switch(type) {
             case EventType::CLICK:
                 clickEventListener->onClick(this);

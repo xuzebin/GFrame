@@ -51,13 +51,12 @@ public:
     void rejectAllLights() { lightSwitch = 0; }
     bool isLightOn(int lightID);
 
-    void registerClickEventListener(ClickEventListener* listener);
-    void removeClickEventListener()     { clickEventListener = NULL; }
-    bool clickEventListenerRegistered() { return clickEventListener != NULL; }
+    void registerClickEventListener(std::unique_ptr<ClickEventListener> listener);
+    void removeClickEventListener()     { clickEventListener.reset(nullptr); }
+    bool clickEventListenerRegistered() { return clickEventListener != nullptr; }
     
     void notify(EventType type);
 
-//     void setProgram(int programId)        { this->programId = programId; }
     void setVisible(bool visible)         { this->visible = visible; }
     void setDepthTest(bool enable)        { this->depthTest = enable; }
     void setPosition(Cvec3 position)      { transform.setPosition(position); }
@@ -100,7 +99,7 @@ protected:
     
     int programId;
     
-    ClickEventListener* clickEventListener;//currently only one event listener for each entity.
+    std::unique_ptr<ClickEventListener> clickEventListener;//currently only one event listener for each entity.
 
     //by default: open 2 lights(..00011)
     int lightSwitch = 3;//0001 indicates light0 opens, 0010 indicates light1 opens, 0011 indicates light0 and light1 open, and so on.

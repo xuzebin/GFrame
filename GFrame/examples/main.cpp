@@ -378,7 +378,7 @@ void init() {
     auto btn0 = std::make_shared<Entity>(buttonG, buttonM, "button0");
     btn0->setPosition(Cvec3(-1.8, 1.9, -5));
     btn0->setScale(Cvec3(0.05, 0.05, 0.05));
-    btn0->registerClickEventListener(new ProgramSwitchBtnEventListener());
+    btn0->registerClickEventListener(std::unique_ptr<ProgramSwitchBtnEventListener>(new ProgramSwitchBtnEventListener()));
     btn0->setShader(colorShader);
     Scene::addChild(btn0);
 
@@ -386,7 +386,7 @@ void init() {
     auto btn1 = std::make_shared<Entity>(buttonG, buttonM, "button1");
     btn1->setPosition(Cvec3(-1.5, 1.9, -5));
     btn1->setScale(Cvec3(0.05, 0.05, 0.05));
-    btn1->registerClickEventListener(new PostProcessingSwitchListener());
+    btn1->registerClickEventListener(std::unique_ptr<PostProcessingSwitchListener>(new PostProcessingSwitchListener()));
     btn1->setShader(colorShader);
     Scene::addChild(btn1);
     
@@ -396,7 +396,7 @@ void init() {
         auto btn = std::make_shared<Entity>(buttonG, buttonM, ("button" + std::to_string(i + 1)));
         btn->setPosition(Cvec3(-1.8, 1.9 - (i + 1) / 3.0, -5));
         btn->setScale(Cvec3(0.05, 0.05, 0.05));
-        btn->registerClickEventListener(new LightColorBtnEventListener());
+        btn->registerClickEventListener(std::unique_ptr<LightColorBtnEventListener>(new LightColorBtnEventListener()));
         btn->setShader(colorShader);
         Scene::addChild(btn);
     }
@@ -407,7 +407,7 @@ void init() {
         auto btn = std::make_shared<Entity>(buttonG, buttonM, ("button" + std::to_string(i + 3)));
         btn->setPosition(Cvec3(-1.5, 1.9 - (i + 1) / 3.0, -5));
         btn->setScale(Cvec3(0.05, 0.05, 0.05));
-        btn->registerClickEventListener(new SpecularLightColorBtnEventListener());
+        btn->registerClickEventListener(std::unique_ptr<SpecularLightColorBtnEventListener>(new SpecularLightColorBtnEventListener()));
         btn->setShader(colorShader);
         Scene::addChild(btn);
     }
