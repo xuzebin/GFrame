@@ -18,7 +18,7 @@ public:
         programId = glCreateProgram();
         readAndCompileShader(programId, vertexShaderFileName, fragmentShaderFileName);
     }
-    virtual void setLocationsAndDraw(Entity* entity, std::shared_ptr<Camera> camera, std::shared_ptr<Light> light0, std::shared_ptr<Light> light1) = 0;
+    virtual void setLocationsAndDraw(Entity& entity, std::shared_ptr<Camera> camera, std::shared_ptr<Light> light0, std::shared_ptr<Light> light1) = 0;
 
 protected:
     GLuint programId;

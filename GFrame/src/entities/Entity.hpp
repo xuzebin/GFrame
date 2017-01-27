@@ -23,9 +23,9 @@ public:
     ClickEventListener() {}
     virtual ~ClickEventListener(){}
 
-    virtual void onClick(Entity* entity) = 0;
-    virtual void onHover(Entity* entity) = 0;
-    virtual void onIdle(Entity* entity) = 0;
+    virtual void onClick(Entity& entity) = 0;
+    virtual void onHover(Entity& entity) = 0;
+    virtual void onIdle(Entity& entity) = 0;
 };
 
 
@@ -40,7 +40,7 @@ struct InitState {
  */
 class Entity {
 public:
-    Entity(Geometry* geometry = NULL, Material* material = NULL, std::string name = "");
+    Entity(std::shared_ptr<Geometry> geometry = nullptr, std::shared_ptr<Material> material = nullptr, std::string name = "");
     ~Entity();
 
     void createMesh();
@@ -57,34 +57,34 @@ public:
     
     void notify(EventType type);
 
-    void setVisible(bool visible)         { this->visible = visible; }
-    void setDepthTest(bool enable)        { this->depthTest = enable; }
-    void setPosition(Cvec3 position)      { transform.setPosition(position); }
-    void translate(Cvec3 translation)     { transform.translate(translation); }
-    void setRotation(Quat rotation)       { transform.setRotation(rotation); }
-    void rotate(Quat rotation)            { transform.rotate(rotation); }
-    void setScale(Cvec3 scale)            { transform.setScale(scale); }
-    void setModelMatrix(const Matrix4& m) { transform.setModelMatrix(m); }
+    void setVisible(bool visible)                         { this->visible = visible; }
+    void setDepthTest(bool enable)                        { this->depthTest = enable; }
+    void setPosition(const Cvec3& position)               { transform.setPosition(position); }
+    void translate(const Cvec3& translation)              { transform.translate(translation); }
+    void setRotation(const Quat& rotation)                { transform.setRotation(rotation); }
+    void rotate(const Quat& rotation)                     { transform.rotate(rotation); }
+    void setScale(const Cvec3& scale)                     { transform.setScale(scale); }
+    void setModelMatrix(const Matrix4& m)                 { transform.setModelMatrix(m); }
+    void setShader(const std::shared_ptr<Shader>& shader) { this->shader = shader; }
+    void setParent(std::shared_ptr<Entity> parent)        { this->parent = parent; }
 
-    int getProgram() const                { return shader->getProgramId(); }
-    std::string getName() const           { return this->name; }
-    bool isVisible() const                { return this->visible; }
-    bool depthTestEnabled() const         { return this->depthTest; }
-    const Cvec3& getPosition() const      { return transform.getPosition(); }
-    const Quat& getRotation() const       { return transform.getRotation(); }
-    const Cvec3& getScale() const         { return transform.getScale(); }
-    const Matrix4& getModelMatrix()       { return transform.getModelMatrix(); }
-    float getBoundingBoxLength()          { return geometry->getBoundingBoxLength() * getScale()[0]; }
+    int getProgram() const                           { return shader->getProgramId(); }
+    std::string getName() const                      { return this->name; }
+    bool isVisible() const                           { return this->visible; }
+    bool depthTestEnabled() const                    { return this->depthTest; }
+    const Cvec3& getPosition() const                 { return transform.getPosition(); }
+    const Quat& getRotation() const                  { return transform.getRotation(); }
+    const Cvec3& getScale() const                    { return transform.getScale(); }
+    const Matrix4& getModelMatrix()                  { return transform.getModelMatrix(); }
+    const std::shared_ptr<Shader>& getShader() const { return shader; }
+    const std::shared_ptr<Entity>& getParent() const { return parent; }
+    float getBoundingBoxLength()                     { return geometry->getBoundingBoxLength() * getScale()[0]; }
 
-    void setShader(const std::shared_ptr<Shader>& shader)  { this->shader = shader; }
-    const std::shared_ptr<Shader>& getShader()             { return shader; }
 
 public:
-    Entity* parent;
-
     Transform transform;
-    Geometry* geometry;
-    Material* material;
+    std::shared_ptr<Geometry> geometry;
+    std::shared_ptr<Material> material;
     
     InitState initState;
 
@@ -98,6 +98,8 @@ protected:
     bool depthTest;
     
     int programId;
+
+    std::shared_ptr<Entity> parent;
     
     std::unique_ptr<ClickEventListener> clickEventListener;//currently only one event listener for each entity.
 
@@ -105,6 +107,8 @@ protected:
     int lightSwitch = 3;//0001 indicates light0 opens, 0010 indicates light1 opens, 0011 indicates light0 and light1 open, and so on.
 
     std::shared_ptr<Shader> shader;
+
+
 };
 
 #endif /* Entity_hpp */

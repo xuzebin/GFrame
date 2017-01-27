@@ -10,13 +10,13 @@ Model::Model(const std::string fileName, std::string name, std::string basePath)
 {
     this->name = name;
 
-    material = new Material();
+    material = std::make_shared<Material>();
         
     std::vector<Vertex> vtx;
     std::vector<unsigned short> idx;
     loadFromFile(fileName, vtx, idx);
 
-    geometry = new Mesh(vtx, idx);
+    geometry = std::make_shared<Mesh>(vtx, idx);
 }
 
 void Model::calcFaceTangent(const Cvec3f& v1, const Cvec3f& v2, const Cvec3f& v3, const Cvec2f& texcoord1, const Cvec2f& texcoord2, const Cvec2f& texcoord3, Cvec3f& tangent, Cvec3f& binormal) {

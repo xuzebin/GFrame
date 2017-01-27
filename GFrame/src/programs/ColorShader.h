@@ -11,7 +11,7 @@ public:
         getLocations(programId);
     }
     
-    void setLocationsAndDraw(Entity* entity, std::shared_ptr<Camera> camera, std::shared_ptr<Light> light0, std::shared_ptr<Light> light1) {
+    void setLocationsAndDraw(Entity& entity, std::shared_ptr<Camera> camera, std::shared_ptr<Light> light0, std::shared_ptr<Light> light1) {
         glUseProgram(programId);
         
         Matrix4 projectionMatrix = camera->getProjectionMatrix();
@@ -19,12 +19,12 @@ public:
         //Transform hierachy, iteratively multiply parent rigidbody matrices
         //to get the ultimate modelmatrix that transform from object frame to world frame.
         Matrix4 modelMatrix;
-        modelMatrix = entity->transform.getModelMatrix();
+        modelMatrix = entity.transform.getModelMatrix();
         
-        Entity* current = entity->parent;
-        while (current != NULL) {
+        auto current = entity.getParent();
+        while (current != nullptr) {
             modelMatrix = current->transform.getRigidBodyMatrix() * modelMatrix;
-            current = current->parent;
+            current = current->getParent();
         }
         
         const Matrix4 viewMatrix = camera->getViewMatrix();
@@ -40,7 +40,7 @@ public:
         glUniformMatrix4fv(uProjectionMatrixLoc, 1, false, projectionMat);
         glUniformMatrix4fv(uNormalMatrixLoc, 1, false, normalMat);
         
-        Cvec3f color = entity->material->getColor();
+        Cvec3f color = entity.material->getColor();
         glUniform3f(uColorLoc, color[0], color[1], color[2]);
         
         if (light0 != nullptr) {
@@ -60,7 +60,7 @@ public:
             glUniform3f(uSpecularLightColorLoc1, specularLightColor[0], specularLightColor[1], specularLightColor[2]);
         }
         
-        entity->geometry->draw(aPositionLoc, aNormalLoc, aTexCoordLoc, -1, -1);
+        entity.geometry->draw(aPositionLoc, aNormalLoc, aTexCoordLoc, -1, -1);
     }
 
 private:

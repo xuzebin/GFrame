@@ -19,7 +19,6 @@
 #include "programs/ModelShader.h"
 #include "programs/TextureShader.h"
 #include "programs/ScreenShader.h"
-#include "programs/ShadowShader.h"
 #include "geometries/Screen.h"
 #include "glObjects/FrameBufferObject.hpp"
 #include "materials/Color.h"
@@ -51,18 +50,18 @@ class BtnEventListener : public ClickEventListener {
 
 public:
     BtnEventListener() {}
-    void onClick(Entity* button) {
-        button->setPosition(button->initState.transform.getPosition() + Cvec3(0, 0, -0.2));
+    void onClick(Entity& button) {
+        button.setPosition(button.initState.transform.getPosition() + Cvec3(0, 0, -0.2));
     }
-    void onHover(Entity* button) {
-        button->setPosition(button->initState.transform.getPosition());
-        button->setScale(button->initState.transform.getScale() * 1.1);
-        button->material->setColor(button->initState.color + Cvec3f(0.1, 0.1, 0.1));
+    void onHover(Entity& button) {
+        button.setPosition(button.initState.transform.getPosition());
+        button.setScale(button.initState.transform.getScale() * 1.1);
+        button.material->setColor(button.initState.color + Cvec3f(0.1, 0.1, 0.1));
     }
-    void onIdle(Entity* button) {
-        button->setPosition(button->initState.transform.getPosition());
-        button->setScale(button->initState.transform.getScale());
-        button->material->setColor(button->initState.color);
+    void onIdle(Entity& button) {
+        button.setPosition(button.initState.transform.getPosition());
+        button.setScale(button.initState.transform.getScale());
+        button.material->setColor(button.initState.color);
     }
 };
 
@@ -70,7 +69,7 @@ class PostProcessingSwitchListener : public BtnEventListener {
 private:
     int effectSelected = 0;
 public:
-    void onClick(Entity* button) {
+    void onClick(Entity& button) {
         BtnEventListener::onClick(button);
         effectSelected = (effectSelected + 1) % 7;
         switch(effectSelected) {
@@ -110,13 +109,16 @@ public:
                 break;
             }
             default:
-                throw std::string("no matched model selected");
+            {
+                std:cerr << "no matched model selected" << std::endl;
+                return;
+            }
         }
     }
-    void onHover(Entity* button) {
+    void onHover(Entity& button) {
         BtnEventListener::onHover(button);
     }
-    void onIdle(Entity* button) {
+    void onIdle(Entity& button) {
         BtnEventListener::onIdle(button);
     }
 };
@@ -125,7 +127,7 @@ class ProgramSwitchBtnEventListener : public BtnEventListener {
 private:
     int programSelected = 0;
 public:
-    void onClick(Entity* button) {
+    void onClick(Entity& button) {
         BtnEventListener::onClick(button);
         programSelected = (programSelected + 1) % 4;
         auto monk = Scene::getEntity("model0");
@@ -154,10 +156,10 @@ public:
                 throw std::string("no matched program selected");
         }
     }
-    void onHover(Entity* button) {
+    void onHover(Entity& button) {
         BtnEventListener::onHover(button);
     }
-    void onIdle(Entity* button) {
+    void onIdle(Entity& button) {
         BtnEventListener::onIdle(button);
     }
 };
@@ -167,38 +169,38 @@ private:
     int lightColor0 = 0;
     int lightColor1 = 0;
 public:
-    void onClick(Entity* button) {
+    void onClick(Entity& button) {
         BtnEventListener::onClick(button);
         
-        if (button->getName() == "button1") {
+        if (button.getName() == "button1") {
             lightColor0 = (lightColor0 + 1) % 2;
             if (lightColor0 == 0) {
                 currentMovingLight = Scene::getLight(0);
                 Scene::getLight(0)->lightColor = Color::WHITE;
-                button->initState.color = Color::YELLOW;
+                button.initState.color = Color::YELLOW;
             } else {
                 currentMovingLight = NULL;
                 Scene::getLight(0)->lightColor = Color::BLACK;
-                button->initState.color = Color::BLACK;
+                button.initState.color = Color::BLACK;
             }
         } else {
             lightColor1 = (lightColor1 + 1) % 2;
             if (lightColor1 == 0) {
                 currentMovingLight = Scene::getLight(1);
                 Scene::getLight(1)->lightColor = Color::WHITE;
-                button->initState.color = Color::YELLOW;
+                button.initState.color = Color::YELLOW;
             } else {
                 currentMovingLight = NULL;
                 Scene::getLight(1)->lightColor = Color::BLACK;
-                button->initState.color = Color::BLACK;
+                button.initState.color = Color::BLACK;
             }
         }
         
     }
-    void onHover(Entity* button) {
+    void onHover(Entity& button) {
         BtnEventListener::onHover(button);
     }
-    void onIdle(Entity* button) {
+    void onIdle(Entity& button) {
         BtnEventListener::onIdle(button);
     }
 };
@@ -208,37 +210,37 @@ private:
     bool spcularLightColorOn0 = true;
     bool spcularLightColorOn1 = true;
 public:
-    void onClick(Entity* button) {
+    void onClick(Entity& button) {
         BtnEventListener::onClick(button);
         
-        if (button->getName() == "button3") {
+        if (button.getName() == "button3") {
             spcularLightColorOn0 = !spcularLightColorOn0;
             if(spcularLightColorOn0) {
                 Scene::getLight(0)->specularLightColor = Color::WHITE;
-                button->material->setColor(Color::WHITE);
-                button->initState.color = Cvec3f(Color::WHITE);
+                button.material->setColor(Color::WHITE);
+                button.initState.color = Cvec3f(Color::WHITE);
             } else {
                 Scene::getLight(0)->specularLightColor = Color::BLACK;
-                button->material->setColor(Color::BLACK);
-                button->initState.color = Cvec3f(Color::BLACK);
+                button.material->setColor(Color::BLACK);
+                button.initState.color = Cvec3f(Color::BLACK);
             }
         } else {
             spcularLightColorOn1 = !spcularLightColorOn1;
             if(spcularLightColorOn1) {
                 Scene::getLight(1)->specularLightColor = Color::WHITE;
-                button->material->setColor(Color::WHITE);
-                button->initState.color = Color::WHITE;
+                button.material->setColor(Color::WHITE);
+                button.initState.color = Color::WHITE;
             } else {
                 Scene::getLight(1)->specularLightColor = Color::BLACK;
-                button->material->setColor(Color::BLACK);
-                button->initState.color = Color::BLACK;
+                button.material->setColor(Color::BLACK);
+                button.initState.color = Color::BLACK;
             }
         }
     }
-    void onHover(Entity* button) {
+    void onHover(Entity& button) {
         BtnEventListener::onHover(button);
     }
-    void onIdle(Entity* button) {
+    void onIdle(Entity& button) {
         BtnEventListener::onIdle(button);
     }
 };
@@ -272,7 +274,7 @@ void display(void) {
         glViewport(0, 0, 1024, 1024);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        if (screen != NULL) {
+        if (screen != nullptr) {
             screen->material->setDiffuseTextureId(firstFBO->getFrameBufferTexture());
             screen->setShader(horizontalBlurShader);
             screen->draw(Scene::getCamera(), horizontalBlurShader, Scene::getLight(0), Scene::getLight(1));
@@ -280,7 +282,7 @@ void display(void) {
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, screenWidth, screenHeight);
-        if (screen != NULL) {
+        if (screen != nullptr) {
             screen->material->setDiffuseTextureId(secondFBO->getFrameBufferTexture());
             screen->setShader(verticalBlurShader);
             screen->draw(Scene::getCamera(), verticalBlurShader, Scene::getLight(0), Scene::getLight(1));
@@ -373,8 +375,8 @@ void init() {
 
     
     /************ program swtich button ************/
-    Geometry* buttonG = new Sphere(2, 40, 40);
-    Material* buttonM = new Material(Color::RED);
+    auto buttonG = std::make_shared<Sphere>(2, 40, 40);
+    auto buttonM = std::make_shared<Material>(Color::RED);
     auto btn0 = std::make_shared<Entity>(buttonG, buttonM, "button0");
     btn0->setPosition(Cvec3(-1.8, 1.9, -5));
     btn0->setScale(Cvec3(0.05, 0.05, 0.05));
@@ -392,7 +394,7 @@ void init() {
     
     /************ light color buttons ************/
     for (int i = 0; i < 2; ++i) {
-        Material* buttonM = new Material(Color::YELLOW);
+        auto buttonM = std::make_shared<Material>(Color::YELLOW);
         auto btn = std::make_shared<Entity>(buttonG, buttonM, ("button" + std::to_string(i + 1)));
         btn->setPosition(Cvec3(-1.8, 1.9 - (i + 1) / 3.0, -5));
         btn->setScale(Cvec3(0.05, 0.05, 0.05));
@@ -403,7 +405,7 @@ void init() {
     
     /************ specular light color buttons ************/
     for (int i = 0; i < 2; ++i) {
-        Material* buttonM = new Material(Color::WHITE);
+        auto buttonM = std::make_shared<Material>(Color::WHITE);
         auto btn = std::make_shared<Entity>(buttonG, buttonM, ("button" + std::to_string(i + 3)));
         btn->setPosition(Cvec3(-1.5, 1.9 - (i + 1) / 3.0, -5));
         btn->setScale(Cvec3(0.05, 0.05, 0.05));
@@ -416,9 +418,9 @@ void init() {
     Cubemap cubemap;
     cubemap.loadTextures("assets/cubemap/posx.jpg", "assets/cubemap/negx.jpg", "assets/cubemap/posy.jpg", "assets/cubemap/negy.jpg", "assets/cubemap/posz.jpg", "assets/cubemap/negz.jpg");
 
-    Material* cubemapM = new Material();
+    auto cubemapM = std::make_shared<Material>();
     cubemapM->setCubemap(cubemap.getTexture());
-    Cube* sb = new Cube(100);
+    auto sb = std::make_shared<Cube>(100);
     auto skybox = std::make_shared<Entity>(sb, cubemapM);
     skybox->setShader(cubemapShader);
     skybox->setRotation(Quat::makeYRotation(180));
@@ -433,8 +435,8 @@ void init() {
     secondFBO = std::make_shared<FrameBufferObject>();
 
 
-    Screen* plane = new Screen();
-    Material* planeM = new Material();
+    auto plane = std::make_shared<Screen>();
+    auto planeM = std::make_shared<Material>();
     planeM->setDiffuseTextureId(firstFBO->getFrameBufferTexture());
     screen = std::make_shared<Entity>(plane, planeM);
     screen->setShader(screenShader);
@@ -542,7 +544,7 @@ void mouse(int button, int state, int x, int y) {
 
 void motion(int x, int y) {
     auto model = Scene::getEntity(currentModel);
-    if (model != NULL) {
+    if (model != nullptr) {
         Quat rotation = trackball.getRotation(x, y);
         model->setRotation(rotation);
     } else {
@@ -555,7 +557,7 @@ bool insideWindow(int x, int y) {
 }
 void passiveMotion(int x, int y) {
     if (insideWindow(x, y)) {
-        if (cartoonifyShader != NULL) {
+        if (cartoonifyShader != nullptr) {
             cartoonifyShader->updateMouseX((float)x / screenWidth);
         }
         Scene::updateMousePassiveMotion(x, y, screenWidth, screenHeight);

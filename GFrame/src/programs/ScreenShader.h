@@ -14,13 +14,13 @@ public:
         getLocations(programId);
     }
 
-    void setLocationsAndDraw(Entity* entity, std::shared_ptr<Camera> camera, std::shared_ptr<Light> light0, std::shared_ptr<Light> light1) {
+    void setLocationsAndDraw(Entity& entity, std::shared_ptr<Camera> camera, std::shared_ptr<Light> light0, std::shared_ptr<Light> light1) {
         glUseProgram(programId);
 
-        if (entity->material->hasDiffuseTexture()) {//we store the screen frame buffer texture in diffuse texture.
+        if (entity.material->hasDiffuseTexture()) {//we store the screen frame buffer texture in diffuse texture.
             glUniform1i(uScreenFrameBufferLoc, 0);
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, entity->material->getDiffuseTexture());
+            glBindTexture(GL_TEXTURE_2D, entity.material->getDiffuseTexture());
         }
 
         //fxaa shader
@@ -35,7 +35,7 @@ public:
         //toonify filtering shader
         glUniform1f(uMouseXOffsetLoc, mouseX);
 
-        entity->geometry->draw(aPositionLoc, -1, aTexCoordLoc, -1, -1);
+        entity.geometry->draw(aPositionLoc, -1, aTexCoordLoc, -1, -1);
     }
 
     void setBlurSize(float blurSize) {

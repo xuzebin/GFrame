@@ -2,21 +2,20 @@
 
 int Entity::id_counter = 0;
 
-Entity::Entity(Geometry* geometry, Material* material, std::string name) : name(name),
-                                                                           geometry(geometry),
-                                                                           material(material),
-                                                                           parent(nullptr),
-                                                                           clickEventListener(nullptr),
-                                                                           visible(true),
-                                                                           depthTest(true)
+Entity::Entity(std::shared_ptr<Geometry> geometry, std::shared_ptr<Material> material, std::string name) : name(name),
+                                                                                                           geometry(geometry),
+                                                                                                           material(material),
+                                                                                                           parent(nullptr),
+                                                                                                           clickEventListener(nullptr),
+                                                                                                           visible(true),
+                                                                                                           depthTest(true)
 
 {
     setName(id_counter++);
 }
 
-Entity::~Entity() {
-    delete material;
-    delete geometry;
+Entity::~Entity() 
+{
 }
 
 void Entity::createMesh()  {
@@ -35,7 +34,7 @@ void Entity::draw(std::shared_ptr<Camera> camera, std::shared_ptr<Shader> shader
     assert(("Geometry not set", geometry != nullptr));
     assert(("Material not set", material != nullptr));
 
-    shader->setLocationsAndDraw(this, camera, light0, light1);
+    shader->setLocationsAndDraw(*this, camera, light0, light1);
 }
 
 void Entity::acceptLight(int lightID) {
@@ -83,13 +82,13 @@ void Entity::notify(EventType type) {
     if (clickEventListener != nullptr) {
         switch(type) {
             case EventType::CLICK:
-                clickEventListener->onClick(this);
+                clickEventListener->onClick(*this);
                 break;
             case EventType::HOVER:
-                clickEventListener->onHover(this);
+                clickEventListener->onHover(*this);
                 break;
             case EventType::IDLE:
-                clickEventListener->onIdle(this);
+                clickEventListener->onIdle(*this);
                 break;
             default:
                 std::cerr << "no matched event type" << std::endl;

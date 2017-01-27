@@ -15,7 +15,7 @@ public:
         getLocations(programId);
     }
     
-    void setLocationsAndDraw(Entity* entity, std::shared_ptr<Camera> camera, std::shared_ptr<Light> light0, std::shared_ptr<Light> light1) {
+    void setLocationsAndDraw(Entity& entity, std::shared_ptr<Camera> camera, std::shared_ptr<Light> light0, std::shared_ptr<Light> light1) {
         glUseProgram(programId);
         
         Matrix4 projectionMatrix = camera->getProjectionMatrix();
@@ -23,12 +23,12 @@ public:
         //Transform hierachy, iteratively multiply parent rigidbody matrices
         //to get the ultimate modelmatrix that transform from object frame to world frame.
         Matrix4 modelMatrix;
-        modelMatrix = entity->transform.getModelMatrix();
+        modelMatrix = entity.transform.getModelMatrix();
         
-        Entity* current = entity->parent;
-        while (current != NULL) {
+        auto current = entity.getParent();
+        while (current != nullptr) {
             modelMatrix = current->transform.getRigidBodyMatrix() * modelMatrix;
-            current = current->parent;
+            current = current->getParent();
         }
         
         const Matrix4 viewMatrix = camera->getViewMatrix();
@@ -44,7 +44,7 @@ public:
         glUniformMatrix4fv(uProjectionMatrixLoc, 1, false, projectionMat);
         glUniformMatrix4fv(uNormalMatrixLoc, 1, false, normalMat);
         
-        Cvec3f color = entity->material->getColor();
+        Cvec3f color = entity.material->getColor();
         glUniform3f(uColorLoc, color[0], color[1], color[2]);
         
         if (light0 != nullptr) {
@@ -65,25 +65,25 @@ public:
         }
         
         
-        if (entity->material->hasDiffuseTexture()) {
+        if (entity.material->hasDiffuseTexture()) {
             glUniform1i(uDiffuseTextureLoc, 0);
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, entity->material->getDiffuseTexture());
+            glBindTexture(GL_TEXTURE_2D, entity.material->getDiffuseTexture());
         }
         
-        if (entity->material->hasSpecularTexture()) {
+        if (entity.material->hasSpecularTexture()) {
             glUniform1i(uSpecularTextureLoc, 1);
             glActiveTexture(GL_TEXTURE0 + 1);
-            glBindTexture(GL_TEXTURE_2D, entity->material->getSpecularTexture());
+            glBindTexture(GL_TEXTURE_2D, entity.material->getSpecularTexture());
         }
     
-        if (entity->material->hasNormalTexture()) {
+        if (entity.material->hasNormalTexture()) {
             glUniform1i(uNormalTextureLoc, 2);
             glActiveTexture(GL_TEXTURE0 + 2);
-            glBindTexture(GL_TEXTURE_2D, entity->material->getNormalTexture());
+            glBindTexture(GL_TEXTURE_2D, entity.material->getNormalTexture());
         }
         
-        entity->geometry->draw(aPositionLoc, aNormalLoc, aTexCoordLoc, aBinormalLoc, aTangentLoc);
+        entity.geometry->draw(aPositionLoc, aNormalLoc, aTexCoordLoc, aBinormalLoc, aTangentLoc);
     }
 private:
     void getLocations(int programId) {
