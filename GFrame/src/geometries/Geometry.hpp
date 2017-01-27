@@ -17,7 +17,7 @@ public:
     virtual ~Geometry();
     
     Geometry& operator = (const Geometry& g);
-    void createVBOs(std::vector<Vertex> vtx, std::vector<unsigned short> idx);
+    void createVBOs(const std::vector<Vertex>& vtx, const std::vector<unsigned short>& idx);
     virtual void draw(const GLuint aPositionLocation, const GLuint aNomralLocation, const GLuint aTexCoordLocation, const GLuint aBinormalLocation, const GLuint aTangentLocation);
     
     float getBoundingBoxLength() { return boundingBoxLength; }

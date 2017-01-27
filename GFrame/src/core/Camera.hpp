@@ -10,9 +10,7 @@
 class Camera {
 
 public:
-     static const Cvec3 UP_VEC;
-//     static const double Z_NEAR;
-//     static const double Z_FAR;
+    static const Cvec3 UP_VEC;
 
     Camera();
     Camera(const Cvec3& position, const Quat& rotation, double fov = 45.0);

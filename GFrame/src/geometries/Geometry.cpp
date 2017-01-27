@@ -19,7 +19,7 @@ Geometry& Geometry::operator = (const Geometry& g) {
     return *this;
 }
 
-void Geometry::createVBOs(std::vector<Vertex> vtx, std::vector<unsigned short> idx) {
+void Geometry::createVBOs(const std::vector<Vertex>& vtx, const std::vector<unsigned short>& idx) {
     if (created) {
         return;
     } else {
