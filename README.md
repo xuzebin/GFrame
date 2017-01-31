@@ -1,4 +1,4 @@
-# GFrame
+# GFrame [![Build Status](https://travis-ci.org/xuzebin/GFrame.svg?branch=master)](https://travis-ci.org/xuzebin/GFrame)
 A tiny C++ OpenGL framework.
 
 ## Build
