@@ -1,4 +1,12 @@
 language: cpp
+
+os:
+- osx
+
+compiler:
+- clang
+- gcc
+
 script:
 - cd GFrame
 - mkdir build
