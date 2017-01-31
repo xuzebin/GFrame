@@ -1,0 +1,7 @@
+language: cpp
+script:
+- cd GFrame
+- mkdir build
+- cd build
+- cmake ..
+- make
