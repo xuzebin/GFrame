@@ -10,6 +10,3 @@ add_library(GFrame ${SRC_FILES})
 #install(TARGETS GFrame DESTINATION /Users/xuzebin/Projects/GLFramework/GFrame/lib/)
 
 SET(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++")
-
-
-                               

@@ -7,8 +7,6 @@ compiler:
 - clang
 - gcc
 
-script:
-- mkdir build
-- cd build
-- cmake ..
-- make
+script: 
+- source buildStandalone.sh
+- source buildXcode.sh

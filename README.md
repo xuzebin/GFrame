@@ -1,14 +1,20 @@
 # GFrame [![Build Status](https://travis-ci.org/xuzebin/GFrame.svg?branch=master)](https://travis-ci.org/xuzebin/GFrame)
 A tiny C++ OpenGL framework.
 
-## Build
+## Build a standalone project
 #### Compile all the examples and the framework code.
 
 ```
-mkdir build
+mkdir -p build
 cd build
 cmake ..
 make
+```
+
+or directly run the build script:
+
+```
+source buildStandalone.sh
 ```
 
 #### Run
@@ -24,20 +30,21 @@ Run the TexturedModel example:
 ./build/examples/TexturedModel/TexturedModel
 ```
 
-## Build as an Xcode project
-
-#### Generate an Xcode project:
+## Build an Xcode project 
 
 ```
-mkdir build
+mkdir -p build
 cd build
 cmake .. -G Xcode
+xcodebuild -target ALL_BUILD -configuration Debug
+xcodebuild -target install -configuration Debug    
 ```
 
-#### Build the project in Xcode.
-1. Run `ALL_BUILD`
-2. Run `install`
-3. Run examples
+or directly run the build script:
+
+```
+source buildXcode.sh
+```        
 
 ## TODO
 1. Add support for different platforms. Currently only support Mac OSX.

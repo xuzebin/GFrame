@@ -582,7 +582,7 @@ int main(int argc, char **argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);// | GLUT_MULTISAMPLE);
     glutInitWindowSize(screenWidth, screenHeight);
-    glutCreateWindow("CS-6533");
+    glutCreateWindow("Main Example");
     
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
