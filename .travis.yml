@@ -8,7 +8,6 @@ compiler:
 - gcc
 
 script:
-- cd GFrame
 - mkdir build
 - cd build
 - cmake ..

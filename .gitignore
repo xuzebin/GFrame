@@ -1,2 +1,7 @@
 legacy/
 *~
+.*~
+.DS_Store
+CMakeLists.txt_
+Makefile_
+clean.sh

@@ -5,7 +5,6 @@ A tiny C++ OpenGL framework.
 #### Compile all the examples and the framework code.
 
 ```
-cd GFrame
 mkdir build
 cd build
 cmake ..
@@ -30,7 +29,6 @@ Run the TexturedModel example:
 #### Generate an Xcode project:
 
 ```
-cd GFrame
 mkdir build
 cd build
 cmake .. -G Xcode
