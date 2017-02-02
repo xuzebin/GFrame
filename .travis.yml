@@ -9,4 +9,3 @@ compiler:
 
 script: 
 - source buildStandalone.sh
-- source buildXcode.sh
