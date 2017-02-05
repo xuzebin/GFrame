@@ -1,7 +1,8 @@
 #ifndef TextureShader_h
 #define TextureShader_h
 
-class Shader;
+#include "Shader.h"
+#include "../entities/Entity.hpp"
 
 class TextureShader : public Shader {
 public:
