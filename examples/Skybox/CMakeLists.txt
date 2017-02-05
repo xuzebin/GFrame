@@ -11,5 +11,5 @@ target_link_libraries(Skybox ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} GFrame)
 
 SET(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++")
 
-#INSTALL(DIRECTORY ${GFrame_SOURCE_DIR}/assets DESTINATION ${GFrame_SOURCE_DIR}/build/examples/Trackball/Debug)
-#INSTALL(DIRECTORY ${GFrame_SOURCE_DIR}/shaders DESTINATION ${GFrame_SOURCE_DIR}/build/examples/Trackball/Debug)
+INSTALL(DIRECTORY ${GFrame_SOURCE_DIR}/assets/cubemap DESTINATION ${GFrame_SOURCE_DIR}/build/examples/Skybox/Debug/assets)
+INSTALL(DIRECTORY ${GFrame_SOURCE_DIR}/shaders DESTINATION ${GFrame_SOURCE_DIR}/build/examples/Skybox/Debug)
