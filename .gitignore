@@ -5,3 +5,4 @@ legacy/
 CMakeLists.txt_
 Makefile_
 clean.sh
+build/
