@@ -1,6 +1,7 @@
 #ifndef Screen_h
 #define Screen_h
-class Geometry;
+
+#include "Geometry.hpp"
 
 class Screen : public Geometry {
 public:

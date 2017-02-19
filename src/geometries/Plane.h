@@ -1,6 +1,8 @@
 #ifndef Plane_h
 #define Plane_h
 
+#include "Geometry.hpp"
+
 class Plane : public Geometry {
 public:
     Plane(float size) {
