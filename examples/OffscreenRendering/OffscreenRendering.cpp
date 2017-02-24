@@ -1,5 +1,5 @@
 /**
- * This examples shows how to realize offscreen rendering using GFrame.
+ * This example shows how to realize offscreen rendering using GFrame.
  * The scene is first rendered to a texture that is bound to a Framebuffer Object,
  * and then this texture is rendered to the screen.
  */

@@ -1,5 +1,5 @@
 /**
- * This examples shows how to realize FXAA post-processing effects using GFrame.
+ * This example shows how to realize FXAA post-processing effects using GFrame.
  */
 
 #include <GLUT/glut.h>
@@ -49,7 +49,7 @@ void init(void) {
     screenShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_fxaa.glsl");
 
     // Frame buffer object config
-    auto fbo = std::make_shared<FrameBufferObject>(1024, 1024, true);
+    auto fbo = std::make_shared<FrameBufferObject>(1024, 1024, false);
     Scene::setFrameBufferObject(fbo);
 
     // Offscreen rendering to to a square plane
@@ -111,7 +111,7 @@ int main(int argc, char **argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitWindowSize(screenWidth, screenHeight);
-    glutCreateWindow("OffscreenRendering");
+    glutCreateWindow("FXAA");
     
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
