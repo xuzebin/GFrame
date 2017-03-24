@@ -11,5 +11,5 @@ target_link_libraries(FXAA ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} GFrame)
 
 SET(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++")
 
-INSTALL(DIRECTORY ${GFrame_SOURCE_DIR}/assets/models/monk DESTINATION ${GFrame_SOURCE_DIR}/build/examples/PostProcessing/FXAA/Debug/assets/models)
+INSTALL(DIRECTORY ${GFrame_SOURCE_DIR}/assets/models/torus DESTINATION ${GFrame_SOURCE_DIR}/build/examples/PostProcessing/FXAA/Debug/assets/models)
 INSTALL(DIRECTORY ${GFrame_SOURCE_DIR}/shaders DESTINATION ${GFrame_SOURCE_DIR}/build/examples/PostProcessing/FXAA/Debug)

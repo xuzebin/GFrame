@@ -1,5 +1,6 @@
 /**
  * This example shows how to realize FXAA post-processing effects using GFrame.
+ * By toggling key 's' you can see the difference between using and not using FXAA for the model.
  */
 
 #include <GLUT/glut.h>
@@ -13,23 +14,26 @@
 #include "entities/Model.hpp"
 #include "core/Light.hpp"
 #include "programs/Shader.h"
-#include "programs/ModelShader.h"
+#include "programs/ColorShader.h"
 #include "programs/ScreenShader.h"
 #include "glObjects/FrameBufferObject.hpp"
+#include "controls/Trackball.hpp"
 
 int screenWidth = 600;
 int screenHeight = 600;
 
-void display(void) {
-    auto model = Scene::getEntity("model0");
-    model->rotate(Quat::makeYRotation(0.5));
+Trackball trackball;
 
+std::shared_ptr<Entity> screen;
+std::shared_ptr<ScreenShader> screenShader, simpleShader;
+
+void display(void) {
     Scene::renderToTexture();// Render to the texture (FBO)
     Scene::renderToScreen(screenWidth, screenHeight);// Render the texture to screen
 }
 
 void init(void) {
-    glClearColor(0.2, 0.2, 0.2, 1.0);
+    glClearColor(0.7, 0.7, 0.7, 1.0);
     glClearDepth(0.0);
     glCullFace(GL_BACK);
     glDisable(GL_CULL_FACE);
@@ -37,16 +41,20 @@ void init(void) {
     glDepthFunc(GL_GREATER);
     glReadBuffer(GL_BACK);
     
-    std::string vertexShader = "shaders/vertex_shader_model.glsl";
-    std::string fragmentShader = "shaders/fragment_shader_model.glsl";
+    std::string vertexShader = "shaders/vertex_shader_simple.glsl";
+    std::string fragmentShader = "shaders/fragment_shader_color.glsl";
 
     // Shader for model
-    auto modelShader = std::make_shared<ModelShader>();
+    auto modelShader = std::make_shared<ColorShader>();
     modelShader->createProgram(vertexShader.c_str(), fragmentShader.c_str());
 
-    //FXAA shader
-    auto screenShader = std::make_shared<ScreenShader>();
+    // FXAA shader
+    screenShader = std::make_shared<ScreenShader>();
     screenShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_postprocessing_fxaa.glsl");
+
+    // Simple shader (without using FXAA)
+    simpleShader = std::make_shared<ScreenShader>();
+    simpleShader->createProgram("shaders/vertex_shader_offscreen.glsl", "shaders/fragment_shader_offscreen.glsl");
 
     // Frame buffer object config
     auto fbo = std::make_shared<FrameBufferObject>(1024, 1024, false);
@@ -56,7 +64,7 @@ void init(void) {
     auto plane = std::make_shared<Screen>();
     auto planeM = std::make_shared<Material>();
     planeM->setDiffuseTextureId(fbo->getFrameBufferTexture());
-    auto screen = std::make_shared<Entity>(plane, planeM);
+    screen = std::make_shared<Entity>(plane, planeM);
     screen->setShader(screenShader);
     Scene::setScreen(screen);
 
@@ -73,12 +81,18 @@ void init(void) {
     Scene::setLight1(light1);
 
     // Model config
-    auto model0 = std::make_shared<Model>("assets/models/monk/Monk_Giveaway_Fixed.obj", "model0", "assets/models/monk/");
-    model0->setScale(Cvec3(0.5, 0.5, 0.5));
-    model0->setPosition(Cvec3(0, -3.4, -9));
-    model0->setRotation(Quat::makeYRotation(20));
+    auto model0 = std::make_shared<Model>("assets/models/torus/catmark_torus_creases0.obj", "model0", "assets/models/torus/");
+    model0->material->setColor(0.6, 0.6, 0.6);
+    model0->setPosition(Cvec3(0, 0, -6));
+    model0->setRotation(Quat::makeYRotation(20) * Quat::makeXRotation(-20));
     model0->setShader(modelShader);
     Scene::addChild(model0);
+
+    //set trackball params
+    trackball.setScreenSize(screenWidth, screenHeight);
+    trackball.setRadius(screenWidth < screenHeight ? screenWidth / 2 : screenHeight / 2);
+    trackball.setSpeed(3.0f);
+    trackball.setTarget(model0);
 
     // Genereate vbo/ibo for the geometry of each Entity.
     Scene::createMeshes();
@@ -88,14 +102,30 @@ void reshape(int w, int h) {
     glViewport(0, 0, w, h);
     screenWidth = w;
     screenHeight = h;
+    trackball.setScreenSize(w, h);
+    trackball.setRadius(w < h ? w / 2 : h / 2);
 }
 
 void idle(void) {
     glutPostRedisplay();
 }
 
+bool fxaaEnabled = true;
 void keyboard(unsigned char key, int x, int y) {
     switch (key) {
+        case 's':
+        case 'S':
+        {
+            if (fxaaEnabled) {
+                //Use Simple shader
+                screen->setShader(simpleShader);
+            } else {
+                //Use FXAA shader
+                screen->setShader(screenShader);
+            }
+            fxaaEnabled = !fxaaEnabled;
+            break;
+        }
         case 'q':
         case 'Q':
         {
@@ -104,6 +134,29 @@ void keyboard(unsigned char key, int x, int y) {
         }
         default:
             break;
+    }
+}
+
+bool mouseLeftDown = false;
+
+void mouse(int button, int state, int x, int y) {
+    if (button == GLUT_LEFT_BUTTON) {
+        if (state == GLUT_DOWN) {
+            trackball.record(x, y);
+            mouseLeftDown = true;
+        } else if (state == GLUT_UP) {
+            mouseLeftDown = false;
+        }
+    }
+}
+
+void motion(int x, int y) {
+    if (mouseLeftDown) {
+        auto model = Scene::getEntity("model0");
+        if (model != NULL) {
+            Quat rotation = trackball.getRotation(x, y);
+            model->setRotation(rotation);
+        }
     }
 }
 
@@ -118,6 +171,8 @@ int main(int argc, char **argv) {
     glutIdleFunc(idle);
 
     glutKeyboardFunc(keyboard);
+    glutMouseFunc(mouse);
+    glutMotionFunc(motion);
 
     init();
     glutMainLoop();
