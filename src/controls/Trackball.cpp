@@ -105,7 +105,6 @@ const Quat& Trackball::getRotation(int x, int y) {
     Cvec3 v1 = getUnitVector(preX, preY);
     Cvec3 v2 = getUnitVector(x, y);
     curRotation = getQuatBetween(v1, v2) * preRotation;
-    
     return curRotation;
 }
 
