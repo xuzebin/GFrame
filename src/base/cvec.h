@@ -129,8 +129,8 @@ public:
 //    assert(dot(*this, *this) > CS175_EPS2);
     return *this /= std::sqrt(dot(*this, *this));
   }
-    
-  friend std::ostream& operator << (std::ostream& os, const Cvec& v) {
+
+  friend std::ostream& operator << (std::ostream& os, const Cvec<T, n>& v) {
       os << "[";
       for (int i = 0; i < n - 1; ++i) {
           os << v[i] << ",";
@@ -141,22 +141,22 @@ public:
     
 };
 
-template<typename T>
+template <typename T>
 inline bool equal(const Cvec<T,2>& v1, const Cvec<T,2>& v2, float epsilon) {
     return fabs(v1[0] - v2[0]) < epsilon && fabs(v1[1] - v2[1]) < epsilon;
 }
 
-template<typename T>
+template <typename T>
 inline bool equal(const Cvec<T,3>& v1, const Cvec<T,3>& v2, float epsilon) {
     return fabs(v1[0] - v2[0]) < epsilon && fabs(v1[1] - v2[1]) < epsilon && fabs(v1[2] - v2[2]) < epsilon;
 }
 
-template<typename T>
+template <typename T>
 inline bool equal(const Cvec<T,4>& v1, const Cvec<T,4>& v2, float epsilon) {
     return fabs(v1[0] - v2[0]) < epsilon && fabs(v1[1] - v2[1]) < epsilon && fabs(v1[2] - v2[2]) < epsilon && fabs(v1[3] - v2[3]) < epsilon;
 }
 
-template<typename T>
+template <typename T>
 inline Cvec<T,3> cross(const Cvec<T,3>& a, const Cvec<T,3>& b) {
   return Cvec<T,3>(a(1)*b(2)-a(2)*b(1), a(2)*b(0)-a(0)*b(2), a(0)*b(1)-a(1)*b(0));
 }

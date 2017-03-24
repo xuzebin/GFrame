@@ -132,6 +132,10 @@ public:
       r.q_[3] = v[2] * sine;
       return r;
   }
+
+  friend std::ostream& operator << (std::ostream& os, const Quat& q) {
+      return os << q.q_;
+  }
   
 };
 

@@ -105,6 +105,8 @@ void motion(int x, int y) {
         if (model != NULL) {
             Quat rotation = trackball.getRotation(x, y);
             model->setRotation(rotation);
+            std::cout << "position: " << model->getPosition() << std::endl;
+            std::cout << "rotation: " << model->getRotation() << std::endl;
         }
     }
 }
