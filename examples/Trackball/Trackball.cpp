@@ -12,9 +12,9 @@
 
 class Shader;
 
-
 int screenWidth = 600;
 int screenHeight = 600;
+
 Trackball trackball;
 
 void display(void) {
@@ -22,7 +22,7 @@ void display(void) {
 }
 
 void init(void) {
-    glClearColor(0.5, 0.5, 0.5, 1.0);
+    glClearColor(0.7, 0.7, 0.7, 1.0);
     glClearDepth(0.0);
     glCullFace(GL_BACK);
     glDisable(GL_CULL_FACE);
@@ -42,24 +42,18 @@ void init(void) {
     auto light0 = std::make_shared<Light>();
     light0->setPosition(1, 5, -5);
 
-    auto light1 = std::make_shared<Light>();
-    light1->setPosition(-1, 0, -4);
-
     Scene::setLight0(light0);
-    Scene::setLight1(light1);
 
-    auto model0 = std::make_shared<Model>("assets/models/ring/ring.obj", "model0", "assets/models/ring/");
-    model0->material->setColor(0.2, 0.2, 0.2);
-    model0->setScale(Cvec3(25, 25, 25));
-    model0->setPosition(Cvec3(0, -0.4, -2));
-    model0->setRotation(Quat::makeYRotation(30));
+    auto model0 = std::make_shared<Model>("assets/models/torus/catmark_torus_creases0.obj", "model0", "assets/models/torus/");
+    model0->material->setColor(0.6, 0.6, 0.6);
+    model0->setPosition(Cvec3(0, 0, -5));
     model0->setShader(colorShader);
-    model0->transform.setPivot(0, 0.2, 0);
     Scene::addChild(model0);
 
     //set trackball params
     trackball.setScreenSize(screenWidth, screenHeight);
     trackball.setRadius(screenWidth < screenHeight ? screenWidth / 2 : screenHeight / 2);
+    trackball.setSpeed(3.0f);
 
     // genereate vbo/ibo for the geometry of each Entity.
     Scene::createMeshes();
