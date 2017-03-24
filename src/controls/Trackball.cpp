@@ -34,10 +34,16 @@ void Trackball::setRadiusAndScreenSize(float radius, int screenWidth, int screen
     setScreenSize(screenWidth, screenHeight);
 }
 
+void Trackball::setTarget(std::shared_ptr<Entity> target) { 
+    this->target = target;
+    this->preRotation = target->getRotation();
+    this->curRotation = this->preRotation;
+}
+
 Quat Trackball::getQuatBetween(const Cvec3& v1, const Cvec3& v2) {
-    if (equal(v1, v2, CS175_EPS)) {
+    if (same(v1, v2, CS175_EPS)) {
         return Quat::makeRotationAroundAxis(v1, 0);
-    } else if (equal(v1, -v2, CS175_EPS)) {
+    } else if (same(v1, -v2, CS175_EPS)) {
         Cvec3 v;
         if (v1[0] > -CS175_EPS && v1[0] < CS175_EPS) {
             v = Cvec3(1, 0, 0);
@@ -98,7 +104,7 @@ void Trackball::recordMousePosition(int x, int y) {
 
 void Trackball::record(int x, int y) {
     recordMousePosition(x, y);
-    setRotationOld();
+    this->preRotation = this->curRotation;
 }
 
 const Quat& Trackball::getRotation(int x, int y) {

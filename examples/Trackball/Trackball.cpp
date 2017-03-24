@@ -47,6 +47,7 @@ void init(void) {
     auto model0 = std::make_shared<Model>("assets/models/torus/catmark_torus_creases0.obj", "model0", "assets/models/torus/");
     model0->material->setColor(0.6, 0.6, 0.6);
     model0->setPosition(Cvec3(0, 0, -5));
+    model0->setRotation(Quat::makeYRotation(30) * Quat::makeXRotation(-30));
     model0->setShader(colorShader);
     Scene::addChild(model0);
 
@@ -54,6 +55,7 @@ void init(void) {
     trackball.setScreenSize(screenWidth, screenHeight);
     trackball.setRadius(screenWidth < screenHeight ? screenWidth / 2 : screenHeight / 2);
     trackball.setSpeed(3.0f);
+    trackball.setTarget(model0);
 
     // genereate vbo/ibo for the geometry of each Entity.
     Scene::createMeshes();

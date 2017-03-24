@@ -3,6 +3,7 @@
 
 #include "../base/cvec.h"
 #include "../base/quat.h"
+#include "../entities/Entity.hpp"
 
 /**
  * Usage: 
@@ -54,11 +55,14 @@ public:
     Trackball();
     Trackball(float radius, int screenWidth, int screenHeight);
     ~Trackball();
-    
+
     void setRadius(float radius) { this->radius = radius; }
     void setScreenSize(int screenWidth, int screenHeight);
     void setRadiusAndScreenSize(float radius, int screenWidth, int screenHeight);
     void setSpeed(float speed)   { this->speed = speed; }
+
+    /** Set the Entity to track **/
+    void setTarget(std::shared_ptr<Entity> target);
     
     float getRadius() const      { return radius; }
     int getScreenWidth() const   { return screenWidth; }
@@ -79,6 +83,9 @@ public:
 private:
     void recordMousePosition(int x, int y);
     void setRotationOld() { preRotation = curRotation; }
+    inline bool same(const Cvec3& v1, const Cvec3& v2, float epsilon) {
+        return fabs(v1[0] - v2[0]) < epsilon && fabs(v1[1] - v2[1]) < epsilon && fabs(v1[2] - v2[2]) < epsilon;
+    }
 
     float radius;
     int screenWidth;
@@ -87,6 +94,8 @@ private:
 
     int preX, preY;
     Quat curRotation, preRotation;
+
+    std::shared_ptr<Entity> target;
 };
 
 #endif /* Trackball_hpp */
