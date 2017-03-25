@@ -19,12 +19,14 @@ public:
     const Matrix4& getViewMatrix() const       { return viewMatrix; }
     const Matrix4& getProjectionMatrix() const { return projectionMatrix; }
     const Cvec3& getPosition() const           { return position; }
+    const Quat& getRotation() const            { return rotation; }
     double getFov() const                      { return fov; }
     double getZNear() const                    { return zNear; }
     double getZFar() const                     { return zFar; }
 
     void updateView(const Cvec3& target)       { viewMatrix = setLookat(position, target, UP_VEC); }
     void rotate(const Quat& rotation);
+    void setRotation(const Quat& rotation);
     void setPosition(const Cvec3& position);
     void setFov(double fov);
     void setZNear(double zNear);

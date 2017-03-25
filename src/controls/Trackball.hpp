@@ -83,6 +83,9 @@ public:
 
     /** get current rotation based on previous and current mouse position **/
     const Quat& getRotation(int x, int y);
+
+    int getPreX() { return preX;}
+    int getPreY() { return preY;}
     
 private:
     void recordMousePosition(int x, int y);

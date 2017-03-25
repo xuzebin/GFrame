@@ -31,6 +31,12 @@ void Camera::rotate(const Quat& rotation) {
     this->rotation = this->rotation * rotation;
     updateViewMatrix();
 }
+
+void Camera::setRotation(const Quat& rotation) {
+    this->rotation = rotation;
+    updateViewMatrix();
+}
+
 void Camera::setPosition(const Cvec3& position) {
     this->position = position;
     updateViewMatrix();
