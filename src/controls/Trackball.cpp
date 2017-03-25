@@ -4,18 +4,27 @@
 #include "Trackball.hpp"
 
 Trackball::Trackball() : radius(0.0f),
-                        screenWidth(0), 
-                        screenHeight(0),
-                        speed(1.0f),
-                        preX(0),
-                        preY(0)
+                         screenWidth(0), 
+                         screenHeight(0),
+                         speed(4.0f),
+                         preX(0),
+                         preY(0)
 {
+}
+
+Trackball::Trackball(int screenWidth, int screenHeight) {
+    this->radius = (screenWidth < screenHeight) ? screenWidth / 2 : screenHeight / 2;
+    this->screenWidth = screenWidth;
+    this->screenHeight = screenHeight;
+    this->speed = 4.0f;
+    this->preX = 0;
+    this->preY = 0;
 }
 
 Trackball::Trackball(float radius, int screenWidth, int screenHeight) : radius(radius),
                                                                         screenWidth(screenWidth),
                                                                         screenHeight(screenHeight),
-                                                                        speed(1.0f),
+                                                                        speed(4.0f),
                                                                         preX(0),
                                                                         preY(0)
 {
@@ -34,10 +43,15 @@ void Trackball::setRadiusAndScreenSize(float radius, int screenWidth, int screen
     setScreenSize(screenWidth, screenHeight);
 }
 
-void Trackball::setTarget(std::shared_ptr<Entity> target) { 
-    this->target = target;
-    this->preRotation = target->getRotation();
-    this->curRotation = this->preRotation;
+void Trackball::updateScreenSize(int screenWidth, int screenHeight) {
+    this->radius = (screenWidth < screenHeight) ? screenWidth / 2 : screenHeight / 2;
+    this->screenWidth = screenWidth;
+    this->screenHeight = screenHeight;
+}
+
+void Trackball::setInitRotation(const Quat& rotation) { 
+    this->preRotation = rotation;
+    this->curRotation = rotation;
 }
 
 Quat Trackball::getQuatBetween(const Cvec3& v1, const Cvec3& v2) {

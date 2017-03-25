@@ -43,7 +43,7 @@ std::shared_ptr<Entity> screen(nullptr);//for post-processing
 std::shared_ptr<FrameBufferObject> firstFBO(nullptr);
 std::shared_ptr<FrameBufferObject> secondFBO(nullptr);
 
-Trackball trackball;
+Trackball trackball(screenWidth, screenHeight);
 
 
 class BtnEventListener : public ClickEventListener {
@@ -444,8 +444,7 @@ void init() {
 
 
     //set trackball params
-    float radius = screenWidth < screenHeight ? screenWidth / 2 : screenHeight / 2;
-    trackball.setRadiusAndScreenSize(radius, screenWidth, screenHeight);
+    trackball.setInitRotation(model0->getRotation());
 
     //this call genereate vbo/ibo for the geometry of each Entity.
     Scene::createMeshes();
@@ -569,9 +568,8 @@ void reshape(int w, int h) {
     screenWidth = w;
     screenHeight = h;
 
-    //set trackball params
-    trackball.setScreenSize(screenWidth, screenHeight);
-    trackball.setRadius(screenWidth < screenHeight ? screenWidth / 2 : screenHeight / 2);
+    //update trackball params
+    trackball.updateScreenSize(screenWidth, screenHeight);
 }
 
 void idle(void) {

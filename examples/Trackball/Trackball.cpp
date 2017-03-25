@@ -15,7 +15,7 @@ class Shader;
 int screenWidth = 600;
 int screenHeight = 600;
 
-Trackball trackball;
+Trackball trackball(screenWidth, screenHeight);
 
 void display(void) {
     Scene::render();
@@ -40,22 +40,20 @@ void init(void) {
     Scene::setCamera(camera);
 
     auto light0 = std::make_shared<Light>();
-    light0->setPosition(1, 5, -5);
+    light0->setPosition(0, 0, 5);
+    light0->lightColor = Cvec3f(1, 1, 1);
 
     Scene::setLight0(light0);
 
     auto model0 = std::make_shared<Model>("assets/models/torus/catmark_torus_creases0.obj", "model0", "assets/models/torus/");
-    model0->material->setColor(0.6, 0.6, 0.6);
-    model0->setPosition(Cvec3(0, 0, -5));
+    model0->material->setColor(0.8, 0.8, 0.8);
+    model0->setPosition(Cvec3(0, 0, -6));
     model0->setRotation(Quat::makeYRotation(30) * Quat::makeXRotation(-30));
     model0->setShader(colorShader);
     Scene::addChild(model0);
 
     //set trackball params
-    trackball.setScreenSize(screenWidth, screenHeight);
-    trackball.setRadius(screenWidth < screenHeight ? screenWidth / 2 : screenHeight / 2);
-    trackball.setSpeed(3.0f);
-    trackball.setTarget(model0);
+    trackball.setInitRotation(model0->getRotation());
 
     // genereate vbo/ibo for the geometry of each Entity.
     Scene::createMeshes();
@@ -65,8 +63,7 @@ void reshape(int w, int h) {
     glViewport(0, 0, w, h);
     screenWidth = w;
     screenHeight = h;
-    trackball.setScreenSize(w, h);
-    trackball.setRadius(w < h ? w / 2 : h / 2);
+    trackball.updateScreenSize(w, h);
 }
 
 void idle(void) {

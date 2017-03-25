@@ -22,7 +22,7 @@
 int screenWidth = 600;
 int screenHeight = 600;
 
-Trackball trackball;
+Trackball trackball(screenWidth, screenHeight);
 
 std::shared_ptr<Entity> screen;
 std::shared_ptr<ScreenShader> screenShader, simpleShader;
@@ -74,11 +74,8 @@ void init(void) {
 
     // Lights config
     auto light0 = std::make_shared<Light>();
-    light0->setPosition(1, 5, -5);
-    auto light1 = std::make_shared<Light>();
-    light1->setPosition(-1, 0, -4);
+    light0->setPosition(0, 0, 5);
     Scene::setLight0(light0);
-    Scene::setLight1(light1);
 
     // Model config
     auto model0 = std::make_shared<Model>("assets/models/torus/catmark_torus_creases0.obj", "model0", "assets/models/torus/");
@@ -89,10 +86,7 @@ void init(void) {
     Scene::addChild(model0);
 
     //set trackball params
-    trackball.setScreenSize(screenWidth, screenHeight);
-    trackball.setRadius(screenWidth < screenHeight ? screenWidth / 2 : screenHeight / 2);
-    trackball.setSpeed(3.0f);
-    trackball.setTarget(model0);
+    trackball.setInitRotation(model0->getRotation());
 
     // Genereate vbo/ibo for the geometry of each Entity.
     Scene::createMeshes();
@@ -102,7 +96,7 @@ void reshape(int w, int h) {
     glViewport(0, 0, w, h);
     screenWidth = w;
     screenHeight = h;
-    trackball.setScreenSize(w, h);
+    trackball.updateScreenSize(w, h);
     trackball.setRadius(w < h ? w / 2 : h / 2);
 }
 

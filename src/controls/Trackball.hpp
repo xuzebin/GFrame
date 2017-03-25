@@ -3,29 +3,31 @@
 
 #include "../base/cvec.h"
 #include "../base/quat.h"
-#include "../entities/Entity.hpp"
 
 /**
  * Usage: 
- * 1. set radius and screen size before rendering or update when reshape callback is called.
- * 2. record the firstly pressed mouse position & object rotation by calling record(x, y) in the mouse callback function.
- * 3. get current rotation by calling getRotation(x, y) passing in the current mouse position in the motion callback function.
+ * 1. setInitRotation(Quat): set the object's initial rotation.
+ * 1. record(int, int): record the firstly pressed mouse position & object's rotation in the mouse callback.
+ * 2. getRotation(int, int): get current rotation in the motion callback function.
+ * 3. updateScreenSize(int, int): update screen size in the reshape callback.
+ * Optional functions:
+ * 4. setSpeed(float): set the rotation speed (default: 4.0f).
+ * 5. setRadius(float): the rotation circle (default: half of the smaller side of the screen).
  * 
  * A brief sample:
- * Trackball trackball;
+ * Trackball trackball(width, height);
  * void init() {
  *     //GL initialization
  *     //...
+ *     //Initialize an Entity object..
+ *     auto entity = ....
  *
- *     trackball.setRadius(screenWidth < screenHeight ? screenWidth / 2 : screenHeight / 2);
- *     trackball.setScreenSize(screenWidth, screenHeight);
+ *     trackball.setInitRotation(entity->getRotation());
  * }
  * void reshape(int w, int h) {
  *     //update screensize
  *     //...
- *
- *     trackball.setRadius(screenWidth < screenHeight ? screenWidth / 2 : screenHeight / 2);
- *     trackball.setScreenSize(screenWidth, screenHeight);
+ *     trackball.updateScreenSize(screenWidth, screenHeight);
  * }
  * bool mouseLeftDown = false;
  * void mouse(int button, int state, int x, int y) {
@@ -41,9 +43,9 @@
  * void moition(int x, int y) {
  *    if (mouseLeftDown) {
  *        Quat rotation = trackball.getRotation(x, y);
- *        //rotate the object by setting this rotation and we are all done!
- *        Entity* model = Scene::getEntity("modelName");
- *        model->setRotation(rotation);
+ *        //rotate the entity by setting the rotation and we are all done!
+ *        auto entity = Scene::getEntity("modelName");
+ *        entity->setRotation(rotation);
  *    }
  * }
  * 
@@ -53,16 +55,18 @@ class Trackball {
 
 public:
     Trackball();
+    Trackball(int screenWidth, int screenHeight);
     Trackball(float radius, int screenWidth, int screenHeight);
     ~Trackball();
 
     void setRadius(float radius) { this->radius = radius; }
     void setScreenSize(int screenWidth, int screenHeight);
     void setRadiusAndScreenSize(float radius, int screenWidth, int screenHeight);
+    void updateScreenSize(int screenWidth, int screenHeight);
     void setSpeed(float speed)   { this->speed = speed; }
 
-    /** Set the Entity to track **/
-    void setTarget(std::shared_ptr<Entity> target);
+    /** Set initial rotation of the target **/
+    void setInitRotation(const Quat& rotation);
     
     float getRadius() const      { return radius; }
     int getScreenWidth() const   { return screenWidth; }
@@ -82,7 +86,7 @@ public:
     
 private:
     void recordMousePosition(int x, int y);
-    void setRotationOld() { preRotation = curRotation; }
+
     inline bool same(const Cvec3& v1, const Cvec3& v2, float epsilon) {
         return fabs(v1[0] - v2[0]) < epsilon && fabs(v1[1] - v2[1]) < epsilon && fabs(v1[2] - v2[2]) < epsilon;
     }
@@ -94,8 +98,6 @@ private:
 
     int preX, preY;
     Quat curRotation, preRotation;
-
-    std::shared_ptr<Entity> target;
 };
 
 #endif /* Trackball_hpp */
