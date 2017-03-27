@@ -16,7 +16,7 @@
     #include <GL/glut.h>
 #endif
 
-GLuint loadGLTexture(const char *filePath);
+GLuint loadGLTexture(const char *filePath, GLboolean generateMipmap, GLboolean enableAnisotropy);
 GLuint loadGLCubemap(std::vector<std::string> faces);
 
 // Check if there has been an error inside OpenGL and if yes, print the error and
