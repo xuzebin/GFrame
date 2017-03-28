@@ -1,3 +1,4 @@
+
 #ifndef Model_hpp
 #define Model_hpp
 
@@ -6,6 +7,7 @@
 
 class Texture;
 class Geometry;
+
 
 class Model : public Entity {
 public:
@@ -17,6 +19,7 @@ public:
 
     std::string getFileName() const { return fileName; }
     std::string getBasePath() const { return basePath; }
+    const BoundingBox& getBoundingBox() const { return geometry->getBoundingBox(); }
 
 private:
     void loadFromFile(const std::string& fileName, std::vector<Vertex>& vertices, std::vector<unsigned short>& indices);

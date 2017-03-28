@@ -49,9 +49,9 @@ void init(void) {
 
     Scene::setLight0(light0);
 
-    auto model0 = std::make_shared<Model>("assets/models/torus/catmark_torus_creases0.obj", "model0", "assets/models/torus/");
+//     auto model0 = std::make_shared<Model>("assets/models/torus/catmark_torus_creases0.obj", "model0", "assets/models/torus/");
     // auto model0 = std::make_shared<Model>("assets/models/knot/texturedknot.obj", "model0", "assets/models/knot/");
-//     auto model0 = std::make_shared<Model>("assets/models/head/head.obj", "model0", "assets/models/head/");
+    auto model0 = std::make_shared<Model>("assets/models/head/head.obj", "model0", "assets/models/head/");
   //   auto model0 = std::make_shared<Model>("assets/models/sportsCar/sportsCar.obj", "model0", "assets/models/sportsCar/");
 
     model0->material->setColor(0.8, 0.8, 0.8);
@@ -89,16 +89,16 @@ void keyboard(unsigned char key, int x, int y) {
             break;
         }
         case 'w':
-            model->translate(Cvec3(0, 0.5, 0));
+            model->translate(Cvec3(0, 0.2, 0));
             break;
         case 's':
-            model->translate(Cvec3(0, -0.5, 0));
+            model->translate(Cvec3(0, -0.2, 0));
             break;
         case 'a':
-            model->translate(Cvec3(-0.5, 0, 0));
+            model->translate(Cvec3(-0.2, 0, 0));
             break;
         case 'd':
-            model->translate(Cvec3(0.5, 0, 0));
+            model->translate(Cvec3(0.2, 0, 0));
         case 'z':
             model->translate(Cvec3(0, 0, -0.2));//?
         case 'x':
