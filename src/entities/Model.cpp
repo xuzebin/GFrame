@@ -76,6 +76,8 @@ void Model::loadFromFile(const std::string& fileName, std::vector<Vertex>& verti
         }
     }
 
+    Cvec3f bb_min;
+    Cvec3f bb_max;
     for (int i = 0; i < shapes.size(); i++) {
         for (int j = 0; j < shapes[i].mesh.indices.size(); j++) {
             unsigned int vertexOffset = shapes[i].mesh.indices[j].vertex_index * 3;
@@ -86,6 +88,26 @@ void Model::loadFromFile(const std::string& fileName, std::vector<Vertex>& verti
             v.position[0] = attrib.vertices[vertexOffset];
             v.position[1] = attrib.vertices[vertexOffset + 1];
             v.position[2] = attrib.vertices[vertexOffset + 2];
+
+            if (v.position[0] < bb_min[0]) {
+                bb_min[0] = v.position[0];
+            }
+            if (v.position[1] < bb_min[1]) {
+                bb_min[1] = v.position[1];
+            }
+            if (v.position[2] < bb_min[2]) {
+                bb_min[2] = v.position[2];
+            }
+            if (v.position[0] > bb_max[0]) {
+                bb_max[0] = v.position[0];
+            }
+            if (v.position[1] > bb_max[1]) {
+                bb_max[1] = v.position[1];
+            }
+            if (v.position[2] > bb_max[2]) {
+                bb_max[2] = v.position[2];
+            }
+
 
             if (attrib.normals.size() > 0) {
                 v.normal[0] = attrib.normals[normalOffset];
@@ -101,6 +123,27 @@ void Model::loadFromFile(const std::string& fileName, std::vector<Vertex>& verti
             vertices.push_back(v);
             indices.push_back(vertices.size() - 1);
         }
+    }
+
+    std::cout << "max: " << bb_max << std::endl;
+    std::cout << "min: " << bb_min << std::endl;
+
+    /** Calculate the scale and translation for recentering and normalizing the model **/
+    float abs_max = 0;
+    for (int i = 0; i < 3; i++) {
+        if (abs_max < std::abs(bb_max[i])) {
+            abs_max = std::abs(bb_max[i]);
+        }
+        if (abs_max < std::abs(bb_min[i])) {
+            abs_max = std::abs(bb_min[i]);
+        }
+    }
+    std::cout << "abs_max: " << abs_max << std::endl;
+
+    //Scale and recenter the vertices
+    for (int i = 0; i < vertices.size(); i++) {
+        vertices[i].position -= (bb_max + bb_min) * 0.5;
+        vertices[i].position /= abs_max;
     }
 
     for (int i = 0; i < vertices.size(); i += 3) {

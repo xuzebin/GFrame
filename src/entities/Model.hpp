@@ -12,7 +12,7 @@ public:
     Model(const std::string fileName, std::string name, std::string basePath = "");
 
     void calcFaceTangent(const Cvec3f& v1, const Cvec3f& v2, const Cvec3f& v3, 
-                         const Cvec2f& texcoord1, const Cvec2f& texcoord2, const Cvec2f& texcoord3, 
+                         const Cvec2f& texcoord1, const Cvec2f& texcoord2, const Cvec2f& texcoord3,
                          Cvec3f& tangent, Cvec3f& binormal, Cvec3f& normal);
 
     std::string getFileName() const { return fileName; }

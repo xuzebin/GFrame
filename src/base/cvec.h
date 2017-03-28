@@ -138,6 +138,13 @@ public:
       os << v[n - 1] << "]";
       return os;
   }
+
+  Cvec& operator = (const Cvec& v) {
+      for (int i = 0; i < n; i++) {
+          d_[i] = v[i];
+      }
+      return *this;
+  }
     
 };
 

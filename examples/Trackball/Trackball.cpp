@@ -31,10 +31,14 @@ void init(void) {
     glReadBuffer(GL_BACK);
     
     std::string vertexShader = "shaders/vertex_shader_simple.glsl";
+//    std::string vertexShader = "shaders/vertex_shader_model.glsl";
     std::string fragmentShader = "shaders/fragment_shader_color.glsl";
+     //    std::string fragmentShader = "shaders/fragment_shader_model.glsl";
 
     auto colorShader = std::make_shared<ColorShader>();
     colorShader->createProgram(vertexShader.c_str(), fragmentShader.c_str());
+//     auto colorShader = std::make_shared<ModelShader>();
+//     colorShader->createProgram(vertexShader.c_str(), fragmentShader.c_str());
 
     auto camera = make_shared<Camera>(Cvec3(0, 0, 0), Quat::makeXRotation(0));
     Scene::setCamera(camera);
@@ -46,8 +50,13 @@ void init(void) {
     Scene::setLight0(light0);
 
     auto model0 = std::make_shared<Model>("assets/models/torus/catmark_torus_creases0.obj", "model0", "assets/models/torus/");
+    // auto model0 = std::make_shared<Model>("assets/models/knot/texturedknot.obj", "model0", "assets/models/knot/");
+//     auto model0 = std::make_shared<Model>("assets/models/head/head.obj", "model0", "assets/models/head/");
+  //   auto model0 = std::make_shared<Model>("assets/models/sportsCar/sportsCar.obj", "model0", "assets/models/sportsCar/");
+
     model0->material->setColor(0.8, 0.8, 0.8);
-    model0->setPosition(Cvec3(0, 0, -6));
+    model0->translate(Cvec3(0, 0, -4));
+
     model0->setRotation(Quat::makeYRotation(30) * Quat::makeXRotation(-30));
     model0->setShader(colorShader);
     Scene::addChild(model0);
@@ -71,6 +80,7 @@ void idle(void) {
 }
 
 void keyboard(unsigned char key, int x, int y) {
+    auto model = Scene::getEntity("model0");
     switch (key) {
         case 'q':
         case 'Q':
@@ -78,6 +88,22 @@ void keyboard(unsigned char key, int x, int y) {
             exit(0);
             break;
         }
+        case 'w':
+            model->translate(Cvec3(0, 0.5, 0));
+            break;
+        case 's':
+            model->translate(Cvec3(0, -0.5, 0));
+            break;
+        case 'a':
+            model->translate(Cvec3(-0.5, 0, 0));
+            break;
+        case 'd':
+            model->translate(Cvec3(0.5, 0, 0));
+        case 'z':
+            model->translate(Cvec3(0, 0, -0.2));//?
+        case 'x':
+            model->translate(Cvec3(0, 0, 0.2));
+            break;
         default:
             break;
     }
@@ -110,7 +136,7 @@ void motion(int x, int y) {
 
 int main(int argc, char **argv) {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE);
     glutInitWindowSize(screenWidth, screenHeight);
     glutCreateWindow("Trackball");
     

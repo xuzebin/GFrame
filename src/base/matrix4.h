@@ -335,7 +335,4 @@ inline Matrix4 setLookat(Cvec3 eye, Cvec3 at, Cvec3 up) {
     return m;
 }
 
-
-
 #endif
-

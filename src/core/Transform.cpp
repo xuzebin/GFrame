@@ -21,7 +21,7 @@ void Transform::setModelMatrix(const Matrix4& m) {
     }
 }
 
-void Transform::setPivot(double x, double y, double z) {
+void Transform::setPivot(float x, float y, float z) {
     pivot[0] = x;
     pivot[1] = y;
     pivot[2] = z;

@@ -15,7 +15,8 @@ public:
     
     void setScale(const Cvec3& scale);
     void setModelMatrix(const Matrix4& m);
-    void setPivot(double x, double y, double z);
+    void setPivot(float x, float y, float z);
+    void setPivot(const Cvec3& pivot) { this->pivot = pivot; }
 
     const Cvec3& getPivot() const { return pivot; }
     const Cvec3& getScale() const { return scale; }
