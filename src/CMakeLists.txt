@@ -5,7 +5,7 @@ find_package(GLUT REQUIRED)
 
 include_directories(${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS})
 file(GLOB_RECURSE SRC_FILES *.cpp)
-add_library(GFrame ${SRC_FILES})
+add_library(GFrame STATIC ${SRC_FILES})
 
 install(TARGETS GFrame DESTINATION ${PROJECT_SOURCE_DIR}/lib)
 

@@ -4,8 +4,8 @@
 # Clean before the build.
 function clean() {
     # Remove previous build folder
-    if [ -d build ]; then
-        rm -rf build
+    if [ -d lib/build ]; then
+        rm -rf lib/build
         echo "[INFO] Previous build foler removed."
     fi
 }
@@ -21,9 +21,9 @@ function validate() {
 
 clean
 
-mkdir -p build
-cd build
-cmake .. -DBUILD_SRC=ON
+mkdir -p lib/build
+cd lib/build
+cmake ../.. -DBUILD_SRC=ON
 validate
 make
 validate
