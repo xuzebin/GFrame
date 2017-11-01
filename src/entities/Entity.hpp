@@ -80,7 +80,6 @@ public:
     const std::shared_ptr<Entity>& getParent() const { return parent; }
     float getBoundingBoxLength()                     { return geometry->getBoundingBoxLength() * getScale()[0]; }
 
-
 public:
     Transform transform;
     std::shared_ptr<Geometry> geometry;
@@ -107,7 +106,6 @@ protected:
     int lightSwitch = 3;//0001 indicates light0 opens, 0010 indicates light1 opens, 0011 indicates light0 and light1 open, and so on.
 
     std::shared_ptr<Shader> shader;
-
 
 };
 
