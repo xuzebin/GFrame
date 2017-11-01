@@ -18,7 +18,7 @@ add_subdirectory(examples/Button3D)
 add_subdirectory(examples/OffscreenRendering)
 add_subdirectory(examples/PostProcessing/FXAA)
 add_subdirectory(examples/PostProcessing/ToneMapping)
-#add_subdirectory(examples/RollingSphere)
+add_subdirectory(examples/RollingSphere)
 add_subdirectory(examples/GLFWTest)
 endif (BUILD_SRC)
 
