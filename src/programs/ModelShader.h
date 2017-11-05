@@ -82,7 +82,7 @@ public:
             glActiveTexture(GL_TEXTURE0 + 2);
             glBindTexture(GL_TEXTURE_2D, entity.material->getNormalTexture());
         }
-        
+        checkGlError();
         entity.geometry->draw(aPositionLoc, aNormalLoc, aTexCoordLoc, aBinormalLoc, aTangentLoc);
     }
 private:

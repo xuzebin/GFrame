@@ -68,6 +68,7 @@ void Scene::renderLoop() {
     for(auto it = entities.begin(); it != entities.end(); ++it) {
         auto shader = (*it)->getShader();
         (*it)->draw(camera, shader, light0, light1);
+        checkGlError();
     }
 }
 
@@ -88,6 +89,8 @@ void Scene::renderToTexture() {
     glViewport(0, 0, 1024, 1024);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    checkGlError();
+
     renderLoop();
 }
 
@@ -97,6 +100,8 @@ void Scene::renderToScreen(GLsizei windowWidth, GLsizei windowHeight) {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, windowWidth, windowHeight);
     screen->draw(Scene::camera, screen->getShader(), Scene::light0, Scene::light1);
+
+    checkGlError();
 
     glutSwapBuffers();
 }

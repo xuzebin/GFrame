@@ -12,6 +12,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+//#define OPENGL4
+
 using namespace std;
 
 void ignoreGlErrors() {
@@ -26,7 +28,7 @@ void checkGlErrors(const char* filename, int lineno) {
 
   if (errCode != GL_NO_ERROR) {
     string error("GL Error: ");
-    error += reinterpret_cast<const char*>(gluErrorString(errCode));
+    //    error += reinterpret_cast<const char*>(gluErrorString(errCode));
     error += " ";
     error += filename;
     error += ":";
@@ -102,6 +104,9 @@ void linkShader(GLuint programHandle, GLuint vs, GLuint fs) {
   glAttachShader(programHandle, vs);
   glAttachShader(programHandle, fs);
 
+#ifdef OPENGL4
+  glBindFragDataLocation(programHandle, 0, "outColor");
+#endif
   glLinkProgram(programHandle);
 
   glDetachShader(programHandle, vs);
@@ -110,7 +115,7 @@ void linkShader(GLuint programHandle, GLuint vs, GLuint fs) {
   GLint linked = 0;
   glGetProgramiv(programHandle, GL_LINK_STATUS, &linked);
   printInfoLog(programHandle, "linking");
-
+  checkGlErrors(__FILE__, __LINE__);
   if (!linked)
     throw runtime_error("fails to link shaders");
 }
@@ -141,8 +146,9 @@ GLuint loadGLTexture(const char *filePath, GLboolean generateMipmap = true, GLbo
     
     GLuint retTexture;
     glGenTextures(1, &retTexture);
+    checkGlErrors(__FILE__, __LINE__);
     glBindTexture(GL_TEXTURE_2D, retTexture);
-    
+    checkGlErrors(__FILE__, __LINE__);
     if (generateMipmap) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     } else {
@@ -152,21 +158,29 @@ GLuint loadGLTexture(const char *filePath, GLboolean generateMipmap = true, GLbo
     
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
+    checkGlErrors(__FILE__, __LINE__);
     if (generateMipmap) {
+        //GL_RGBA16F_ARB not found in opengl 3+
+#ifndef OPENGL4
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
         glGenerateMipmap(GL_TEXTURE_2D);
+        checkGlErrors(__FILE__, __LINE__);
+#endif
     } else {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
     }
     if (enableAnisotropy) {
         GLfloat fLargest;
+#ifndef OPENGL4
+        //GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT not found in opengl 3+
         glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &fLargest);//fLargest = 16
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, fLargest);
+        checkGlErrors(__FILE__, __LINE__);
+#endif
     }
-    
     glBindTexture(GL_TEXTURE_2D, 0);
     stbi_image_free(image);
+    checkGlErrors(__FILE__, __LINE__);
     return retTexture;
 }
 
@@ -227,6 +241,8 @@ GLuint loadGLCubemap(std::vector<std::string> faces) {
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
     
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+    checkGlErrors(__FILE__, __LINE__);
     return textureID;
 }
+
 

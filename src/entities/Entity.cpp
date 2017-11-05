@@ -33,7 +33,7 @@ void Entity::draw(std::shared_ptr<Camera> camera, std::shared_ptr<Shader> shader
     }
     assert(("Geometry not set", geometry != nullptr));
     assert(("Material not set", material != nullptr));
-
+    checkGlError();
     shader->setLocationsAndDraw(*this, camera, light0, light1);
 }
 

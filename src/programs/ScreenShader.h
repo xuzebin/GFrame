@@ -35,6 +35,8 @@ public:
         //toonify filtering shader
         glUniform1f(uMouseXOffsetLoc, mouseX);
 
+        checkGlError();
+
         entity.geometry->draw(aPositionLoc, -1, aTexCoordLoc, -1, -1);
     }
 

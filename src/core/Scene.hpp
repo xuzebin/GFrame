@@ -1,7 +1,14 @@
 #ifndef Scene_hpp
 #define Scene_hpp
 
+
+#ifdef __APPLE__
 #include <GLUT/glut.h>
+//#   include <OpenGL/gl3.h>
+//#   define __gl_h_ /* Prevent inclusion of the old gl.h */
+#else
+#   include <GL/glew.h>
+#endif
 #include <unordered_map>
 #include <vector>
 #include <string>

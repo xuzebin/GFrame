@@ -15,7 +15,6 @@ Model::Model(const std::string fileName, std::string name, std::string basePath)
     std::vector<Vertex> vtx;
     std::vector<unsigned short> idx;
     loadFromFile(fileName, vtx, idx);
-
     geometry = std::make_shared<Mesh>(vtx, idx);
 }
 
@@ -50,6 +49,7 @@ void Model::loadFromFile(const std::string& fileName, std::vector<Vertex>& verti
 
     //TODO add getBaseDir function
     bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, fileName.c_str(), basePath.c_str(), true);
+
     if (!err.empty()) {
         std::cerr << err << std::endl;
     }

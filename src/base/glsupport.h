@@ -10,7 +10,10 @@
 #include <vector>
 
 #ifdef __APPLE__
-    #include <GLUT/glut.h>
+#   include <GLUT/glut.h>
+
+//#   include <OpenGL/gl3.h>
+//#   define __gl_h_ /* Prevent inclusion of the old gl.h */
 #else
     #include <GL/glew.h>
     #include <GL/glut.h>
@@ -22,7 +25,7 @@ GLuint loadGLCubemap(std::vector<std::string> faces);
 // Check if there has been an error inside OpenGL and if yes, print the error and
 // through a runtime_error exception.
 void checkGlErrors(const char* filename, int lineno);
-
+#define checkGlError() checkGlErrors(__FILE__,__LINE__)
 // clear all the GL Error flags
 void ignoreGlErrors();
 

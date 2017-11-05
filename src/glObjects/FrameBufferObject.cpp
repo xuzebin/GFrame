@@ -1,6 +1,12 @@
 #include "FrameBufferObject.hpp"
 #include <stddef.h>
 
+#ifdef __APPLE__
+#   include <GLUT/glut.h>
+//#   include <OpenGL/gl3.h>
+//#   define __gl_h_ /* Prevent inclusion of the old gl.h */
+#endif
+
 FrameBufferObject::FrameBufferObject(GLsizei width, GLsizei height, bool highPrecision) : width(width),
                                                                                           height(height),
                                                                                           highPrecision(highPrecision)

@@ -12,8 +12,9 @@ public:
     }
     
     void setLocationsAndDraw(Entity& entity, std::shared_ptr<Camera> camera, std::shared_ptr<Light> light0, std::shared_ptr<Light> light1) {
+        checkGlError();
         glUseProgram(programId);
-        
+        checkGlError();
         Matrix4 projectionMatrix = camera->getProjectionMatrix();
         
         //Transform hierachy, iteratively multiply parent rigidbody matrices
@@ -37,12 +38,15 @@ public:
         normal.writeToColumnMajorMatrix(normalMat);
         
         glUniformMatrix4fv(uModelViewMatrixLoc, 1, false, modelViewMat);
+        checkGlError();
         glUniformMatrix4fv(uProjectionMatrixLoc, 1, false, projectionMat);
+        checkGlError();
         glUniformMatrix4fv(uNormalMatrixLoc, 1, false, normalMat);
+        checkGlError();
         
         Cvec3f color = entity.material->getColor();
         glUniform3f(uColorLoc, color[0], color[1], color[2]);
-        
+        checkGlError();
         if (light0 != nullptr) {
             Cvec3 lightPosEye0 = light0->getPositionInEyeSpace(viewMatrix);
             glUniform3f(uLightPositionLoc0, lightPosEye0[0], lightPosEye0[1], lightPosEye0[2]);
@@ -50,6 +54,7 @@ public:
             glUniform3f(uLightColorLoc0, lightColor[0], lightColor[1], lightColor[2]);
             Cvec3f specularLightColor = light0->specularLightColor;
             glUniform3f(uSpecularLightColorLoc0, specularLightColor[0], specularLightColor[1], specularLightColor[2]);
+            checkGlError();
         }
         if (light1 != nullptr) {
             Cvec3 lightPosEye1 = light1->getPositionInEyeSpace(viewMatrix);
@@ -58,7 +63,9 @@ public:
             glUniform3f(uLightColorLoc1, lightColor[0], lightColor[1], lightColor[2]);
             Cvec3f specularLightColor = light1->specularLightColor;
             glUniform3f(uSpecularLightColorLoc1, specularLightColor[0], specularLightColor[1], specularLightColor[2]);
+            checkGlError();
         }
+
         
         entity.geometry->draw(aPositionLoc, aNormalLoc, aTexCoordLoc, -1, -1);
     }

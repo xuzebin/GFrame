@@ -94,7 +94,7 @@ public:
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_CUBE_MAP, entity.material->getCubemapTexture());
         }
-        
+        checkGlError();
         entity.geometry->draw(aPositionLoc, aNormalLoc, aTexCoordLoc, -1, -1);
     }
 
