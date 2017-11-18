@@ -247,7 +247,7 @@ public:
 
 
 void display(void) {
-//    Scene::render();//render the scene directly to scren
+    //    Scene::render();//render the scene directly to scren
     //render to texture and then to screen using one fbo
 
     //blur effect rendering using 2 fbos
@@ -255,10 +255,12 @@ void display(void) {
     float blurSize = 0.02f - 0.001f * time * 15.0f;
 
     if (blurSize < -1e-8) {
+        std::cout << "not blurring" << std::endl;
         screen->material->setDiffuseTextureId(firstFBO->getFrameBufferTexture());
         Scene::renderToTexture();
         Scene::renderToScreen(screenWidth, screenHeight);
     } else {
+        std::cout << "blur eefect" << std::endl;
         horizontalBlurShader->setBlurSize(blurSize);
         verticalBlurShader->setBlurSize(blurSize);
 
@@ -294,7 +296,7 @@ void display(void) {
 }
 
 void init() {
-    glClearColor(0.2, 0.2, 0.2, 1.0);
+    glClearColor(0.3, 0.3, 0.5, 1.0);
     glClearDepth(0.0);
     glCullFace(GL_BACK);
 //    glEnable(GL_CULL_FACE);
@@ -353,24 +355,24 @@ void init() {
     Scene::setCamera(camera);
     
     auto light0 = std::make_shared<Light>();
-    light0->setPosition(1, 5, -5);
+    light0->setPosition(1, 5, 0);
 
     auto light1 = std::make_shared<Light>();
-    light1->setPosition(-1, 0, -4);
+    light1->setPosition(-1, 0, 0);
 
     Scene::setLight0(light0);
     Scene::setLight1(light1);
 
     currentMovingLight = Scene::getLight(0);
 
-    
+
     auto model0 = std::make_shared<Model>("assets/models/monk/Monk_Giveaway_Fixed.obj", "model0", "assets/models/monk/");
-    model0->setScale(Cvec3(0.5, 0.5, 0.5));
-    model0->setPosition(Cvec3(0, -3.4, -9));
+    model0->setPosition(Cvec3(0, 0, -1.5));
     model0->setRotation(Quat::makeYRotation(20));
     model0->material->setColor(0.0, 0.8, 0.8);
-    model0->setShader(refractShader);
-    model0->transform.setPivot(0, 3, 0);
+    //    model0->setShader(refractShader);
+    model0->setShader(modelShader);
+    //    model0->transform.setPivot(0, 3, 0);
     Scene::addChild(model0);
 
     
@@ -379,7 +381,7 @@ void init() {
     auto buttonM = std::make_shared<Material>(Color::RED);
     auto btn0 = std::make_shared<Entity>(buttonG, buttonM, "button0");
     btn0->setPosition(Cvec3(-1.8, 1.9, -5));
-    btn0->setScale(Cvec3(0.05, 0.05, 0.05));
+    btn0->setScale(Cvec3(0.1, 0.1, 0.1));
     btn0->registerClickEventListener(std::unique_ptr<ProgramSwitchBtnEventListener>(new ProgramSwitchBtnEventListener()));
     btn0->setShader(colorShader);
     Scene::addChild(btn0);
@@ -387,7 +389,7 @@ void init() {
     /************ post-processing effect swtich button ************/
     auto btn1 = std::make_shared<Entity>(buttonG, buttonM, "button1");
     btn1->setPosition(Cvec3(-1.5, 1.9, -5));
-    btn1->setScale(Cvec3(0.05, 0.05, 0.05));
+    btn1->setScale(Cvec3(0.1, 0.1, 0.1));
     btn1->registerClickEventListener(std::unique_ptr<PostProcessingSwitchListener>(new PostProcessingSwitchListener()));
     btn1->setShader(colorShader);
     Scene::addChild(btn1);
@@ -397,7 +399,7 @@ void init() {
         auto buttonM = std::make_shared<Material>(Color::YELLOW);
         auto btn = std::make_shared<Entity>(buttonG, buttonM, ("button" + std::to_string(i + 1)));
         btn->setPosition(Cvec3(-1.8, 1.9 - (i + 1) / 3.0, -5));
-        btn->setScale(Cvec3(0.05, 0.05, 0.05));
+        btn->setScale(Cvec3(0.1, 0.1, 0.1));
         btn->registerClickEventListener(std::unique_ptr<LightColorBtnEventListener>(new LightColorBtnEventListener()));
         btn->setShader(colorShader);
         Scene::addChild(btn);
@@ -408,12 +410,11 @@ void init() {
         auto buttonM = std::make_shared<Material>(Color::WHITE);
         auto btn = std::make_shared<Entity>(buttonG, buttonM, ("button" + std::to_string(i + 3)));
         btn->setPosition(Cvec3(-1.5, 1.9 - (i + 1) / 3.0, -5));
-        btn->setScale(Cvec3(0.05, 0.05, 0.05));
+        btn->setScale(Cvec3(0.1, 0.1, 0.1));
         btn->registerClickEventListener(std::unique_ptr<SpecularLightColorBtnEventListener>(new SpecularLightColorBtnEventListener()));
         btn->setShader(colorShader);
         Scene::addChild(btn);
     }
-
 
     Cubemap cubemap;
     cubemap.loadTextures("assets/cubemap/posx.jpg", "assets/cubemap/negx.jpg", "assets/cubemap/posy.jpg", "assets/cubemap/negy.jpg", "assets/cubemap/posz.jpg", "assets/cubemap/negz.jpg");
@@ -424,8 +425,8 @@ void init() {
     auto skybox = std::make_shared<Entity>(sb, cubemapM);
     skybox->setShader(cubemapShader);
     skybox->setRotation(Quat::makeYRotation(180));
-    Scene::addChild(skybox);
-
+    // comment it out temperarily, because the model is not shown if skybox is rendered.
+    //    Scene::addChild(skybox);
 
 
     firstFBO = std::make_shared<FrameBufferObject>(1024, 1024, true);
