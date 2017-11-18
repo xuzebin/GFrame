@@ -6,6 +6,11 @@ OPTION(BUILD_SRC "Build source files" OFF)
 
 SET(GFRAME_STATIC_LIB ${PROJECT_SOURCE_DIR}/lib/libGFrame.a)
 
+if (APPLE)
+add_definitions(-Wno-deprecated-declarations)
+add_definitions(-Wno-unused-value)
+endif (APPLE)
+
 if (BUILD_SRC)
 add_subdirectory(src)
 else (BUILD_SRC)

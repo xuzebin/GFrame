@@ -12,6 +12,7 @@
 #include "core/Light.hpp"
 #include "programs/Shader.h"
 #include "programs/ColorShader.h"
+#include "base/cvec.h"
 
 int screenWidth = 600;
 int screenHeight = 600;
@@ -26,13 +27,69 @@ void display(void) {
 
     auto ball = Scene::getEntity("button");
     auto ground = Scene::getEntity("ground");
+    auto shadow = Scene::getEntity("shadow");
+
+    //draw ground
+    glDepthMask(GL_FALSE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    //    glEnable(GL_POLYGON_OFFSET_FILL);
+    //    glPolygonOffset(1, 1);
+    ground->draw(Scene::getCamera(), ground->getShader(), Scene::getLight(0), Scene::getLight(1));
+    //    glDisable(GL_POLYGON_OFFSET_FILL);
+
+    glDepthMask(GL_TRUE);
+    //draw sphere
+    glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
+
+    ball->draw(Scene::getCamera(), ball->getShader(), Scene::getLight(0), Scene::getLight(1));
+
+    //draw shadow
+
+    //first update shadow's modelview matrix
+    shadow->setModelMatrix(ball->getModelMatrix());
+
+    auto shadowShader = shadow->getShader();
+    GLfloat modelMat[16], viewMat[16];
+    shadow->getModelMatrix().writeToColumnMajorMatrix(modelMat);
+    const Matrix4& invViewMat = inv(Scene::getCamera()->getViewMatrix());
+    invViewMat.writeToColumnMajorMatrix(viewMat);
+
+    glUseProgram(shadowShader->getProgramId());
+    GLint modelMatLoc = glGetUniformLocation(shadowShader->getProgramId(), "uModelMatrix");
+    GLint viewMatLoc = glGetUniformLocation(shadowShader->getProgramId(), "uViewMatrix");
+
+    glUniformMatrix4fv(modelMatLoc, 1, false, modelMat);
+    glUniformMatrix4fv(viewMatLoc, 1, false, viewMat);
 
     glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
-    ball->draw(Scene::getCamera(), ball->getShader(), Scene::getLight(0), Scene::getLight(1));
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    ground->draw(Scene::getCamera(), ground->getShader(), Scene::getLight(0), Scene::getLight(1));
+    shadow->draw(Scene::getCamera(), shadow->getShader(), Scene::getLight(0), Scene::getLight(1));
 
     glutSwapBuffers();
+}
+
+void createShadowMatrix(const Cvec3& lightPosition, const Cvec3& groundPosition, Matrix4& shadowMatrix) {
+    //assume ground is at (0,0,0)
+    Cvec4 light(lightPosition, 1.0);
+
+    shadowMatrix(0,0) = light[1];
+    shadowMatrix(0,1) = -light[0];
+    shadowMatrix(0,2) = 0;
+    shadowMatrix(0,3) = 0;
+
+    shadowMatrix(1,0) = 0;
+    shadowMatrix(1,1) = 0;
+    shadowMatrix(1,2) = 0;
+    shadowMatrix(1,3) = 0;
+
+    shadowMatrix(2,0) = 0;
+    shadowMatrix(2,1) = -light[2];
+    shadowMatrix(2,2) = light[1];
+    shadowMatrix(2,3) = 0;
+
+    shadowMatrix(3,0) = 0;
+    shadowMatrix(3,1) = -light[3];
+    shadowMatrix(3,2) = 0;
+    shadowMatrix(3,3) = light[1];
 }
 
 void init(void) {
@@ -44,6 +101,9 @@ void init(void) {
     glDepthFunc(GL_GREATER);
     glReadBuffer(GL_BACK);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    //    glEnable(GL_BLEND);
+    //    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     std::string vertexShader = "shaders/vertex_shader_simple.glsl";
     std::string fragmentShader = "shaders/fragment_shader_color.glsl";
@@ -58,28 +118,46 @@ void init(void) {
 
     /** Lights config **/
     auto light0 = std::make_shared<Light>();
-    light0->setPosition(0, 0, 10);
+    light0->setPosition(-5, 10, -10);
     auto light1 = std::make_shared<Light>();
     light1->setPosition(-1, 0, -4);
 
     Scene::setLight0(light0);
-    Scene::setLight1(light1);
+    //    Scene::setLight1(light1);
 
-    /** Button config **/
-    auto sphere = std::make_shared<Sphere>(1, 8, 8);
+    /** sphere **/
+    auto sphere = std::make_shared<Sphere>(1, 20, 20);
     auto material = std::make_shared<Material>(Color::RED);
     auto button = std::make_shared<Entity>(sphere, material, "button");
     button->setShader(colorShader);
+    button->setPosition(Cvec3(0, 1, 0));
     Scene::addChild(button);
 
-
+    // ground
     auto plane = std::make_shared<Plane>(2);
     auto material2 = std::make_shared<Material>(Cvec3f(0.0, 1.0, 0.0));
     auto ground = std::make_shared<Entity>(plane, material2, "ground");
-    ground->setPosition(Cvec3(0, -1, 0));
     ground->setScale(Cvec3(3, 3, 3));
     ground->setShader(colorShader);
     Scene::addChild(ground);
+
+    /** sphere shadow  **/
+    std::string shadowShaderFile = "shaders/vertex_shader_shadow.glsl";
+    auto shadowShader = std::make_shared<ColorShader>();
+    shadowShader->createProgram(shadowShaderFile.c_str(), fragmentShader.c_str());
+    auto materialShadow = std::make_shared<Material>(Cvec3f(0.25, 0.25, 0.25));
+    auto sphereShadow = std::make_shared<Entity>(sphere, materialShadow, "shadow");
+    sphereShadow->setShader(shadowShader);
+    Scene::addChild(sphereShadow);
+    Matrix4 shadowMatrix;
+    GLfloat shadowMat[16];
+    createShadowMatrix(light0->getPosition(), ground->getPosition(), shadowMatrix);
+    shadowMatrix.writeToColumnMajorMatrix(shadowMat);
+
+    glUseProgram(shadowShader->getProgramId());
+    GLint shadowMatrixLocation = glGetUniformLocation(shadowShader->getProgramId(), "uShadowMatrix");
+    glUniformMatrix4fv(shadowMatrixLocation, 1, false, shadowMat);
+    checkGlErrors(__FILE__, __LINE__);
 
     // genereate vbo/ibo for the geometry of each Entity.
     Scene::createMeshes();
@@ -112,7 +190,7 @@ void idle(void) {
     if (timeSinceStart == -1) {
         timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
     }
-    float dif = (float)glutGet(GLUT_ELAPSED_TIME)/10.0f - timeSinceStart/10.0f;
+    float dif = (float)glutGet(GLUT_ELAPSED_TIME)/30.0f - timeSinceStart/30.0f;
     angle += dif;
 //     float dif = 0.5;
 //     angle += dif;
@@ -133,8 +211,8 @@ void keyboard(unsigned char key, int x, int y) {
             exit(0);
             break;
         }
-        case 'z':
-        case 'Z':
+        case 'p':
+        case 'P':
         {
             wireframe = !wireframe;
             break;
@@ -160,8 +238,8 @@ void keyboard(unsigned char key, int x, int y) {
             }
             break;
         }
-        case 'x':
-        case 'X':
+        case 'i':
+        case 'I':
         {
             //reset to initial
             btn->setPosition(btn->initState.transform.getPosition());
@@ -211,6 +289,48 @@ void keyboard(unsigned char key, int x, int y) {
             currentDirection[2] = 0;
             lastOrietation = btn->getRotation();
             resetAngles();
+            break;
+        }
+        case 'x':
+        {
+            auto camera = Scene::getCamera();
+            camera->setPosition(camera->getPosition() + Cvec3(-1, 0, 0));
+            camera->updateView(Cvec3(0, 0, 0));
+            break;
+        }
+        case 'X':
+        {
+            auto camera = Scene::getCamera();
+            camera->setPosition(camera->getPosition() + Cvec3(1, 0, 0));
+            camera->updateView(Cvec3(0, 0, 0));
+            break;
+        }
+        case 'y':
+        {
+            auto camera = Scene::getCamera();
+            camera->setPosition(camera->getPosition() + Cvec3(0, -1, 0));
+            camera->updateView(Cvec3(0, 0, 0));
+            break;
+        }
+        case 'Y':
+        {
+            auto camera = Scene::getCamera();
+            camera->setPosition(camera->getPosition() + Cvec3(0, 1, 0));
+            camera->updateView(Cvec3(0, 0, 0));
+            break;
+        }
+        case 'z':
+        {
+            auto camera = Scene::getCamera();
+            camera->setPosition(camera->getPosition() + Cvec3(0, 0, -1));
+            camera->updateView(Cvec3(0, 0, 0));
+            break;
+        }
+        case 'Z':
+        {
+            auto camera = Scene::getCamera();
+            camera->setPosition(camera->getPosition() + Cvec3(0, 0, 1));
+            camera->updateView(Cvec3(0, 0, 0));
             break;
         }
         default:
