@@ -26,7 +26,8 @@ public:
     }
 
     const std::vector<Vertex>& getVertices() {
-        return std::vector<Vertex>();
+        static std::vector<Vertex> nothing;
+        return nothing;
     }
 
 protected:
