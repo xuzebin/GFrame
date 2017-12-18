@@ -33,7 +33,8 @@ const std::shared_ptr<Light>& Scene::getLight(int index) {
             return light1;
         default:
             std::cerr << "No matched light index" << std::endl;
-            return nullptr;
+            static std::shared_ptr<Light> nothing;
+            return nothing;
     }
 }
 
@@ -103,7 +104,8 @@ void Scene::renderToScreen(GLsizei windowWidth, GLsizei windowHeight) {
 
 const std::shared_ptr<Entity>& Scene::getEntity(std::string name) {
     if (entityTable.find(name) == entityTable.end()) {
-        return nullptr;
+        static std::shared_ptr<Entity> nothing;
+        return nothing;
     }
     return entityTable[name];
 }
