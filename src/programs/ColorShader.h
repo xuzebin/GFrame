@@ -15,33 +15,35 @@ public:
         glUseProgram(programId);
         
         Matrix4 projectionMatrix = camera->getProjectionMatrix();
-        
+        checkGlErrors(__FILE__, __LINE__);
         //Transform hierachy, iteratively multiply parent rigidbody matrices
         //to get the ultimate modelmatrix that transform from object frame to world frame.
         Matrix4 modelMatrix;
         modelMatrix = entity.transform.getModelMatrix();
-        
+        checkGlErrors(__FILE__, __LINE__);
         auto current = entity.getParent();
         while (current != nullptr) {
             modelMatrix = current->transform.getRigidBodyMatrix() * modelMatrix;
             current = current->getParent();
         }
+        checkGlErrors(__FILE__, __LINE__);
         
         const Matrix4 viewMatrix = camera->getViewMatrix();
         Matrix4 modelViewMatrix = inv(viewMatrix) * modelMatrix;
         Matrix4 normal = normalMatrix(modelViewMatrix);
         
-        
+        checkGlErrors(__FILE__, __LINE__);
         modelViewMatrix.writeToColumnMajorMatrix(modelViewMat);
         projectionMatrix.writeToColumnMajorMatrix(projectionMat);
         normal.writeToColumnMajorMatrix(normalMat);
-        
+        checkGlErrors(__FILE__, __LINE__);
         glUniformMatrix4fv(uModelViewMatrixLoc, 1, false, modelViewMat);
         glUniformMatrix4fv(uProjectionMatrixLoc, 1, false, projectionMat);
         glUniformMatrix4fv(uNormalMatrixLoc, 1, false, normalMat);
         
         Cvec3f color = entity.material->getColor();
         glUniform3f(uColorLoc, color[0], color[1], color[2]);
+        checkGlErrors(__FILE__, __LINE__);
         
         if (light0 != nullptr) {
             Cvec3 lightPosEye0 = light0->getPositionInEyeSpace(viewMatrix);
@@ -59,8 +61,9 @@ public:
             Cvec3f specularLightColor = light1->specularLightColor;
             glUniform3f(uSpecularLightColorLoc1, specularLightColor[0], specularLightColor[1], specularLightColor[2]);
         }
-        
+        checkGlErrors(__FILE__, __LINE__);
         entity.geometry->draw(aPositionLoc, aNormalLoc, aTexCoordLoc, -1, -1);
+        checkGlErrors(__FILE__, __LINE__);
     }
 
 private:

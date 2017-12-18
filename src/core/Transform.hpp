@@ -1,7 +1,7 @@
 #ifndef Transform_hpp
 #define Transform_hpp
 
-#include "RigidbodyTransform.hpp"
+#include "RigidBodyTransform.hpp"
 
 /**
  * Transform that manages position, rotation and scale of an object.

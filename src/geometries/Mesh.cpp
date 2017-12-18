@@ -1,7 +1,8 @@
 #include "Mesh.hpp"
 
-Mesh::Mesh(std::vector<Vertex> vtx, std::vector<unsigned short> idx) : vtx(vtx),
-                                                                 idx(idx)
+Mesh::Mesh(std::vector<Vertex> vtx, std::vector<unsigned short> idx, bool clean_data) : vtx(vtx),
+                                                                                        idx(idx),
+                                                                                        clean_data(clean_data)
 {
 }
 
@@ -15,8 +16,10 @@ void Mesh::createVBOs() {
     }
     
     Geometry::createVBOs(vtx, idx);
-    
-    clearDataInMemoery();
+
+    if (clean_data) {
+        clearDataInMemoery();
+    }
 }
 
 void Mesh::clearDataInMemoery() {

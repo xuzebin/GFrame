@@ -40,7 +40,7 @@ struct InitState {
  */
 class Entity {
 public:
-    Entity(std::shared_ptr<Geometry> geometry = nullptr, std::shared_ptr<Material> material = nullptr, std::string name = "");
+    Entity(std::shared_ptr<Geometry> geometry = nullptr, std::shared_ptr<Material> material = nullptr, std::string name = "", bool clean_data = true);
     ~Entity();
 
     void createMesh();
@@ -59,14 +59,28 @@ public:
 
     void setVisible(bool visible)                         { this->visible = visible; }
     void setDepthTest(bool enable)                        { this->depthTest = enable; }
-    void setPosition(const Cvec3& position)               { transform.setPosition(position); }
-    void translate(const Cvec3& translation)              { transform.translate(translation); }
-    void setRotation(const Quat& rotation)                { transform.setRotation(rotation); }
-    void rotate(const Quat& rotation)                     { transform.rotate(rotation); }
-    void setScale(const Cvec3& scale)                     { transform.setScale(scale); }
+
+    void setPosition(const Cvec3& position)               { 
+        transform.setPosition(position); 
+    }
+    void translate(const Cvec3& translation)              { 
+        transform.translate(translation); 
+    }
+    void setRotation(const Quat& rotation)                { 
+        transform.setRotation(rotation);
+    }
+    void rotate(const Quat& rotation)                     { 
+        transform.rotate(rotation);
+    }
+    void setScale(const Cvec3& scale)                     { 
+        transform.setScale(scale);
+    }
     void setModelMatrix(const Matrix4& m)                 { transform.setModelMatrix(m); }
     void setShader(const std::shared_ptr<Shader>& shader) { this->shader = shader; }
-    void setParent(std::shared_ptr<Entity> parent)        { this->parent = parent; }
+    void setParent(std::shared_ptr<Entity> parent)        { 
+        this->parent = parent; 
+        std::cout << "parent set" << std::endl;
+    }
 
     int getProgram() const                           { return shader->getProgramId(); }
     std::string getName() const                      { return this->name; }
@@ -79,6 +93,12 @@ public:
     const std::shared_ptr<Shader>& getShader() const { return shader; }
     const std::shared_ptr<Entity>& getParent() const { return parent; }
     float getBoundingBoxLength()                     { return geometry->getBoundingBoxLength() * getScale()[0]; }
+
+    //convex hull setter and getter; use setParent instead
+    //    void setConvexHull(std::shared_ptr<Entity> convexhull) { this->convexhull = convexhull; }
+    //    std::shared_ptr<Entity>& getConvexHull()   const { return convexhull; }
+    void setChild(std::shared_ptr<Entity> child) { this->child = child; }
+    std::shared_ptr<Entity> getChild()           { return this->child;  }
 
 public:
     Transform transform;
@@ -99,6 +119,9 @@ protected:
     int programId;
 
     std::shared_ptr<Entity> parent;
+
+    //child entity. adding this used for getting object's attached convex hull
+    std::shared_ptr<Entity> child;
     
     std::unique_ptr<ClickEventListener> clickEventListener;//currently only one event listener for each entity.
 
@@ -106,6 +129,7 @@ protected:
     int lightSwitch = 3;//0001 indicates light0 opens, 0010 indicates light1 opens, 0011 indicates light0 and light1 open, and so on.
 
     std::shared_ptr<Shader> shader;
+
 
 };
 

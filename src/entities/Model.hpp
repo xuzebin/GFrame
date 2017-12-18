@@ -1,4 +1,3 @@
-
 #ifndef Model_hpp
 #define Model_hpp
 
@@ -11,7 +10,7 @@ class Geometry;
 
 class Model : public Entity {
 public:
-    Model(const std::string fileName, std::string name, std::string basePath = "");
+    Model(const std::string fileName, std::string name, std::string basePath = "", bool clean_data = true);
 
     void calcFaceTangent(const Cvec3f& v1, const Cvec3f& v2, const Cvec3f& v3, 
                          const Cvec2f& texcoord1, const Cvec2f& texcoord2, const Cvec2f& texcoord3,
@@ -20,6 +19,9 @@ public:
     std::string getFileName() const { return fileName; }
     std::string getBasePath() const { return basePath; }
     const BoundingBox& getBoundingBox() const { return geometry->getBoundingBox(); }
+
+    //obj loading utility, only load vertices (no duplicate vertices)
+    static void loadVerticesFromFile(const std::string fileName, std::vector<Cvec3>& outvs);
 
 private:
     void loadFromFile(const std::string& fileName, std::vector<Vertex>& vertices, std::vector<unsigned short>& indices);

@@ -126,6 +126,17 @@ public:
     return r;
   }
 
+  friend std::ostream& operator << (std::ostream& os, const Matrix4& m) {
+      for (int i = 0; i < 4; ++i) {
+          os << "[ ";
+          for (int j = 0; j < 4; ++j) {
+              os << m(i,j) << " ";
+          }
+          os << "]" << std::endl;
+      }
+      return os;
+  }
+
 
   static Matrix4 makeXRotation(const double ang) {
     return makeXRotation(std::cos(ang * CS175_PI/180), std::sin(ang * CS175_PI/180));

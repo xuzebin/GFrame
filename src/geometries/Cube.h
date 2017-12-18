@@ -25,6 +25,10 @@ public:
         Geometry::createVBOs(vtx, idx);
     }
 
+    const std::vector<Vertex>& getVertices() {
+        return std::vector<Vertex>();
+    }
+
 protected:
     float size;
 };

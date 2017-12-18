@@ -40,6 +40,10 @@ public:
     float getStacks() const { return stacks; }
     bool isStereo() const   { return stereo; }
 
+    const std::vector<Vertex>& getVertices() {
+        return std::vector<Vertex>();
+    }
+
 protected:
     float radius;
     float slices;

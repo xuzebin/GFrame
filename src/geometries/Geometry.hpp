@@ -31,9 +31,15 @@ public:
 
     BoundingBox calcBoundingBox(const std::vector<Vertex>& vertices);
 
+    //used for retriving vertices
+    virtual const std::vector<Vertex>& getVertices() = 0;
+
+
+
+    void normalizeVertices(std::vector<Vertex>& vertices);
 protected:
     Geometry();
-    void normalizeVertices(std::vector<Vertex>& vertices);
+
 
     unsigned short indicesNum;
     float boundingBoxLength;//currently all objects are considered sphere when testing intersection

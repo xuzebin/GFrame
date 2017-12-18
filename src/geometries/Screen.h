@@ -64,6 +64,10 @@ public:
         glDisableVertexAttribArray(aTexCoordLocation);
     }
 
+    const std::vector<Vertex>& getVertices() {
+        return std::vector<Vertex>();
+    }
+
 protected:
     float size;
 

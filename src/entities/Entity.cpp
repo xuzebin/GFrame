@@ -2,13 +2,14 @@
 
 int Entity::id_counter = 0;
 
-Entity::Entity(std::shared_ptr<Geometry> geometry, std::shared_ptr<Material> material, std::string name) : name(name),
-                                                                                                           geometry(geometry),
-                                                                                                           material(material),
-                                                                                                           parent(nullptr),
-                                                                                                           clickEventListener(nullptr),
-                                                                                                           visible(true),
-                                                                                                           depthTest(true)
+Entity::Entity(std::shared_ptr<Geometry> geometry, std::shared_ptr<Material> material, std::string name, bool clean_data) : name(name),
+                                                                                                                            geometry(geometry),
+                                                                                                                            material(material),
+                                                                                                                            parent(nullptr),
+                                                                                                                            clickEventListener(nullptr),
+                                                                                                                            visible(true),
+                                                                                                                            depthTest(true),
+                                                                                                                            child(nullptr)
 
 {
     setName(id_counter++);
@@ -25,6 +26,12 @@ void Entity::createMesh()  {
     
     initState.transform = transform;
     initState.color = material->getColor();
+
+    //if convex hull was set, create mesh for it as the convex hull won't be added to the scene hierarchy.
+    // Note: not used; use parent instead
+    //    if (convexhull != nullptr) {
+    //        convexhull->createMesh();
+    //    }
 }
 
 void Entity::draw(std::shared_ptr<Camera> camera, std::shared_ptr<Shader> shader, std::shared_ptr<Light> light0, std::shared_ptr<Light> light1) {

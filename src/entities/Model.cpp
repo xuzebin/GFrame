@@ -5,8 +5,8 @@
 #include "../materials/Material.hpp"
 #include "../geometries/Geometry.hpp"
 
-Model::Model(const std::string fileName, std::string name, std::string basePath) : fileName(fileName),
-                                                                                   basePath(basePath)
+Model::Model(const std::string fileName, std::string name, std::string basePath, bool clean_data) : fileName(fileName),
+                                                                                                    basePath(basePath)
 {
     this->name = name;
 
@@ -16,7 +16,7 @@ Model::Model(const std::string fileName, std::string name, std::string basePath)
     std::vector<unsigned short> idx;
     loadFromFile(fileName, vtx, idx);
 
-    geometry = std::make_shared<Mesh>(vtx, idx);
+    geometry = std::make_shared<Mesh>(vtx, idx, clean_data);
 }
 
 void Model::calcFaceTangent(const Cvec3f& v1, const Cvec3f& v2, const Cvec3f& v3, const Cvec2f& texcoord1, const Cvec2f& texcoord2, const Cvec2f& texcoord3, Cvec3f& tangent, Cvec3f& binormal, Cvec3f& normal) {
@@ -127,3 +127,27 @@ void Model::loadFromFile(const std::string& fileName, std::vector<Vertex>& verti
     }
 }
 
+void Model::loadVerticesFromFile(const std::string fileName, std::vector<Cvec3>& outvs) {
+    if (fileName == "") {
+        throw std::string("filename empty");
+    }
+    tinyobj::attrib_t attrib;
+    std::vector<tinyobj::shape_t> shapes;
+    std::vector<tinyobj::material_t> materials;
+    std::string err;
+
+    //TODO add getBaseDir function
+    bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, fileName.c_str(), "", true);
+    if (!err.empty()) {
+        std::cerr << err << std::endl;
+    }
+    if (!ret) {
+        std::cerr << "Failed to load " << fileName << std::endl;
+    }
+    std::cout << "loading vertices from file. vertices size= " << attrib.vertices.size()/3 << std::endl;
+    for (int i = 0; i < attrib.vertices.size(); i += 3) {
+        std::cout << attrib.vertices[i] << std::endl;
+        outvs.push_back(Cvec3(attrib.vertices[i], attrib.vertices[i+1], attrib.vertices[i+2]));
+    }
+    std::cout << "loading vertices done." << std::endl;
+}

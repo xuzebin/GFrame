@@ -14,6 +14,9 @@
 
 using namespace std;
 
+#define DEBUG 0
+
+
 void ignoreGlErrors() {
   GLenum errCode;
   do {
@@ -22,6 +25,8 @@ void ignoreGlErrors() {
 }
 
 void checkGlErrors(const char* filename, int lineno) {
+#if DEBUG
+    std::cout << "debug mode" << std::endl;
   const GLenum errCode = glGetError();
 
   if (errCode != GL_NO_ERROR) {
@@ -34,6 +39,7 @@ void checkGlErrors(const char* filename, int lineno) {
     cerr << error << endl;
     throw runtime_error(error);
   }
+#endif
 }
 
 // Dump text file into a character vector, throws exception on error

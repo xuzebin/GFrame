@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Geometry.hpp"
 #include "../base/geometrymaker.h"
+#include "../base/glsupport.h"
 
 Geometry::Geometry() : indicesNum(0),
                        boundingBoxLength(0),
@@ -42,24 +43,27 @@ void Geometry::createVBOs(std::vector<Vertex>& vtx, const std::vector<unsigned s
 
 void Geometry::draw(const GLuint aPositionLocation, const GLuint aNomralLocation, const GLuint aTexCoordLocation, const GLuint aBinormalLocation, const GLuint aTangentLocation) {
     glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-    
+    checkGlErrors(__FILE__, __LINE__);
     glVertexAttribPointer(aTexCoordLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
     glEnableVertexAttribArray(aTexCoordLocation);
-    
+    checkGlErrors(__FILE__, __LINE__);
     glVertexAttribPointer(aPositionLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
     glEnableVertexAttribArray(aPositionLocation);
-    
+    checkGlErrors(__FILE__, __LINE__);
     glVertexAttribPointer(aNomralLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
     glEnableVertexAttribArray(aNomralLocation);
-    
+    checkGlErrors(__FILE__, __LINE__);
     glVertexAttribPointer(aBinormalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, binormal));
+    checkGlErrors(__FILE__, __LINE__);
     glEnableVertexAttribArray(aBinormalLocation);
-    
+    checkGlErrors(__FILE__, __LINE__);    
     glVertexAttribPointer(aTangentLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
     glEnableVertexAttribArray(aTangentLocation);
+    checkGlErrors(__FILE__, __LINE__);
     
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
     glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_SHORT, 0);
+    checkGlErrors(__FILE__, __LINE__);
 }
 
 BoundingBox Geometry::calcBoundingBox(const std::vector<Vertex>& vertices) {
