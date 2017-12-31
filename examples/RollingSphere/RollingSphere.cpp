@@ -32,11 +32,7 @@ void display(void) {
     //draw ground
     glDepthMask(GL_FALSE);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    //    glEnable(GL_POLYGON_OFFSET_FILL);
-    //    glPolygonOffset(1, 1);
     ground->draw(Scene::getCamera(), ground->getShader(), Scene::getLight(0), Scene::getLight(1));
-    //    glDisable(GL_POLYGON_OFFSET_FILL);
-
     glDepthMask(GL_TRUE);
     //draw sphere
     glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
@@ -44,7 +40,6 @@ void display(void) {
     ball->draw(Scene::getCamera(), ball->getShader(), Scene::getLight(0), Scene::getLight(1));
 
     //draw shadow
-
     //first update shadow's modelview matrix
     shadow->setModelMatrix(ball->getModelMatrix());
 
@@ -118,7 +113,7 @@ void init(void) {
 
     /** Lights config **/
     auto light0 = std::make_shared<Light>();
-    light0->setPosition(-5, 10, -10);
+    light0->setPosition(-5, 10, 0);
     auto light1 = std::make_shared<Light>();
     light1->setPosition(-1, 0, -4);
 
