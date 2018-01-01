@@ -169,6 +169,7 @@ void display(GLFWwindow* window) {
 }
 
 GLFWwindow* initWindow(const int resX, const int resY) {
+    std::cout << "press t to enable tone mapping, f to disable" << std::endl;
     if(!glfwInit()) {
         fprintf(stderr, "Failed to initialize GLFW\n");
         return NULL;
@@ -178,7 +179,7 @@ GLFWwindow* initWindow(const int resX, const int resY) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
     // Open a window and create its OpenGL context
-    GLFWwindow* window = glfwCreateWindow(resX, resY, "GLFW Test", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(resX, resY, "Post-Processing Tone Mapping", NULL, NULL);
 
     if(window == NULL) {
         fprintf(stderr, "Failed to open GLFW window.\n");
@@ -256,9 +257,10 @@ GLFWwindow* initWindow(const int resX, const int resY) {
 
     // Lights config
     auto light0 = std::make_shared<Light>();
-    light0->setPosition(1, 5, 3);
+    light0->setPosition(1, 5, 0);
     auto light1 = std::make_shared<Light>();
-    light1->setPosition(-1, 0, -2);
+    //    light1->setPosition(-1, 0, -2);
+    light1->setPosition(-1, 0, 0);
     light1->lightColor = Cvec3f(3, 3, 3);
     Scene::setLight0(light0);
     Scene::setLight1(light1);
@@ -272,7 +274,6 @@ GLFWwindow* initWindow(const int resX, const int resY) {
     std::string path = filepath.substr(0, found + 1);
     std::string file = filepath.substr(found + 1);
     auto model0 = std::make_shared<Model>(filepath, "model0", path);
-    model0->setScale(Cvec3(1.5, 1.5, 1.5));
     model0->setPosition(Cvec3(0, 0, -3));
     model0->setRotation(Quat::makeYRotation(20));
     model0->setShader(modelShader);

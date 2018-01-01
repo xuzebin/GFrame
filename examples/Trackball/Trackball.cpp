@@ -31,28 +31,21 @@ void init(void) {
     glReadBuffer(GL_BACK);
     
     std::string vertexShader = "shaders/vertex_shader_simple.glsl";
-//    std::string vertexShader = "shaders/vertex_shader_model.glsl";
     std::string fragmentShader = "shaders/fragment_shader_color.glsl";
-     //    std::string fragmentShader = "shaders/fragment_shader_model.glsl";
 
     auto colorShader = std::make_shared<ColorShader>();
     colorShader->createProgram(vertexShader.c_str(), fragmentShader.c_str());
-//     auto colorShader = std::make_shared<ModelShader>();
-//     colorShader->createProgram(vertexShader.c_str(), fragmentShader.c_str());
 
     auto camera = make_shared<Camera>(Cvec3(0, 0, 0), Quat::makeXRotation(0));
     Scene::setCamera(camera);
 
     auto light0 = std::make_shared<Light>();
-    light0->setPosition(0, 0, 5);
+    light0->setPosition(0, 0, 0);
     light0->lightColor = Cvec3f(1, 1, 1);
 
     Scene::setLight0(light0);
 
-//     auto model0 = std::make_shared<Model>("assets/models/torus/catmark_torus_creases0.obj", "model0", "assets/models/torus/");
-    // auto model0 = std::make_shared<Model>("assets/models/knot/texturedknot.obj", "model0", "assets/models/knot/");
-    auto model0 = std::make_shared<Model>("assets/models/head/head.obj", "model0", "assets/models/head/");
-  //   auto model0 = std::make_shared<Model>("assets/models/sportsCar/sportsCar.obj", "model0", "assets/models/sportsCar/");
+    auto model0 = std::make_shared<Model>("assets/models/torus/catmark_torus_creases0.obj", "model0", "assets/models/torus/");
 
     model0->material->setColor(0.8, 0.8, 0.8);
     model0->translate(Cvec3(0, 0, -4));

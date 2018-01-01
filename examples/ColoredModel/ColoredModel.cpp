@@ -39,17 +39,16 @@ void init(void) {
     Scene::setCamera(camera);
 
     auto light0 = std::make_shared<Light>();
-    light0->setPosition(1, 5, -5);
+    light0->setPosition(1, 5, 0);
     auto light1 = std::make_shared<Light>();
-    light1->setPosition(-1, 0, -4);
+    light1->setPosition(-1, 0, 0);
 
     Scene::setLight0(light0);
     Scene::setLight1(light1);
 
     auto model0 = std::make_shared<Model>("assets/models/ring/ring.obj", "model0", "assets/models/ring/");
     model0->material->setColor(0.2, 0.2, 0.2);
-    model0->setScale(Cvec3(20, 20, 20));
-    model0->setPosition(Cvec3(0, -0.5, -2));
+    model0->setPosition(Cvec3(0, 0, -2));
     model0->setRotation(Quat::makeYRotation(30));
     model0->setShader(colorShader);
     Scene::addChild(model0);

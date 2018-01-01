@@ -33,6 +33,7 @@ void display(void) {
 }
 
 void init(void) {
+    std::cout << "press s to switch enable/disable FXAA" << std::endl;
     glClearColor(0.7, 0.7, 0.7, 1.0);
     glClearDepth(0.0);
     glCullFace(GL_BACK);
@@ -74,13 +75,13 @@ void init(void) {
 
     // Lights config
     auto light0 = std::make_shared<Light>();
-    light0->setPosition(0, 0, 5);
+    light0->setPosition(0, 2, 0);
     Scene::setLight0(light0);
 
     // Model config
     auto model0 = std::make_shared<Model>("assets/models/torus/catmark_torus_creases0.obj", "model0", "assets/models/torus/");
     model0->material->setColor(0.6, 0.6, 0.6);
-    model0->setPosition(Cvec3(0, 0, -6));
+    model0->setPosition(Cvec3(0, 0, -5));
     model0->setRotation(Quat::makeYRotation(20) * Quat::makeXRotation(-20));
     model0->setShader(modelShader);
     Scene::addChild(model0);
@@ -158,7 +159,7 @@ int main(int argc, char **argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitWindowSize(screenWidth, screenHeight);
-    glutCreateWindow("FXAA");
+    glutCreateWindow("Post-Processing FXAA");
     
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
