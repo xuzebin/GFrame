@@ -31,14 +31,15 @@ public:
     void setFov(double fov);
     void setZNear(double zNear);
     void setZFar(double zFar);
-    
-private:
-    void setViewMatrix(const Cvec3& position, const Quat& rotation);
-    void updateViewMatrix();
     void setProjectionMatrix(double fov,
                              double aspectRatio,
                              double zNear,
                              double zFar);
+
+ private:
+    void setViewMatrix(const Cvec3& position, const Quat& rotation);
+    void updateViewMatrix();
+
 
     Cvec3 position;
     Quat rotation;

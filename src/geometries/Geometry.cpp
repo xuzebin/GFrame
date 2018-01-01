@@ -52,11 +52,14 @@ void Geometry::draw(const GLuint aPositionLocation, const GLuint aNomralLocation
     glVertexAttribPointer(aNomralLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
     glEnableVertexAttribArray(aNomralLocation);
     
-    glVertexAttribPointer(aBinormalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, binormal));
-    glEnableVertexAttribArray(aBinormalLocation);
-    
-    glVertexAttribPointer(aTangentLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
-    glEnableVertexAttribArray(aTangentLocation);
+    if (aBinormalLocation != -1) {
+        glVertexAttribPointer(aBinormalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, binormal));
+        glEnableVertexAttribArray(aBinormalLocation);
+    }
+    if (aTangentLocation != -1) {
+        glVertexAttribPointer(aTangentLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
+        glEnableVertexAttribArray(aTangentLocation);
+    }
     
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
     glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_SHORT, 0);

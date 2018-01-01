@@ -26,6 +26,8 @@ public:
 
     RigidBodyTransform& operator = (const RigidBodyTransform& t);
 
+    bool matrixDirty() const { return isMatrixDirty; }
+
 protected:
     void calculateMatrix();
 
