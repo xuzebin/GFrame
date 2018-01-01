@@ -25,5 +25,6 @@ add_subdirectory(examples/PostProcessing/FXAA)
 add_subdirectory(examples/PostProcessing/ToneMapping)
 add_subdirectory(examples/RollingSphere)
 add_subdirectory(examples/GLFWTest)
+add_subdirectory(examples/PBR)
 endif (BUILD_SRC)
 
